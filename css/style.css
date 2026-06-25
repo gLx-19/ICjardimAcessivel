@@ -1,0 +1,92 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+body {
+    background: #ffffff;
+    color: #121212;
+}
+
+
+#cabecalho {
+    background: white;
+    color:#0E381C;
+    text-align: center;
+    padding: 14px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.card {
+    width: 90%;
+    max-width: 320px;
+    background: #CDFCD3;
+    border-radius: 16px;
+    padding: 15px;
+    text-align: center;
+    color: #121212;
+    justify-self: center;
+}
+
+
+.card img {
+    width: 100%;
+    border-radius: 12px;
+}
+
+
+.nomes {
+    margin-top: 10px;
+    color: #1A4326;
+}
+
+.nomes h2 {
+    font-size: 1.3rem;
+}
+
+
+.informcoes {
+    background: #D4A373;
+    color: #121212;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.audioDescricao,
+.verLibras, .saberMais {
+    background: #1A4326;
+    color: #F9DC5C;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.container {
+    display: grid;
+    /* Define que as colunas se adaptam sozinhas ao espaço, centralizadas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+    gap: 20px;
+    padding: 20px;
+    justify-content: center; /* Centraliza o grid na tela */
+    align-items: start;
+    max-width: 1200px; /* Evita que o grid espalhe demais em telas ultra-wide */
+    margin: 0 auto; /* Centraliza o container inteiro */
+}
+
+@media (min-width: 600px) {
+    .container {
+        /* O auto-fit cuida disso dinamicamente */
+    }
+}

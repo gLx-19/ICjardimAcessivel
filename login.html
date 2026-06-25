@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantae Acessível - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+
+        <form id="formulario" class="p-4 border rounded shadow-sm bg-white" style="width: 100%; max-width: 400px;">
+            <fieldset>
+                <legend class="text-center mb-4 text-success fw-bold">Plantae Acessível</legend>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="email">Email</label>
+                    <input class="form-control" id="email" name="email" type="email" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="senha">Senha</label>
+                    <input class="form-control" id="senha" name="senha" type="password" placeholder="Sua senha" required>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a class="btn btn-outline-success w-100" href="cliente.html">Cadastrar</a>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-success w-100" type="button" onclick="autenticar()">Login</button>
+                    </div>
+                </div> 
+            </fieldset>
+        </form>
+
+    </div>
+
+</body>
+</html>
