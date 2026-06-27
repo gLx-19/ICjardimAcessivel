@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantas - Painel de Gestão</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header id="cabecalho">
+        <h1>Plantae Acessível</h1>
+    </header>
+
+    <main class="container">
+
+        <div class="card">
+
+            <div class="nomes">
+                <h2>🌿 Plantas</h2>
+                <p>Pesquise uma planta cadastrada ou registre uma nova.</p>
+            </div>
+
+            <!-- ==================== PESQUISA ==================== -->
+
+            <section class="pesquisa">
+
+                <h3>Pesquisar planta</h3>
+
+                <form action="plantas-admin.php" method="GET">
+
+                    <input
+                        type="text"
+                        name="pesquisa"
+                        placeholder="Digite o nome da planta">
+
+                    <button type="submit" class="btn-pesquisar">
+                        🔍 Pesquisar
+                    </button>
+
+                </form>
+
+            </section>
+
+            <!-- ==================== RESULTADOS ==================== -->
+
+            <section class="lista-plantas">
+
+                <h3>Resultados</h3>
+
+                <div class="planta-item">
+
+                    <span>🌿 Samambaia</span>
+
+                    <div class="acoes">
+                        <button class="btn-ver">Ver</button>
+                        <button class="btn-editar">Editar</button>
+                        <button class="btn-excluir">Excluir</button>
+                    </div>
+
+                </div>
+
+                <div class="planta-item">
+
+                    <span>🌹 Rosa</span>
+
+                    <div class="acoes">
+                        <button class="btn-ver">Ver</button>
+                        <button class="btn-editar">Editar</button>
+                        <button class="btn-excluir">Excluir</button>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ==================== CADASTRO ==================== -->
+
+            <section class="cadastro">
+
+                <h3>Cadastrar nova planta</h3>
+
+                <form action="cadastrar-planta.php" method="POST" enctype="multipart/form-data">
+
+                    <label for="nome">Nome da planta</label>
+                    <input type="text" id="nome" name="nome" required>
+
+                    <label for="cientifico">Nome científico</label>
+                    <input type="text" id="cientifico" name="cientifico">
+
+                    <label for="familia">Família</label>
+                    <input type="text" id="familia" name="familia">
+
+                    <label for="descricao">Descrição</label>
+                    <textarea id="descricao" name="descricao" rows="4"></textarea>
+
+                    <label for="luminosidade">Luminosidade</label>
+                    <select id="luminosidade" name="luminosidade">
+                        <option value="">Selecione</option>
+                        <option>Sol pleno</option>
+                        <option>Meia sombra</option>
+                        <option>Sombra</option>
+                    </select>
+
+                    <label for="rega">Frequência de rega</label>
+                    <input type="text" id="rega" name="rega">
+
+                    <label for="imagem">Imagem da planta</label>
+                    <input type="file" id="imagem" name="imagem">
+
+                    <button type="submit" class="btn-principal">
+                        Confirmar cadastro
+                    </button>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

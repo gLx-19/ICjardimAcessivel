@@ -89,4 +89,230 @@ body {
     .container {
         /* O auto-fit cuida disso dinamicamente */
     }
+
+    .card {
+    width: 90%;
+    max-width: 450px;
+    background: #CDFCD3;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    color: #121212;
+    justify-self: center;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-menu {
+    background: #1A4326;
+    color: #F9DC5C;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-menu:hover {
+    background: #275d36;
+    transform: translateY(-2px);
+}
+
+.btn-menu:active {
+    transform: scale(0.98);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #ffffff;
+    color: #121212;
+}
+
+#cabecalho {
+    background: white;
+    color: #0E381C;
+    text-align: center;
+    padding: 14px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 30px 15px;
+}
+
+.card {
+    width: 100%;
+    max-width: 600px;
+    background: #CDFCD3;
+    border-radius: 16px;
+    padding: 25px;
+}
+
+.nomes {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.nomes h2 {
+    color: #1A4326;
+    margin-bottom: 8px;
+}
+
+.nomes p {
+    color: #444;
+}
+
+/* Pesquisa */
+
+.pesquisa {
+    margin-bottom: 30px;
+}
+
+.pesquisa h3 {
+    color: #1A4326;
+    margin-bottom: 12px;
+}
+
+.pesquisa form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pesquisa input {
+    padding: 12px;
+    border: 2px solid #B4E7BD;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.btn-pesquisar {
+    background: #1A4326;
+    color: #F9DC5C;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Lista */
+
+.lista-plantas h3 {
+    color: #1A4326;
+    margin-bottom: 15px;
+}
+
+.planta-item {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.planta-item span {
+    font-weight: bold;
+    color: #1A4326;
+}
+
+.acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.acoes button {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-ver {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-editar {
+    background: #F9DC5C;
+}
+
+.btn-excluir {
+    background: #E74C3C;
+    color: white;
+}
+
+/* Nova planta */
+
+.nova-planta {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.nova-planta p {
+    margin-bottom: 12px;
+    color: #1A4326;
+}
+
+.btn-principal {
+    width: 100%;
+    background: #1A4326;
+    color: #F9DC5C;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-principal:hover,
+.btn-pesquisar:hover {
+    opacity: 0.9;
+}
+
+.acoes button:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+
+    .planta-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .acoes {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .acoes button {
+        flex: 1;
+    }
+
+}
 }
