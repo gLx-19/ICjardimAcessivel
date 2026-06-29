@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantae Acessível - Tags NFC</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header id="cabecalho">
+        <h1>Plantae Acessível</h1>
+    </header>
+
+    <main class="container">
+
+        <div class="card">
+
+            <div class="nomes">
+                <h2>📱 Tags NFC</h2>
+                <p>Gerencie as tags NFC vinculadas às plantas.</p>
+            </div>
+
+            <!-- PESQUISA -->
+
+            <section class="pesquisa">
+
+                <h3>Pesquisar Tag</h3>
+
+                <form id="formPesquisa">
+
+                    <input
+                        type="text"
+                        id="pesquisa"
+                        placeholder="Digite o código NFC">
+
+                    <button
+                        type="submit"
+                        class="btn-pesquisar">
+
+                        🔍 Pesquisar
+
+                    </button>
+
+                </form>
+
+            </section>
+
+            <!-- LISTA -->
+
+            <section class="lista-plantas">
+
+                <h3>Tags cadastradas</h3>
+
+                <div id="listaTags">
+
+                    <div class="planta-item">
+
+                        <span>
+                            📱 NFC0001 - Lavanda
+                        </span>
+
+                        <div class="acoes">
+
+                            <button class="btn-editar">
+                                Editar
+                            </button>
+
+                            <button class="btn-excluir">
+                                Excluir
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- CADASTRO -->
+
+            <section class="cadastro">
+
+                <h3>Cadastrar Nova Tag</h3>
+
+                <form id="formCadastro">
+
+                    <label for="codigo">
+                        Código NFC
+                    </label>
+
+                    <input
+                        type="text"
+                        id="codigo"
+                        placeholder="Ex.: NFC0001"
+                        required>
+
+                    <label for="planta">
+                        Planta vinculada
+                    </label>
+
+                    <select id="planta">
+
+                        <option>Selecione uma planta</option>
+                        <option>Lavanda</option>
+                        <option>Samambaia</option>
+                        <option>Rosa</option>
+
+                    </select>
+
+                    <button
+                        type="submit"
+                        class="btn-principal">
+
+                        Confirmar Cadastro
+
+                    </button>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <script src="js/tag.js"></script>
+
+</body>
+
+</html>

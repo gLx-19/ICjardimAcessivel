@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantae Acessível - Tarefas</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header id="cabecalho">
+        <h1>Plantae Acessível</h1>
+    </header>
+
+    <main class="container">
+
+        <div class="card">
+
+            <div class="nomes">
+                <h2>📋 Tarefas</h2>
+                <p>Gerencie as tarefas do jardim.</p>
+            </div>
+
+            <!-- PESQUISA -->
+
+            <section class="pesquisa">
+
+                <h3>Pesquisar Tarefa</h3>
+
+                <form id="formPesquisa">
+
+                    <input
+                        type="text"
+                        id="pesquisa"
+                        placeholder="Digite a descrição da tarefa">
+
+                    <button
+                        type="submit"
+                        class="btn-pesquisar">
+
+                        🔍 Pesquisar
+
+                    </button>
+
+                </form>
+
+            </section>
+
+            <!-- LISTA -->
+
+            <section class="lista-plantas">
+
+                <h3>Tarefas cadastradas</h3>
+
+                <div id="listaTarefas">
+
+                    <div class="planta-item">
+
+                        <span>
+                            📋 Regar Lavanda
+                        </span>
+
+                        <div class="acoes">
+
+                            <button class="btn-ver">
+                                Status
+                            </button>
+
+                            <button class="btn-editar">
+                                Editar
+                            </button>
+
+                            <button class="btn-excluir">
+                                Excluir
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- CADASTRO -->
+
+            <section class="cadastro">
+
+                <h3>Cadastrar Nova Tarefa</h3>
+
+                <form id="formCadastro">
+
+                    <label for="descricao">
+                        Descrição
+                    </label>
+
+                    <textarea
+                        id="descricao"
+                        rows="4"
+                        placeholder="Descreva a tarefa">
+                    </textarea>
+
+                    <label for="prazo">
+                        Prazo
+                    </label>
+
+                    <input
+                        type="date"
+                        id="prazo"
+                        required>
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select id="status">
+
+                        <option>Pendente</option>
+                        <option>Em andamento</option>
+                        <option>Concluída</option>
+
+                    </select>
+
+                    <label for="realizada">
+                        Data realizada
+                    </label>
+
+                    <input
+                        type="date"
+                        id="realizada">
+
+                    <button
+                        type="submit"
+                        class="btn-principal">
+
+                        Confirmar Cadastro
+
+                    </button>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <script src="js/tarefas.js"></script>
+
+</body>
+
+</html>

@@ -1,3 +1,6 @@
+/* ===========================
+   RESET
+=========================== */
 
 * {
     margin: 0;
@@ -6,52 +9,70 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* ===========================
+   GERAL
+=========================== */
 
 body {
     background: #ffffff;
     color: #121212;
 }
 
-
 #cabecalho {
-    background: white;
-    color:#0E381C;
+    background: #ffffff;
+    color: #0E381C;
     text-align: center;
     padding: 14px;
     font-size: 1.2rem;
     font-weight: bold;
-    width: 100%;
-    box-sizing: border-box;
 }
 
+/* ===========================
+   CONTAINER
+=========================== */
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 30px 15px;
+}
 
 .card {
     width: 90%;
-    max-width: 320px;
+    max-width: 600px;
     background: #CDFCD3;
     border-radius: 16px;
-    padding: 15px;
-    text-align: center;
+    padding: 25px;
     color: #121212;
-    justify-self: center;
 }
-
 
 .card img {
     width: 100%;
     border-radius: 12px;
 }
 
+/* ===========================
+   TÍTULOS
+=========================== */
 
 .nomes {
-    margin-top: 10px;
+    text-align: center;
+    margin-bottom: 25px;
     color: #1A4326;
 }
 
 .nomes h2 {
     font-size: 1.3rem;
+    margin-bottom: 8px;
 }
 
+.nomes p {
+    color: #444;
+}
+
+/* ===========================
+   INFORMAÇÕES
+=========================== */
 
 .informcoes {
     background: #D4A373;
@@ -62,8 +83,13 @@ body {
     font-size: 1rem;
 }
 
+/* ===========================
+   BOTÕES PADRÃO
+=========================== */
+
 .audioDescricao,
-.verLibras, .saberMais {
+.verLibras,
+.saberMais {
     background: #1A4326;
     color: #F9DC5C;
     padding: 12px;
@@ -71,35 +97,18 @@ body {
     border-radius: 12px;
     font-weight: bold;
     cursor: pointer;
+    transition: .3s;
 }
 
-.container {
-    display: grid;
-    /* Define que as colunas se adaptam sozinhas ao espaço, centralizadas */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
-    gap: 20px;
-    padding: 20px;
-    justify-content: center; /* Centraliza o grid na tela */
-    align-items: start;
-    max-width: 1200px; /* Evita que o grid espalhe demais em telas ultra-wide */
-    margin: 0 auto; /* Centraliza o container inteiro */
+.audioDescricao:hover,
+.verLibras:hover,
+.saberMais:hover {
+    opacity: .9;
 }
 
-@media (min-width: 600px) {
-    .container {
-        /* O auto-fit cuida disso dinamicamente */
-    }
-
-    .card {
-    width: 90%;
-    max-width: 450px;
-    background: #CDFCD3;
-    border-radius: 16px;
-    padding: 25px;
-    text-align: center;
-    color: #121212;
-    justify-self: center;
-}
+/* ===========================
+   MENU
+=========================== */
 
 .menu {
     display: flex;
@@ -117,7 +126,7 @@ body {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    transition: .3s;
 }
 
 .btn-menu:hover {
@@ -126,59 +135,12 @@ body {
 }
 
 .btn-menu:active {
-    transform: scale(0.98);
+    transform: scale(.98);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    background: #ffffff;
-    color: #121212;
-}
-
-#cabecalho {
-    background: white;
-    color: #0E381C;
-    text-align: center;
-    padding: 14px;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    padding: 30px 15px;
-}
-
-.card {
-    width: 100%;
-    max-width: 600px;
-    background: #CDFCD3;
-    border-radius: 16px;
-    padding: 25px;
-}
-
-.nomes {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.nomes h2 {
-    color: #1A4326;
-    margin-bottom: 8px;
-}
-
-.nomes p {
-    color: #444;
-}
-
-/* Pesquisa */
+/* ===========================
+   PESQUISA
+=========================== */
 
 .pesquisa {
     margin-bottom: 30px;
@@ -209,11 +171,18 @@ body {
     border-radius: 10px;
     padding: 12px;
     font-size: 1rem;
-    cursor: pointer;
     font-weight: bold;
+    cursor: pointer;
+    transition: .3s;
 }
 
-/* Lista */
+.btn-pesquisar:hover {
+    opacity: .9;
+}
+
+/* ===========================
+   LISTA DE PLANTAS
+=========================== */
 
 .lista-plantas h3 {
     color: #1A4326;
@@ -221,7 +190,7 @@ body {
 }
 
 .planta-item {
-    background: white;
+    background: #ffffff;
     border-radius: 12px;
     padding: 15px;
     margin-bottom: 15px;
@@ -236,6 +205,10 @@ body {
     color: #1A4326;
 }
 
+/* ===========================
+   AÇÕES
+=========================== */
+
 .acoes {
     display: flex;
     gap: 8px;
@@ -247,6 +220,11 @@ body {
     padding: 8px 14px;
     cursor: pointer;
     font-weight: bold;
+    transition: .3s;
+}
+
+.acoes button:hover {
+    opacity: .9;
 }
 
 .btn-ver {
@@ -263,7 +241,9 @@ body {
     color: white;
 }
 
-/* Nova planta */
+/* ===========================
+   NOVA PLANTA
+=========================== */
 
 .nova-planta {
     margin-top: 25px;
@@ -285,18 +265,130 @@ body {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
+    transition: .3s;
 }
 
-.btn-principal:hover,
-.btn-pesquisar:hover {
-    opacity: 0.9;
+.btn-principal:hover {
+    opacity: .9;
 }
 
-.acoes button:hover {
-    opacity: 0.9;
+/* ===========================
+   CATÁLOGO
+=========================== */
+
+.catalogo{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 25px;
 }
+
+.card-planta{
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+}
+
+.card-planta img{
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+.card-planta h3{
+    color: #1A4326;
+    margin-bottom: 5px;
+}
+
+.card-planta p{
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* ===========================
+   PÁGINA DA PLANTA
+=========================== */
+
+.informcoes h3{
+    color:#1A4326;
+    margin-bottom:10px;
+}
+
+.informcoes p{
+    line-height:1.6;
+}
+
+.informcoes strong{
+    color:#1A4326;
+}
+
+.audioDescricao,
+.verLibras{
+    width:100%;
+    border:none;
+    font-size:1rem;
+}
+
+.audioDescricao{
+    margin-top:20px;
+}
+
+.menu{
+    margin-top:25px;
+}
+
+/* ===========================
+   CADASTRO
+=========================== */
+
+.cadastro{
+    margin-top:30px;
+}
+
+.cadastro h3{
+    color:#1A4326;
+    margin-bottom:15px;
+}
+
+.cadastro form{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.cadastro label{
+    font-weight:bold;
+    color:#1A4326;
+}
+
+.cadastro input,
+.cadastro textarea,
+.cadastro select{
+
+    padding:12px;
+    border:2px solid #B4E7BD;
+    border-radius:10px;
+    font-size:1rem;
+
+}
+
+.cadastro textarea{
+    resize:vertical;
+    min-height:100px;
+}
+
+
+
+/* ===========================
+   RESPONSIVIDADE
+=========================== */
 
 @media (max-width: 600px) {
+
+    .card {
+        width: 100%;
+    }
 
     .planta-item {
         flex-direction: column;
@@ -306,7 +398,6 @@ body {
 
     .acoes {
         width: 100%;
-        display: flex;
         justify-content: space-between;
     }
 
@@ -314,5 +405,4 @@ body {
         flex: 1;
     }
 
-}
 }

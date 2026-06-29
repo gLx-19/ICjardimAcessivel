@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantae Acessível</title>
+    <title>Plantae Acessível - Catálogo</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -17,37 +17,51 @@
     <main class="container">
 
         <div class="card">
+
             <div class="nomes">
                 <h2>Catálogo de Plantas</h2>
                 <p>Explore nosso jardim!</p>
             </div>
 
+            <!-- Pesquisa -->
 
-            <div class="informcoes">
-                <label for="pesquisa">Digite o nome da planta:</label>
-                <input id="pesquisa" name="pesquisa" type="text" placeholder="Ex: Lavanda..."
-                    style="width: 100%; margin-top: 5px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                <input type="button" value="Buscar"
-                    style="width: 100%; margin-top: 8px; padding: 8px; background: #1A4326; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+            <div class="pesquisa">
+
+                <h3>Pesquisar Planta</h3>
+
+                <form id="formPesquisa">
+
+                    <input
+                        type="text"
+                        id="pesquisa"
+                        placeholder="Digite o nome da planta">
+
+                    <button
+                        type="submit"
+                        class="btn-pesquisar">
+                        Buscar
+                    </button>
+
+                </form>
+
             </div>
 
-            <div class="card">
-                <img src="imagens/lavanda.png" alt="Lavanda">
+            <!-- Lista de plantas -->
 
+            <div id="listaPlantas" class="catalogo">
 
-                <div class="nomes">
-                    <h2>Lavanda</h2>
-                    <p>Lavandula angustifolia</p>
-                </div>
-                <div class="saberMais">Saber Mais</div>
-
+                <!--
+                    Os cards serão adicionados aqui
+                    pelo JavaScript.
+                -->
 
             </div>
-        </div>
 
         </div>
 
     </main>
+
+    <script src="js/catalogo.js"></script>
 
 </body>
 

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantae Acessível</title>
+    <title>Plantae Acessível - Planta</title>
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -17,32 +18,114 @@
     <main class="container">
 
         <div class="card">
-            <img src="imagens/lavanda.png" alt="Lavanda">
 
-            <div class="audioDescricao">
-                <p>🔊 Ouvir audiodescrição</p>
-            </div>
+            <!-- Imagem -->
 
-            <div class="verLibras">
-                <p>Tradução em Libras</p>
-            </div>
+            <img
+                id="imagemPlanta"
+                src="imagens/lavanda.png"
+                alt="Lavanda">
+
+            <!-- Botões de acessibilidade -->
+
+            <button class="audioDescricao">
+                🔊 Ouvir Audiodescrição
+            </button>
+
+            <button class="verLibras">
+                🤟 Ver em Libras
+            </button>
+
+            <!-- Nome -->
 
             <div class="nomes">
-                <h2>Lavanda</h2>
-                <p>
+
+                <h2 id="nomePlanta">
+                    Lavanda
+                </h2>
+
+                <p id="nomeCientifico">
                     Lavandula angustifolia
                 </p>
+
             </div>
 
+            <!-- Descrição -->
+
             <div class="informcoes">
-                <p>
-                    Planta aromática com propriedades relaxantes.
+
+                <h3>Descrição</h3>
+
+                <p id="descricao">
+
+                    Planta aromática conhecida pelo perfume agradável e pelas
+                    propriedades relaxantes.
+
                 </p>
+
+            </div>
+
+            <!-- Informações -->
+
+            <div class="informcoes">
+
+                <h3>Cuidados</h3>
+
+                <p>
+                    <strong>💧 Frequência de rega:</strong>
+                    <span id="rega">
+                        2 vezes por semana
+                    </span>
+                </p>
+
+                <br>
+
+                <p>
+                    <strong>✂ Frequência de poda:</strong>
+                    <span id="poda">
+                        A cada 3 meses
+                    </span>
+                </p>
+
+                <br>
+
+                <p>
+                    <strong>☀ Luminosidade:</strong>
+                    <span id="luminosidade">
+                        Sol pleno
+                    </span>
+                </p>
+
+                <br>
+
+                <p>
+                    <strong>🌿 Família botânica:</strong>
+                    <span id="familia">
+                        Lamiaceae
+                    </span>
+                </p>
+
+            </div>
+
+            <!-- Navegação -->
+
+            <div class="menu">
+
+                <button class="btn-menu" id="btnAnterior">
+                    ⬅ Planta anterior
+                </button>
+
+                <button class="btn-menu" id="btnProxima">
+                    Planta seguinte ➡
+                </button>
+
             </div>
 
         </div>
 
     </main>
+
+    <script src="js/planta.js"></script>
 
 </body>
 

@@ -4,123 +4,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantas - Painel de Gestão</title>
+    <title>Painel de Gestão - Plantas</title>
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <header id="cabecalho">
-        <h1>Plantae Acessível</h1>
-    </header>
+<header id="cabecalho">
+    <h1>Plantae Acessível</h1>
+</header>
 
-    <main class="container">
+<main class="container">
 
-        <div class="card">
+<div class="card">
 
-            <div class="nomes">
-                <h2>🌿 Plantas</h2>
-                <p>Pesquise uma planta cadastrada ou registre uma nova.</p>
-            </div>
+    <div class="nomes">
+        <h2>🌿 Plantas</h2>
+        <p>Pesquise uma planta cadastrada ou registre uma nova.</p>
+    </div>
 
-            <!-- ==================== PESQUISA ==================== -->
+    <!-- PESQUISA -->
 
-            <section class="pesquisa">
+    <section class="pesquisa">
 
-                <h3>Pesquisar planta</h3>
+        <h3>Pesquisar Planta</h3>
 
-                <form action="plantas-admin.php" method="GET">
+        <form id="formPesquisa">
 
-                    <input
-                        type="text"
-                        name="pesquisa"
-                        placeholder="Digite o nome da planta">
+            <input
+                type="text"
+                id="pesquisa"
+                placeholder="Digite o nome da planta">
 
-                    <button type="submit" class="btn-pesquisar">
-                        🔍 Pesquisar
-                    </button>
+            <button
+                type="submit"
+                class="btn-pesquisar">
 
-                </form>
+                🔍 Pesquisar
 
-            </section>
+            </button>
 
-            <!-- ==================== RESULTADOS ==================== -->
+        </form>
 
-            <section class="lista-plantas">
+    </section>
 
-                <h3>Resultados</h3>
+    <!-- RESULTADOS -->
 
-                <div class="planta-item">
+    <section class="lista-plantas">
 
-                    <span>🌿 Samambaia</span>
+        <h3>Plantas cadastradas</h3>
 
-                    <div class="acoes">
-                        <button class="btn-ver">Ver</button>
-                        <button class="btn-editar">Editar</button>
-                        <button class="btn-excluir">Excluir</button>
-                    </div>
+        <div id="listaPlantas">
 
-                </div>
-
-                <div class="planta-item">
-
-                    <span>🌹 Rosa</span>
-
-                    <div class="acoes">
-                        <button class="btn-ver">Ver</button>
-                        <button class="btn-editar">Editar</button>
-                        <button class="btn-excluir">Excluir</button>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- ==================== CADASTRO ==================== -->
-
-            <section class="cadastro">
-
-                <h3>Cadastrar nova planta</h3>
-
-                <form action="cadastrar-planta.php" method="POST" enctype="multipart/form-data">
-
-                    <label for="nome">Nome da planta</label>
-                    <input type="text" id="nome" name="nome" required>
-
-                    <label for="cientifico">Nome científico</label>
-                    <input type="text" id="cientifico" name="cientifico">
-
-                    <label for="familia">Família</label>
-                    <input type="text" id="familia" name="familia">
-
-                    <label for="descricao">Descrição</label>
-                    <textarea id="descricao" name="descricao" rows="4"></textarea>
-
-                    <label for="luminosidade">Luminosidade</label>
-                    <select id="luminosidade" name="luminosidade">
-                        <option value="">Selecione</option>
-                        <option>Sol pleno</option>
-                        <option>Meia sombra</option>
-                        <option>Sombra</option>
-                    </select>
-
-                    <label for="rega">Frequência de rega</label>
-                    <input type="text" id="rega" name="rega">
-
-                    <label for="imagem">Imagem da planta</label>
-                    <input type="file" id="imagem" name="imagem">
-
-                    <button type="submit" class="btn-principal">
-                        Confirmar cadastro
-                    </button>
-
-                </form>
-
-            </section>
+            <!-- As plantas serão inseridas aqui pelo JavaScript -->
 
         </div>
 
-    </main>
+    </section>
+
+    <!-- CADASTRO -->
+
+    <section class="cadastro">
+
+        <h3>Cadastrar Nova Planta</h3>
+
+        <form id="formCadastro">
+
+            <label>Nome da planta</label>
+            <input
+                type="text"
+                id="nome"
+                required>
+
+            <label>Nome científico</label>
+            <input
+                type="text"
+                id="cientifico">
+
+            <label>Família botânica</label>
+            <input
+                type="text"
+                id="familia">
+
+            <label>Descrição</label>
+
+            <textarea
+                id="descricao"
+                rows="4">
+            </textarea>
+
+            <label>Luminosidade</label>
+
+            <select id="luminosidade">
+
+                <option>Sol pleno</option>
+                <option>Meia sombra</option>
+                <option>Sombra</option>
+
+            </select>
+
+            <label>Frequência de rega</label>
+
+            <input
+                type="text"
+                id="rega"
+                placeholder="Ex.: 2 vezes por semana">
+
+            <label>Frequência de poda</label>
+
+            <input
+                type="text"
+                id="poda"
+                placeholder="Ex.: A cada 3 meses">
+
+            <label>Conteúdo em áudio</label>
+
+            <input
+                type="file"
+                id="audio"
+                accept="audio/*">
+
+            <label>Conteúdo em Libras</label>
+
+            <input
+                type="file"
+                id="libras"
+                accept="video/*">
+
+            <label>Imagem da planta</label>
+
+            <input
+                type="file"
+                id="imagem"
+                accept="image/*">
+
+            <button
+                type="submit"
+                class="btn-principal">
+
+                Confirmar Cadastro
+
+            </button>
+
+        </form>
+
+    </section>
+
+</div>
+
+</main>
+
+<script src="js/plantas-admin.js"></script>
 
 </body>
 
