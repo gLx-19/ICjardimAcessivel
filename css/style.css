@@ -434,6 +434,69 @@ body {
     margin: 5px 0;
 }
 
+
+/* ==========================
+   Tela Inicial
+========================== */
+
+.telaInicial {
+
+    text-align: center;
+    padding: 50px 40px;
+
+}
+
+.telaInicial h2 {
+
+    color: #2E8B57;
+    margin-bottom: 20px;
+
+}
+
+.textoInicial {
+
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 40px;
+    line-height: 1.6;
+
+}
+
+.btn-iniciar {
+
+    width: 100%;
+    padding: 22px;
+
+    background-color: #2E8B57;
+
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 24px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+.btn-iniciar:hover {
+
+    background-color: #246b43;
+    transform: scale(1.02);
+
+}
+
+.menu-nav a {
+
+    font-size: 14px;
+
+}
+
+
 /* ===========================
    RESPONSIVIDADE
 =========================== */

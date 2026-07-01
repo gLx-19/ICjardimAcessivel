@@ -192,3 +192,5 @@ Você também precisa escolher onde os dados serão armazenados:
 ❌ Banco de dados (MySQL/PHP, se o trabalho exigir backend)
 
 
+IMPORTANTE!!!!!!!!!!!!!!!!!!!!!!!!!
+pensar em arrumar no HTML+BACKEND do menuUsuario para distinguir jardineiro de admin
