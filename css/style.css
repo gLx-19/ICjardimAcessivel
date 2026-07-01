@@ -378,7 +378,61 @@ body {
     min-height:100px;
 }
 
+/* ===========================
+   HEADER E FOOTER
+=========================== */
 
+#cabecalhoNav {
+    background-color: #2E8B57; /* Verde folha */
+    color: white;
+    padding: 15px 20px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
+.menu-nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+.btn-login-header {
+    background-color: #fff;
+    color: #2E8B57 !important;
+    padding: 5px 12px;
+    border-radius: 4px;
+}
+
+#rodapeGlobal {
+    background-color: #333;
+    color: #ccc;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    margin-top: 40px;
+}
+
+.footer-container p {
+    margin: 5px 0;
+}
 
 /* ===========================
    RESPONSIVIDADE

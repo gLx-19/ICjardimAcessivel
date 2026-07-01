@@ -10,8 +10,13 @@
 
 <body>
 
-    <header id="cabecalho">
-        <h1>Plantae Acessível</h1>
+    <header id="cabecalhoNav">
+        <div class="header-container">
+            <div class="logo-area">
+                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <h1>Plantae Acessível</h1>
+            </div>
+        </div>
     </header>
 
     <main class="container">
@@ -31,14 +36,9 @@
 
                 <form id="formPesquisa">
 
-                    <input
-                        type="text"
-                        id="pesquisa"
-                        placeholder="Digite o nome da planta">
+                    <input type="text" id="pesquisa" placeholder="Digite o nome da planta">
 
-                    <button
-                        type="submit"
-                        class="btn-pesquisar">
+                    <button type="submit" class="btn-pesquisar">
                         Buscar
                     </button>
 
@@ -60,8 +60,16 @@
         </div>
 
     </main>
+
+    <footer id="rodapeGlobal">
+        <div class="footer-container">
+            <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
+            <p>CEFET-MG - Campus VII Timóteo</p>
+        </div>
+    </footer>
+
     <script src="js/catalogo.js"></script>
-    </body>
+</body>
 </body>
 
 </html>

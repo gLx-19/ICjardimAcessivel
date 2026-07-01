@@ -11,151 +11,134 @@
 
 <body>
 
-<header id="cabecalho">
-    <h1>Plantae Acessível</h1>
-</header>
+    <header id="cabecalhoNav">
+        <div class="header-container">
+            <div class="logo-area">
+                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <h1>Plantae Acessível</h1>
+            </div>
 
-<main class="container">
+            <nav class="menu-nav">
+                <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
+            </nav>
+        </div>
+    </header>
 
-<div class="card">
+    <main class="container">
 
-    <div class="nomes">
-        <h2>🌿 Plantas</h2>
-        <p>Pesquise uma planta cadastrada ou registre uma nova.</p>
-    </div>
+        <div class="card">
 
-    <!-- PESQUISA -->
+            <div class="nomes">
+                <h2>🌿 Plantas</h2>
+                <p>Pesquise uma planta cadastrada ou registre uma nova.</p>
+            </div>
 
-    <section class="pesquisa">
+            <!-- PESQUISA -->
 
-        <h3>Pesquisar Planta</h3>
+            <section class="pesquisa">
 
-        <form id="formPesquisa">
+                <h3>Pesquisar Planta</h3>
 
-            <input
-                type="text"
-                id="pesquisa"
-                placeholder="Digite o nome da planta">
+                <form id="formPesquisa">
 
-            <button
-                type="submit"
-                class="btn-pesquisar">
+                    <input type="text" id="pesquisa" placeholder="Digite o nome da planta">
 
-                🔍 Pesquisar
+                    <button type="submit" class="btn-pesquisar">
 
-            </button>
+                        🔍 Pesquisar
 
-        </form>
+                    </button>
 
-    </section>
+                </form>
 
-    <!-- RESULTADOS -->
+            </section>
 
-    <section class="lista-plantas">
+            <!-- RESULTADOS -->
 
-        <h3>Plantas cadastradas</h3>
+            <section class="lista-plantas">
 
-        <div id="listaPlantas">
+                <h3>Plantas cadastradas</h3>
 
-            <!-- As plantas serão inseridas aqui pelo JavaScript -->
+                <div id="listaPlantas">
+
+                    <!-- As plantas serão inseridas aqui pelo JavaScript -->
+
+                </div>
+
+            </section>
+
+            <!-- CADASTRO -->
+
+            <section class="cadastro">
+
+                <h3>Cadastrar Nova Planta</h3>
+
+                <form id="formCadastro">
+
+                    <label>Nome da planta</label>
+                    <input type="text" id="nome" required>
+
+                    <label>Nome científico</label>
+                    <input type="text" id="cientifico">
+
+                    <label>Família botânica</label>
+                    <input type="text" id="familia">
+
+                    <label>Descrição</label>
+
+                    <textarea id="descricao" rows="4">
+            </textarea>
+
+                    <label>Luminosidade</label>
+
+                    <select id="luminosidade">
+
+                        <option>Sol pleno</option>
+                        <option>Meia sombra</option>
+                        <option>Sombra</option>
+
+                    </select>
+
+                    <label>Frequência de rega</label>
+
+                    <input type="text" id="rega" placeholder="Ex.: 2 vezes por semana">
+
+                    <label>Frequência de poda</label>
+
+                    <input type="text" id="poda" placeholder="Ex.: A cada 3 meses">
+
+                    <label>Conteúdo em áudio</label>
+
+                    <input type="file" id="audio" accept="audio/*">
+
+                    <label>Conteúdo em Libras</label>
+
+                    <input type="file" id="libras" accept="video/*">
+
+                    <label>Imagem da planta</label>
+
+                    <input type="file" id="imagem" accept="image/*">
+
+                    <button type="submit" class="btn-principal">
+
+                        Confirmar Cadastro
+
+                    </button>
+
+                </form>
+
+            </section>
 
         </div>
 
-    </section>
-
-    <!-- CADASTRO -->
-
-    <section class="cadastro">
-
-        <h3>Cadastrar Nova Planta</h3>
-
-        <form id="formCadastro">
-
-            <label>Nome da planta</label>
-            <input
-                type="text"
-                id="nome"
-                required>
-
-            <label>Nome científico</label>
-            <input
-                type="text"
-                id="cientifico">
-
-            <label>Família botânica</label>
-            <input
-                type="text"
-                id="familia">
-
-            <label>Descrição</label>
-
-            <textarea
-                id="descricao"
-                rows="4">
-            </textarea>
-
-            <label>Luminosidade</label>
-
-            <select id="luminosidade">
-
-                <option>Sol pleno</option>
-                <option>Meia sombra</option>
-                <option>Sombra</option>
-
-            </select>
-
-            <label>Frequência de rega</label>
-
-            <input
-                type="text"
-                id="rega"
-                placeholder="Ex.: 2 vezes por semana">
-
-            <label>Frequência de poda</label>
-
-            <input
-                type="text"
-                id="poda"
-                placeholder="Ex.: A cada 3 meses">
-
-            <label>Conteúdo em áudio</label>
-
-            <input
-                type="file"
-                id="audio"
-                accept="audio/*">
-
-            <label>Conteúdo em Libras</label>
-
-            <input
-                type="file"
-                id="libras"
-                accept="video/*">
-
-            <label>Imagem da planta</label>
-
-            <input
-                type="file"
-                id="imagem"
-                accept="image/*">
-
-            <button
-                type="submit"
-                class="btn-principal">
-
-                Confirmar Cadastro
-
-            </button>
-
-        </form>
-
-    </section>
-
-</div>
-
-</main>
-
-<script src="js/plantas-admin.js"></script>
+    </main>
+    <footer id="rodapeGlobal">
+        <div class="footer-container">
+            <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
+            <p>CEFET-MG - Campus VII Timóteo</p>
+        </div>
+    </footer>
+    <script src="js/plantas-admin.js"></script>
 
 </body>
 

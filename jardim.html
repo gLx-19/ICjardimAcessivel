@@ -11,9 +11,18 @@
 
 <body>
 
-    <header id="cabecalho">
-        <h1>Plantae Acessível</h1>
-    </header>
+    <header id="cabecalhoNav">
+    <div class="header-container">
+        <div class="logo-area">
+            <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+            <h1>Plantae Acessível</h1>
+        </div>
+
+        <nav class="menu-nav">
+            <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
+        </nav>
+    </div>
+</header>
 
     <main class="container">
 
@@ -32,14 +41,9 @@
 
                 <form id="formPesquisa">
 
-                    <input
-                        type="text"
-                        id="pesquisa"
-                        placeholder="Digite o nome do jardim">
+                    <input type="text" id="pesquisa" placeholder="Digite o nome do jardim">
 
-                    <button
-                        type="submit"
-                        class="btn-pesquisar">
+                    <button type="submit" class="btn-pesquisar">
 
                         🔍 Pesquisar
 
@@ -97,33 +101,22 @@
                         Nome
                     </label>
 
-                    <input
-                        type="text"
-                        id="nome"
-                        required>
+                    <input type="text" id="nome" required>
 
                     <label for="localizacao">
                         Localização
                     </label>
 
-                    <input
-                        type="text"
-                        id="localizacao"
-                        placeholder="Ex.: Bloco A - Entrada">
+                    <input type="text" id="localizacao" placeholder="Ex.: Bloco A - Entrada">
 
                     <label for="descricao">
                         Descrição
                     </label>
 
-                    <textarea
-                        id="descricao"
-                        rows="5"
-                        placeholder="Descrição do jardim">
+                    <textarea id="descricao" rows="5" placeholder="Descrição do jardim">
                     </textarea>
 
-                    <button
-                        type="submit"
-                        class="btn-principal">
+                    <button type="submit" class="btn-principal">
 
                         Confirmar Cadastro
 
@@ -136,6 +129,12 @@
         </div>
 
     </main>
+    <footer id="rodapeGlobal">
+        <div class="footer-container">
+            <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
+            <p>CEFET-MG - Campus VII Timóteo</p>
+        </div>
+    </footer>
 
     <script src="js/jardim.js"></script>
 
