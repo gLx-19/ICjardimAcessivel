@@ -36,49 +36,44 @@ async function buscarPlantasDoServidor(termoPesquisa = "") {
         console.error("Erro:", erro);
 
         divListaPlantas.innerHTML =
-            `<p style="color:red;">
-                Não foi possível conectar ao servidor.
-            </p>`;
+            `<p style=\"color:red;\">\r\n                Não foi possível conectar ao servidor.\r\n            </p>`;
     }
 
 }
 
 // ======================================================
-// Mostra os cards das plantas
+// Mostra os cards das plantas (Ajustado para planta.nome)
 // ======================================================
 function renderizarCatalogo(plantas) {
 
-    divListaPlantas.innerHTML = '';
+    divListaPlantas.innerHTML = "";
 
     if (plantas.length === 0) {
-
-        divListaPlantas.innerHTML =
-            "<p>Nenhuma planta encontrada.</p>";
-
+        divListaPlantas.innerHTML = "<p>Nenhuma planta encontrada.</p>";
         return;
     }
 
     plantas.forEach(planta => {
 
         const cardHTML = `
-            <div class="card" style="margin-bottom:20px;padding:15px;text-align:center;">
+            <div class="planta-card">
+                
+                <img 
+                    src="${planta.imagemUrl || 'imagens/placeholder.png'}" 
+                    alt="${planta.nome || 'Planta'}" 
+                    style="max-width:150px;border-radius:8px;"
+                >
 
-                <img
-                    src="${planta.imagemUrl || 'imagens/placeholder.png'}"
-                    alt="${planta.nome}"
-                    style="max-width:150px;border-radius:8px;">
+                <h3>${planta.nome || 'Sem nome'}</h3>
 
-                <h3>${planta.nome}</h3>
-
-                <p><i>${planta.nomeCientifico}</i></p>
+                <p><i>${planta.nomeCientifico || 'Sem nome científico'}</i></p>
 
                 <button
                     class="btn-pesquisar"
-                    onclick="verDetalhes(${planta.id})"
-                    style="margin-top:10px;">
-
+                    onclick=\"verDetalhes(${planta.id})\"
+                    style="margin-top:10px;"
+                >
                     Saber Mais
-
                 </button>
 
             </div>

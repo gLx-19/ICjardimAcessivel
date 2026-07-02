@@ -8,6 +8,7 @@ import com.cefet.plantae_acessivel.repository.PlantaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,5 +65,23 @@ public class PlantaService {
     @Transactional
     public void excluir(Long id) {
         plantaRepository.deleteById(id);
+    }
+
+   @Transactional
+    public PlantaDTO atualizar(Long id, PlantaDTO dto) {
+        // 1. Busca a planta antiga no banco de dados pelo ID (usando plantaRepository)
+        Planta plantaExistente = plantaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
+
+        // 2. Atualiza os dados com o que veio do Front-end
+        plantaExistente.setNome(dto.getNome());
+        plantaExistente.setNomeCientifico(dto.getNomeCientifico());
+        plantaExistente.setDescricao(dto.getDescricao());
+        plantaExistente.setRega(dto.getRega());
+        plantaExistente.setPoda(dto.getPoda());
+        
+        // 3. Salva de novo no banco e retorna (usando plantaRepository)
+        Planta plantaAtualizada = plantaRepository.save(plantaExistente);
+        return new PlantaDTO(plantaAtualizada);
     }
 }

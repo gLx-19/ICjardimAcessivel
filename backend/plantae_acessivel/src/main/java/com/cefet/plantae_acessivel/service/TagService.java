@@ -34,7 +34,7 @@ public class TagService {
         return new TagDTO(entity);
     }
 
-    @Transactional
+   @Transactional
     public TagDTO cadastrar(TagDTO dto) {
         if (tagRepository.existsById(dto.getId())) {
             throw new RuntimeException("Esta Tag NFC já está cadastrada no sistema.");
@@ -53,6 +53,12 @@ public class TagService {
         entity.setId(dto.getId());
         entity.setDataVinculo(dto.getDataVinculo());
         entity.setPlanta(planta);
+
+        // O SEU IF ENTRA BEM AQUI:
+        // Se a data de vínculo não foi enviada pelo front-end, o Java gera a data de hoje automaticamente!
+        if (entity.getDataVinculo() == null) {
+            entity.setDataVinculo(java.time.LocalDate.now());
+        }
 
         entity = tagRepository.save(entity);
         return new TagDTO(entity);

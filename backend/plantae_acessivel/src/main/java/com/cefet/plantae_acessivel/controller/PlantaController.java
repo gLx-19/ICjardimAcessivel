@@ -36,4 +36,9 @@ public class PlantaController {
     public void excluir(@PathVariable Long id) {
         service.excluir(id);
     }
+
+    @PutMapping("/{id}")
+    public PlantaDTO atualizar(@PathVariable Long id, @RequestBody PlantaDTO dto) {
+        return service.atualizar(id, dto);
+    }
 }

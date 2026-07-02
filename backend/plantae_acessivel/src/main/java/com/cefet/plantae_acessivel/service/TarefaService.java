@@ -55,4 +55,19 @@ public class TarefaService {
     public void excluir(Long id) {
         repository.deleteById(id);
     }
+
+    @Transactional
+    public TarefaDTO atualizar(Long id, TarefaDTO dto) {
+        Tarefa entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada."));
+
+        // Ajustado para os nomes exatos do seu TarefaDTO!
+        entity.setTitulo(dto.getTitulo());
+        entity.setDescricao(dto.getDescricao());
+        entity.setDataPrevista(dto.getDataPrevista());
+        entity.setConcluida(dto.isConcluida());
+
+        entity = repository.save(entity);
+        return new TarefaDTO(entity);
+    }
 }

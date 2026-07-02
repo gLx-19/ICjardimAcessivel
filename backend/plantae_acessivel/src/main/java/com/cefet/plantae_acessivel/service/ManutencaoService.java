@@ -53,4 +53,24 @@ public class ManutencaoService {
         }
         repository.deleteById(id);
     }
+
+    @Transactional
+    public ManutencaoDTO atualizar(Long id, ManutencaoDTO dto) {
+        // 1. Busca a manutenção existente pelo ID
+        Manutencao entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registro de manutenção não encontrado."));
+
+        // 2. Busca o jardim atualizado caso tenha sido alterado
+        Jardim jardim = jardimRepository.findById(dto.getJardimId())
+                .orElseThrow(() -> new RuntimeException("Jardim não encontrado para vincular a manutenção."));
+
+        // 3. Atualiza os dados com o que veio da tela (Front-end)
+        entity.setDescricao(dto.getDescricao());
+        entity.setDataRegistro(dto.getDataRegistro() != null ? dto.getDataRegistro() : java.time.LocalDate.now());
+        entity.setJardim(jardim);
+
+        // 4. Salva no banco de dados e retorna o DTO atualizado
+        entity = repository.save(entity);
+        return new ManutencaoDTO(entity);
+    }
 }

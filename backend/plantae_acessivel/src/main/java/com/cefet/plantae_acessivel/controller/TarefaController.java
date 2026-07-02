@@ -39,4 +39,9 @@ public class TarefaController {
     public void excluir(@PathVariable Long id) {
         service.excluir(id);
     }
+
+    @PutMapping("/{id}")
+    public TarefaDTO atualizar(@PathVariable Long id, @RequestBody TarefaDTO dto) {
+        return service.atualizar(id, dto);
+    }
 }
