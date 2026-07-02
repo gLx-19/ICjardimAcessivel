@@ -1,42 +1,58 @@
-// URL da API principal de Tarefas
 const API_URL = "http://localhost:8080/api/tarefas";
 
 const formCadastro = document.getElementById("formCadastro");
+const formPesquisa = document.getElementById("formPesquisa");
 const listaTarefasDiv = document.getElementById("listaTarefas");
+const btnSubmit = formCadastro.querySelector("button[type='submit']");
+const tituloFormulario = document.getElementById("tituloFormulario");
+
+let tarefaEmEdicaoId = null;
 
 // ======================================================
-// 1. CARREGAR/LISTAR TAREFAS DO BANCO
+// 1. CARREGAR/LISTAR TAREFAS (COM SUPORTE A FILTRO)
 // ======================================================
-async function carregarTarefas() {
+async function carregarTarefas(termoPesquisa = "") {
     try {
         const resposta = await fetch(API_URL);
         if (!resposta.ok) throw new Error("Erro ao buscar tarefas");
         
-        const tarefas = await resposta.json();
-
-        // Limpa a lista visual antes de preencher
+        let tarefas = await resposta.json();
         listaTarefasDiv.innerHTML = "";
 
+        if (termoPesquisa) {
+            const termo = termoPesquisa.toLowerCase();
+            tarefas = tarefas.filter(t => 
+                (t.titulo && t.titulo.toLowerCase().includes(termo)) ||
+                (t.descricao && t.descricao.toLowerCase().includes(termo))
+            );
+        }
+
         if (tarefas.length === 0) {
-            listaTarefasDiv.innerHTML = "<p>Nenhuma tarefa cadastrada no momento.</p>";
+            listaTarefasDiv.innerHTML = "<p>Nenhuma tarefa encontrada.</p>";
             return;
         }
 
-        // Desenha cada tarefa na tela
         tarefas.forEach(tarefa => {
-            // Se concluida for true, mostra check. Se false, pendente.
             const statusTexto = tarefa.concluida ? "✅ Concluída" : "⏳ Pendente";
             
+            // Formatando a exibição da data
+            let dataFormatada = tarefa.dataPrevista || 'Sem data';
+            if (tarefa.dataPrevista && tarefa.dataPrevista.includes("-")) {
+                const partes = tarefa.dataPrevista.split("-");
+                dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
+
             const tarefaCard = document.createElement("div");
             tarefaCard.className = "planta-item"; 
             tarefaCard.innerHTML = `
                 <div style="margin-bottom: 10px;">
-                    <strong>📋 ${tarefa.titulo || 'Tarefa'}</strong> - ${statusTexto}<br>
-                    <em>Prazo: ${tarefa.dataPrevista || 'Sem data definida'}</em><br>
-                    <p style="margin-top: 5px;">${tarefa.descricao || ''}</p>
+                    <strong>📋 ${tarefa.titulo || 'Tarefa'}</strong> - <small>${statusTexto}</small><br>
+                    <em>Prazo: ${dataFormatada}</em><br>
+                    <p style="margin-top: 5px; color: #555;">${tarefa.descricao || ''}</p>
                 </div>
                 <div class="acoes">
                     ${!tarefa.concluida ? `<button class="btn-ver" onclick="concluirTarefa(${tarefa.id})">✔ Concluir</button>` : ''}
+                    <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(tarefa).replace(/"/g, '&quot;')})" style="background-color: #ffc107; color: black;">✏️ Editar</button>
                     <button class="btn-excluir" onclick="excluirTarefa(${tarefa.id})">🗑 Excluir</button>
                 </div>
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
@@ -51,35 +67,59 @@ async function carregarTarefas() {
 }
 
 // ======================================================
-// 2. ENVIAR CADASTRO PARA O BANCO DE DADOS
+// 2. PREPARAR EDIÇÃO (Puxa os dados para o formulário)
+// ======================================================
+function prepararEdicao(tarefa) {
+    document.getElementById("titulo").value = tarefa.titulo || "";
+    document.getElementById("descricao").value = tarefa.descricao || "";
+    document.getElementById("prazo").value = tarefa.dataPrevista || "";
+    document.getElementById("status").value = tarefa.concluida ? "Concluída" : "Pendente";
+
+    tarefaEmEdicaoId = tarefa.id;
+    tituloFormulario.textContent = "✏️ Editando Tarefa";
+    btnSubmit.textContent = "💾 Salvar Alterações";
+    
+    formCadastro.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ======================================================
+// 3. SALVAR OU ATUALIZAR TAREFA (POST / PUT)
 // ======================================================
 formCadastro.addEventListener("submit", async function (event) {
     event.preventDefault(); 
 
-    // Pega o status do HTML e converte para true/false para o Java
     const statusSelecionado = document.getElementById("status").value;
     const isConcluida = (statusSelecionado === "Concluída");
 
     const dadosDaTarefa = {
-        titulo: "Tarefa de Manutenção", // O Java exige título, enviando um padrão
-        descricao: document.getElementById("descricao").value,
+        titulo: document.getElementById("titulo").value.trim(),
+        descricao: document.getElementById("descricao").value.trim(),
         dataPrevista: document.getElementById("prazo").value,
         concluida: isConcluida
     };
 
     try {
-        const resposta = await fetch(API_URL, {
-            method: "POST",
+        let resposta;
+        const url = tarefaEmEdicaoId ? `${API_URL}/${tarefaEmEdicaoId}` : API_URL;
+        const metodo = tarefaEmEdicaoId ? "PUT" : "POST";
+
+        resposta = await fetch(url, {
+            method: metodo,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(dadosDaTarefa)
         });
 
         if (resposta.ok) {
-            alert("✅ Tarefa cadastrada com sucesso!");
+            alert(tarefaEmEdicaoId ? "✅ Tarefa atualizada com sucesso!" : "✅ Tarefa cadastrada com sucesso!");
+            
             formCadastro.reset();
-            carregarTarefas(); // Atualiza a lista na hora
+            tarefaEmEdicaoId = null;
+            tituloFormulario.textContent = "Cadastrar Nova Tarefa";
+            btnSubmit.textContent = "Confirmar Cadastro";
+            
+            carregarTarefas(); 
         } else {
-            alert("❌ Erro ao cadastrar tarefa. Verifique os dados.");
+            alert("❌ Erro ao salvar tarefa. Verifique as informações fornecidas.");
         }
     } catch (erro) {
         console.error("Erro:", erro);
@@ -88,17 +128,13 @@ formCadastro.addEventListener("submit", async function (event) {
 });
 
 // ======================================================
-// 3. MARCAR TAREFA COMO CONCLUÍDA
+// 4. ROTA PATCH: CONCLUIR RÁPIDO PELO BOTÃO
 // ======================================================
 async function concluirTarefa(id) {
     try {
-        // Usa a rota PATCH que a sua dupla criou no Controller
-        const resposta = await fetch(`${API_URL}/${id}/concluir`, {
-            method: "PATCH"
-        });
-
+        const resposta = await fetch(`${API_URL}/${id}/concluir`, { method: "PATCH" });
         if (resposta.ok) {
-            carregarTarefas(); // Atualiza a tela
+            carregarTarefas(); 
         } else {
             alert("Erro ao tentar concluir a tarefa.");
         }
@@ -108,20 +144,15 @@ async function concluirTarefa(id) {
 }
 
 // ======================================================
-// 4. EXCLUIR TAREFA
+// 5. EXCLUIR TAREFA
 // ======================================================
 async function excluirTarefa(id) {
-    if (!confirm("Tem certeza que deseja excluir esta tarefa?")) {
-        return; 
-    }
+    if (!confirm("Tem certeza que deseja excluir esta tarefa?")) return; 
 
     try {
-        const resposta = await fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
-        });
-
+        const resposta = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
         if (resposta.ok) {
-            carregarTarefas(); // Atualiza a tela
+            carregarTarefas(); 
         } else {
             alert("Erro ao excluir a tarefa.");
         }
@@ -130,5 +161,12 @@ async function excluirTarefa(id) {
     }
 }
 
-// Executa a listagem assim que abre a página
+// ======================================================
+// 6. FILTRO DE BUSCA
+// ======================================================
+formPesquisa.addEventListener("submit", function (event) {
+    event.preventDefault();
+    carregarTarefas(document.getElementById("pesquisa").value.trim());
+});
+
 carregarTarefas();

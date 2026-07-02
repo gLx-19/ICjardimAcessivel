@@ -67,20 +67,28 @@ public class PlantaService {
         plantaRepository.deleteById(id);
     }
 
-   @Transactional
+  @Transactional
     public PlantaDTO atualizar(Long id, PlantaDTO dto) {
-        // 1. Busca a planta antiga no banco de dados pelo ID (usando plantaRepository)
+        // 1. Busca a planta antiga no banco de dados pelo ID
         Planta plantaExistente = plantaRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
 
-        // 2. Atualiza os dados com o que veio do Front-end
+        // 2. Busca o jardim atualizado enviado pelo front-end para não quebrar a restrição do banco
+        Jardim jardim = jardimRepository.findById(dto.getJardimId())
+            .orElseThrow(() -> new RuntimeException("Jardim informado não existe."));
+
+        // 3. Atualiza todas as propriedades com os dados novos
         plantaExistente.setNome(dto.getNome());
         plantaExistente.setNomeCientifico(dto.getNomeCientifico());
         plantaExistente.setDescricao(dto.getDescricao());
         plantaExistente.setRega(dto.getRega());
         plantaExistente.setPoda(dto.getPoda());
-        
-        // 3. Salva de novo no banco e retorna (usando plantaRepository)
+        plantaExistente.setLuminosidade(dto.getLuminosidade());
+        plantaExistente.setFamilia(dto.getFamilia());
+        plantaExistente.setImagemUrl(dto.getImagemUrl());
+        plantaExistente.setJardim(jardim); // Define o jardim obrigatoriamente
+
+        // 4. Salva de novo no banco
         Planta plantaAtualizada = plantaRepository.save(plantaExistente);
         return new PlantaDTO(plantaAtualizada);
     }

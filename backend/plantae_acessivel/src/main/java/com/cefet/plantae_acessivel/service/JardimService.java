@@ -20,8 +20,16 @@ public class JardimService {
     }
 
     @Transactional(readOnly = true)
-    public List<JardimDTO> listarTodos() {
-        return repository.findAll().stream().map(JardimDTO::new).collect(Collectors.toList());
+    public List<JardimDTO> listarTodos(String pesquisa) {
+        List<Jardim> lista;
+        
+        if (pesquisa != null && !pesquisa.trim().isEmpty()) {
+            lista = repository.findByNomeContainingIgnoreCase(pesquisa);
+        } else {
+            lista = repository.findAll();
+        }
+        
+        return lista.stream().map(JardimDTO::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

@@ -36,4 +36,11 @@ public class TagController {
     public void excluir(@PathVariable String id) {
         service.excluir(id);
     }
+
+    @PutMapping("/{id}")
+    public TagDTO atualizar(@PathVariable String id, @RequestBody TagDTO dto) {
+        return service.atualizar(id, dto);
+    }
+
+    
 }

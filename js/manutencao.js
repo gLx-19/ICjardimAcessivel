@@ -1,44 +1,44 @@
 const API_MANUTENCOES = "http://localhost:8080/api/manutencoes";
-const API_PLANTAS = "http://localhost:8080/api/plantas";
+const API_JARDINS = "http://localhost:8080/api/jardins";
 
 const formCadastro = document.getElementById("formCadastro");
 const formPesquisa = document.getElementById("formPesquisa");
 const listaManutencoesDiv = document.getElementById("listaManutencoes");
-const selectPlanta = document.getElementById("planta");
+const selectJardim = document.getElementById("jardim");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
-// Variável para controlar se estamos editando ou cadastrando
 let manutencaoEmEdicaoId = null;
+let listaJardinsLocal = [];
 
 // ======================================================
-// 1. CARREGAR AS PLANTAS DO BANCO NO SELECT DE CADASTRO
+// 1. CARREGAR OS JARDINS REAIS NO SELECT
 // ======================================================
-async function carregarSelectPlantas() {
+async function carregarSelectJardins() {
     try {
-        const resposta = await fetch(API_PLANTAS);
-        if (!resposta.ok) throw new Error("Erro ao buscar plantas");
+        const resposta = await fetch(API_JARDINS);
+        if (!resposta.ok) throw new Error("Erro ao buscar jardins");
         
-        const plantas = await resposta.json();
-        selectPlanta.innerHTML = ""; 
+        listaJardinsLocal = await resposta.json();
+        selectJardim.innerHTML = "<option value=''>Selecione um jardim</option>"; 
 
-        if (plantas.length === 0) {
-            selectPlanta.innerHTML = "<option value=''>Nenhuma planta cadastrada</option>";
+        if (listaJardinsLocal.length === 0) {
+            selectJardim.innerHTML = "<option value=''>Nenhum jardim cadastrado</option>";
             return;
         }
 
-        plantas.forEach(planta => {
+        listaJardinsLocal.forEach(jardim => {
             const option = document.createElement("option");
-            option.value = planta.id; 
-            option.textContent = planta.nome || "Planta sem nome";
-            selectPlanta.appendChild(option);
+            option.value = jardim.id; 
+            option.textContent = jardim.nome || "Jardim sem nome";
+            selectJardim.appendChild(option);
         });
     } catch (erro) {
-        console.error("Erro ao carregar select de plantas:", erro);
+        console.error("Erro ao carregar select de jardins:", erro);
     }
 }
 
 // ======================================================
-// 2. CARREGAR E FILTRAR A LISTA DE MANUTENÇÕES
+// 2. LISTAR AS MANUTENÇÕES DO BANCO
 // ======================================================
 async function carregarManutencoes(termoPesquisa = "") {
     try {
@@ -48,13 +48,11 @@ async function carregarManutencoes(termoPesquisa = "") {
         let manutencoes = await resposta.json();
         listaManutencoesDiv.innerHTML = "";
 
+        // Filtro local adaptado para os campos reais do seu Java
         if (termoPesquisa) {
             const termo = termoPesquisa.toLowerCase();
             manutencoes = manutencoes.filter(m => 
-                (m.tipo && m.tipo.toLowerCase().includes(termo)) ||
-                (m.responsavel && m.responsavel.toLowerCase().includes(termo)) ||
-                (m.descricao && m.descricao.toLowerCase().includes(termo)) ||
-                (m.nomePlanta && m.nomePlanta.toLowerCase().includes(termo))
+                (m.descricao && m.descricao.toLowerCase().includes(termo))
             );
         }
 
@@ -67,19 +65,23 @@ async function carregarManutencoes(termoPesquisa = "") {
             const itemDiv = document.createElement("div");
             itemDiv.className = "planta-item";
 
-            let dataFormatada = manutencao.data;
-            if (manutencao.data && manutencao.data.includes("-")) {
-                const partes = manutencao.data.split("-");
+            // Tratamento correto do campo dataRegistro vindo do Java DTO
+            let dataFormatada = manutencao.dataRegistro;
+            if (manutencao.dataRegistro && manutencao.dataRegistro.includes("-")) {
+                const partes = manutencao.dataRegistro.split("-");
                 dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
             }
 
+            // Acha o nome do jardim correspondente para mostrar na tela
+            const jardimObj = listaJardinsLocal.find(j => j.id === manutencao.jardimId);
+            const nomeJardim = jardimObj ? jardimObj.nome : "Jardim não identificado";
+
             itemDiv.innerHTML = `
                 <span>
-                    🌿 ${manutencao.nomePlanta || 'Planta'} - ${manutencao.tipo} (${dataFormatada})
-                    <br><small style="color: #666;">Responsável: ${manutencao.responsavel || 'Não informado'}</small>
+                    🛠️ <strong>${nomeJardim}</strong> - (${dataFormatada || 'Sem data'})
+                    <br><small style="color: #666;">Procedimento: ${manutencao.descricao}</small>
                 </span>
                 <div class="acoes">
-                    <button class="btn-ver" onclick="alert('Descrição: ${manutencao.descricao || "Sem descrição"}')">Ver</button>
                     <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(manutencao).replace(/"/g, '&quot;')})">Editar</button>
                     <button class="btn-excluir" onclick="excluirManutencao(${manutencao.id})">Excluir</button>
                 </div>
@@ -94,76 +96,52 @@ async function carregarManutencoes(termoPesquisa = "") {
 }
 
 // ======================================================
-// 3. PREPARAR EDIÇÃO (Puxa os dados de volta para a tela)
+// 3. PREPARAR EDIÇÃO
 // ======================================================
 function prepararEdicao(manutencao) {
-    // Preenche os campos do formulário
-    document.getElementById("data").value = manutencao.data || "";
-    document.getElementById("tipo").value = manutencao.tipo || "Rega";
+    document.getElementById("data").value = manutencao.dataRegistro || "";
     document.getElementById("descricao").value = manutencao.descricao || "";
-    document.getElementById("responsavel").value = manutencao.responsavel || "";
     
-    if (manutencao.plantaId) {
-        selectPlanta.value = manutencao.plantaId;
+    if (manutencao.jardimId) {
+        selectJardim.value = manutencao.jardimId;
     }
 
-    // Entra no Modo Edição
     manutencaoEmEdicaoId = manutencao.id;
     btnSubmit.textContent = "💾 Salvar Alterações";
-    
-    // Rola a tela suavemente até o formulário
     formCadastro.scrollIntoView({ behavior: 'smooth' });
 }
 
 // ======================================================
-// 4. CADASTRAR OU ATUALIZAR MANUTENÇÃO
+// 4. SALVAR OU ALTERAR (POST / PUT)
 // ======================================================
 formCadastro.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const dadosManutencao = {
-        data: document.getElementById("data").value,
-        tipo: document.getElementById("tipo").value,
+        dataRegistro: document.getElementById("data").value,
         descricao: document.getElementById("descricao").value.trim(),
-        responsavel: document.getElementById("responsavel").value.trim(),
-        plantaId: parseInt(selectPlanta.value)
+        jardimId: parseInt(selectJardim.value)
     };
 
     try {
         let resposta;
-        
-        if (manutencaoEmEdicaoId) {
-            // Se estamos editando, faz um PUT
-            resposta = await fetch(`${API_MANUTENCOES}/${manutencaoEmEdicaoId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dadosManutencao)
-            });
-        } else {
-            // Se for novo, faz um POST
-            resposta = await fetch(API_MANUTENCOES, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dadosManutencao)
-            });
-        }
+        const url = manutencaoEmEdicaoId ? `${API_MANUTENCOES}/${manutencaoEmEdicaoId}` : API_MANUTENCOES;
+        const metodo = manutencaoEmEdicaoId ? "PUT" : "POST";
+
+        resposta = await fetch(url, {
+            method: metodo,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dadosManutencao)
+        });
 
         if (resposta.ok) {
-            alert(manutencaoEmEdicaoId ? "✅ Registro atualizado com sucesso!" : "✅ Manutenção registrada com sucesso!");
-            
-            // Reseta o formulário e sai do modo edição
+            alert(manutencaoEmEdicaoId ? "✅ Registro de manutenção alterado!" : "✅ Manutenção registrada com sucesso!");
             formCadastro.reset();
             manutencaoEmEdicaoId = null;
-            btnSubmit.textContent = "Confirmar Cadastro";
-            
+            btnSubmit.textContent = "Confirmar Registro";
             carregarManutencoes();
         } else {
-            // Como o Java ainda não tem o PUT, ele vai responder um erro (405 método não permitido ou 404)
-            if (manutencaoEmEdicaoId) {
-                alert("⚠️ Quase lá! O Front-end enviou a alteração, mas a sua dupla precisa adicionar o método @PutMapping no ManutencaoController do Java para salvar.");
-            } else {
-                alert("❌ Erro ao registrar manutenção. Verifique os dados.");
-            }
+            alert("❌ Erro ao processar dados no servidor. Verifique os campos.");
         }
     } catch (erro) {
         alert("🔌 Erro de conexão com o servidor!");
@@ -171,14 +149,14 @@ formCadastro.addEventListener("submit", async function (event) {
 });
 
 // ======================================================
-// 5. EXCLUIR MANUTENÇÃO
+// 5. EXCLUIR
 // ======================================================
 async function excluirManutencao(id) {
     if (!confirm("Tem certeza que deseja apagar este registro de manutenção?")) return;
 
     try {
-        const resposta = await fetch(`${API_MANUTENCOES}/${id}`, { method: "DELETE" });
-        if (resposta.ok) {
+        const reply = await fetch(`${API_MANUTENCOES}/${id}`, { method: "DELETE" });
+        if (reply.ok) {
             alert("🗑️ Registro de manutenção excluído!");
             carregarManutencoes();
         } else {
@@ -189,15 +167,14 @@ async function excluirManutencao(id) {
     }
 }
 
-// ======================================================
-// 6. FILTRO DE PESQUISA
-// ======================================================
 formPesquisa.addEventListener("submit", function (event) {
     event.preventDefault();
-    const termo = document.getElementById("pesquisa").value;
-    carregarManutencoes(termo);
+    carregarManutencoes(document.getElementById("pesquisa").value.trim());
 });
 
-// Inicialização da página
-carregarSelectPlantas();
-carregarManutencoes();
+// Inicialização segura
+async function inicializar() {
+    await carregarSelectJardins();
+    await carregarManutencoes();
+}
+inicializar();

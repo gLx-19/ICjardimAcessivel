@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cefet.plantae_acessivel.dto.JardimDTO;
@@ -27,8 +28,8 @@ public class JardimController {
     }
 
     @GetMapping
-    public List<JardimDTO> listarTodos() {
-        return service.listarTodos();
+    public List<JardimDTO> listarTodos(@RequestParam(required = false) String pesquisa) {
+        return service.listarTodos(pesquisa);
     }
 
     @GetMapping("/{id}")

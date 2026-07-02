@@ -5,172 +5,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantae Acessível - Manutenções</title>
-
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
    <header id="cabecalhoNav">
-    <div class="header-container">
-        <div class="logo-area">
-            <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
-            <h1>Plantae Acessível</h1>
+        <div class="header-container">
+            <div class="logo-area">
+                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <h1>Plantae Acessível</h1>
+            </div>
+            <nav class="menu-nav">
+                <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
+            </nav>
         </div>
-
-        <nav class="menu-nav">
-            <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
-        </nav>
-    </div>
-</header>
+    </header>
 
     <main class="container">
-
         <div class="card">
-
             <div class="nomes">
                 <h2>🛠 Manutenções</h2>
-                <p>Gerencie os registros de manutenção das plantas.</p>
+                <p>Gerencie os registros de manutenção dos jardins.</p>
             </div>
 
-            <!-- PESQUISA -->
-
             <section class="pesquisa">
-
                 <h3>Pesquisar Manutenção</h3>
-
                 <form id="formPesquisa">
-
-                    <input
-                        type="text"
-                        id="pesquisa"
-                        placeholder="Pesquisar por planta, responsável ou tipo">
-
-                    <button
-                        type="submit"
-                        class="btn-pesquisar">
-
-                        🔍 Pesquisar
-
-                    </button>
-
+                    <input type="text" id="pesquisa" placeholder="Pesquisar por descrição ou jardim">
+                    <button type="submit" class="btn-pesquisar">🔍 Pesquisar</button>
                 </form>
-
             </section>
-
-            <!-- LISTA -->
 
             <section class="lista-plantas">
-
                 <h3>Manutenções cadastradas</h3>
-
                 <div id="listaManutencoes">
-
-                    <div class="planta-item">
-
-                        <span>
-                            🌿 Lavanda - Rega (10/06/2026)
-                        </span>
-
-                        <div class="acoes">
-
-                            <button class="btn-ver">
-                                Ver
-                            </button>
-
-                            <button class="btn-editar">
-                                Editar
-                            </button>
-
-                            <button class="btn-excluir">
-                                Excluir
-                            </button>
-
-                        </div>
-
                     </div>
-
-                </div>
-
             </section>
-
-            <!-- CADASTRO -->
 
             <section class="cadastro">
-
                 <h3>Cadastrar Manutenção</h3>
-
                 <form id="formCadastro">
+                    <label for="data">Data do Registro</label>
+                    <input type="date" id="data" required>
 
-                    <label for="data">
-                        Data
-                    </label>
+                    <label for="jardim">Jardim Vinculado</label>
+                    <select id="jardim" required>
+                        </select>
 
-                    <input
-                        type="date"
-                        id="data"
-                        required>
+                    <label for="descricao">Descrição dos Procedimentos</label>
+                    <textarea id="descricao" rows="5" placeholder="Descreva as tarefas feitas (Ex: Rega da lavanda, poda, adubação)" required></textarea>
 
-                    <label for="tipo">
-                        Tipo de manutenção
-                    </label>
-
-                    <select id="tipo">
-
-                        <option>Rega</option>
-                        <option>Poda</option>
-                        <option>Adubação</option>
-                        <option>Limpeza</option>
-                        <option>Controle de Pragas</option>
-                        <option>Outro</option>
-
-                    </select>
-
-                    <label for="descricao">
-                        Descrição
-                    </label>
-
-                    <textarea
-                        id="descricao"
-                        rows="4"
-                        placeholder="Descreva a manutenção realizada">
-                    </textarea>
-
-                    <label for="responsavel">
-                        Responsável
-                    </label>
-
-                    <input
-                        type="text"
-                        id="responsavel"
-                        placeholder="Nome do responsável">
-
-                    <label for="planta">
-                        Planta
-                    </label>
-
-                    <select id="planta">
-
-                        <option>Lavanda</option>
-                        <option>Samambaia</option>
-                        <option>Rosa</option>
-
-                    </select>
-
-                    <button
-                        type="submit"
-                        class="btn-principal">
-
-                        Confirmar Cadastro
-
-                    </button>
-
+                    <button type="submit" class="btn-principal">Confirmar Registro</button>
                 </form>
-
             </section>
-
         </div>
-
     </main>
 
     <footer id="rodapeGlobal">
@@ -181,7 +70,5 @@
     </footer>
 
     <script src="js/manutencao.js"></script>
-
 </body>
-
 </html>

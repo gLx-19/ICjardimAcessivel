@@ -68,4 +68,36 @@ public class TagService {
     public void excluir(String id) {
         tagRepository.deleteById(id);
     }
+
+    @Transactional
+    public TagDTO atualizar(String id, TagDTO dto) {
+        // 1. Busca a tag existente no banco
+        Tag entity = tagRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tag NFC não encontrada."));
+
+        // 2. Se o usuário escolheu uma planta, faz as validações
+        Planta planta = null;
+        if (dto.getPlantaId() != null) {
+            // Verifica se a planta escolhida já está em OUTRA tag (ignorando a tag atual)
+            Tag tagExistente = tagRepository.findAll().stream()
+                    .filter(t -> t.getPlanta() != null && t.getPlanta().getId().equals(dto.getPlantaId()) && !t.getId().equals(id))
+                    .findFirst().orElse(null);
+            
+            if (tagExistente != null) {
+                throw new RuntimeException("Esta planta já possui outra Tag vinculada.");
+            }
+
+            planta = plantaRepository.findById(dto.getPlantaId())
+                    .orElseThrow(() -> new RuntimeException("Planta não encontrada."));
+        }
+
+        // 3. Atualiza os dados (Planta vinculada e renova a data de vínculo)
+        entity.setPlanta(planta);
+        entity.setDataVinculo(java.time.LocalDate.now());
+
+        entity = tagRepository.save(entity);
+        return new TagDTO(entity);
+    }
+
+    
 }

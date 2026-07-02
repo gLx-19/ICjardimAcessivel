@@ -27,6 +27,10 @@ public class ManutencaoController {
         return service.cadastrar(dto);
     }
 
+   @PutMapping("/{id}")
+    public ManutencaoDTO atualizar(@PathVariable Long id, @RequestBody ManutencaoDTO dto) {
+        return service.atualizar(id, dto);
+    }
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id) {
         service.excluir(id);
