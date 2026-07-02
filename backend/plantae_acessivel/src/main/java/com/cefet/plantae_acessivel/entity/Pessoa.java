@@ -19,49 +19,22 @@ public class Pessoa {
     @Column(nullable = false)
     private String senha;
 
+    // MUDANÇA AQUI: Tipo mudou de String para PerfilEnum
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String perfil; // ADMIN, JARDINEIRO, VISITANTE
+    private PerfilEnum perfil; 
 
-    public Pessoa() {
-    }
+    public Pessoa() {}
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getPerfil() {
-        return perfil;
-    }
-
-    public void setPerfil(String perfil) {
-        this.perfil = perfil;
-    }
+    // Getters e Setters atualizados para PerfilEnum
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+    public PerfilEnum getPerfil() { return perfil; }
+    public void setPerfil(PerfilEnum perfil) { this.perfil = perfil; }
 }
