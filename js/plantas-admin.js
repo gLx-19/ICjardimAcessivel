@@ -10,28 +10,34 @@ const btnSubmit = formCadastro.querySelector("button[type='submit']");
 let plantaEmEdicaoId = null; 
 
 // ======================================================
-// 1. CARREGAR OS JARDINS NO SELECT DO FORMULÁRIO
+// 1. CARREGAR O JARDIM ÚNICO NO SELECT (CORRIGIDO)
 // ======================================================
 async function carregarSelectJardins() {
     try {
         const resposta = await fetch(API_JARDINS);
-        if (!resposta.ok) throw new Error("Erro ao buscar jardins");
-        const jardins = await resposta.json();
+        if (!resposta.ok) throw new Error("Erro ao buscar jardim");
+        
+        // O back-end agora envia um objeto único, não um array []
+        const jardimUnico = await resposta.json();
         selectJardim.innerHTML = "";
 
-        if (jardins.length === 0) {
+        if (!jardimUnico || !jardimUnico.id) {
             selectJardim.innerHTML = "<option value=''>Nenhum jardim cadastrado</option>";
             return;
         }
 
-        jardins.forEach(jardim => {
-            const option = document.createElement("option");
-            option.value = jardim.id;
-            option.textContent = jardim.nome;
-            selectJardim.appendChild(option);
-        });
+        // Cria a opção única baseada no objeto recebido do Back-end
+        const option = document.createElement("option");
+        option.value = jardimUnico.id;
+        option.textContent = jardimUnico.nome;
+        selectJardim.appendChild(option);
+        
+        // Deixa ele selecionado por padrão
+        selectJardim.value = jardimUnico.id;
+
     } catch (erro) {
         console.error("Erro ao carregar select de jardins:", erro);
+        selectJardim.innerHTML = "<option value=''>Erro ao carregar jardim</option>";
     }
 }
 
@@ -132,12 +138,18 @@ async function prepararEdicao(id) {
 }
 
 // ======================================================
-// 5. CADASTRAR OU ATUALIZAR PLANTA
+// 5. CADASTRAR OU ATUALIZAR PLANTA (CORRIGIDO PARA O SEU CONTROLLER)
 // ======================================================
 formCadastro.addEventListener("submit", async function (event) {
     event.preventDefault(); 
 
+    if (!selectJardim.value) {
+        alert("Erro: É obrigatório selecionar o jardim de origem.");
+        return;
+    }
+
     const dadosDaPlanta = {
+        id: plantaEmEdicaoId ? plantaEmEdicaoId : null, // Passa o ID se for edição para o Spring reaproveitar
         nome: document.getElementById("nome").value,
         nomeCientifico: document.getElementById("cientifico").value,
         familia: document.getElementById("familia").value,
@@ -145,16 +157,13 @@ formCadastro.addEventListener("submit", async function (event) {
         luminosidade: document.getElementById("luminosidade").value,
         rega: document.getElementById("rega").value,
         poda: document.getElementById("poda").value,
-        jardimId: parseInt(selectJardim.value) // Mapeia o ID selecionado dinamicamente!
+        jardimId: parseInt(selectJardim.value)
     };
 
     try {
-        let resposta;
-        const url = plantaEmEdicaoId ? `${API_URL}/${plantaEmEdicaoId}` : API_URL;
-        const metodo = plantaEmEdicaoId ? "PUT" : "POST";
-
-        resposta = await fetch(url, {
-            method: metodo,
+        // Como o seu PlantaController usa apenas o @PostMapping para salvar/atualizar
+        const resposta = await fetch(API_URL, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(dadosDaPlanta)
         });
@@ -164,9 +173,12 @@ formCadastro.addEventListener("submit", async function (event) {
             formCadastro.reset();
             plantaEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
+            
+            // Garante que o select do Jardim permaneça preenchido corretamente
+            await carregarSelectJardins();
             carregarPlantas();
         } else {
-            alert("❌ Erro ao salvar. Verifique se o nome científico já existe.");
+            alert("❌ Erro ao salvar. Verifique as informações ou se os campos obrigatórios estão corretos.");
         }
     } catch (erro) {
         alert("🔌 Erro de conexão com o servidor!");

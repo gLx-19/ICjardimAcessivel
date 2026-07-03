@@ -8,32 +8,36 @@ const selectJardim = document.getElementById("jardim");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
 let manutencaoEmEdicaoId = null;
-let listaJardinsLocal = [];
+// Agora guardamos o objeto único do jardim aqui
+let jardimUnicoLocal = null;
 
 // ======================================================
-// 1. CARREGAR OS JARDINS REAIS NO SELECT
+// 1. CARREGAR O JARDIM REAL NO SELECT (CORRIGIDO PARA OBJETO ÚNICO)
 // ======================================================
 async function carregarSelectJardins() {
     try {
         const resposta = await fetch(API_JARDINS);
-        if (!resposta.ok) throw new Error("Erro ao buscar jardins");
+        if (!resposta.ok) throw new Error("Erro ao buscar jardim");
         
-        listaJardinsLocal = await resposta.json();
-        selectJardim.innerHTML = "<option value=''>Selecione um jardim</option>"; 
+        // O back-end retorna um objeto direto {} e não uma lista []
+        jardimUnicoLocal = await resposta.json();
+        selectJardim.innerHTML = ""; 
 
-        if (listaJardinsLocal.length === 0) {
+        if (!jardimUnicoLocal || !jardimUnicoLocal.id) {
             selectJardim.innerHTML = "<option value=''>Nenhum jardim cadastrado</option>";
             return;
         }
 
-        listaJardinsLocal.forEach(jardim => {
-            const option = document.createElement("option");
-            option.value = jardim.id; 
-            option.textContent = jardim.nome || "Jardim sem nome";
-            selectJardim.appendChild(option);
-        });
+        const option = document.createElement("option");
+        option.value = jardimUnicoLocal.id; 
+        option.textContent = jardimUnicoLocal.nome || "Jardim Principal";
+        selectJardim.appendChild(option);
+        
+        // Mantém selecionado por padrão
+        selectJardim.value = jardimUnicoLocal.id;
     } catch (erro) {
-        console.error("Erro ao carregar select de jardins:", erro);
+        console.error("Erro ao carregar select de jardim:", erro);
+        selectJardim.innerHTML = "<option value=''>Erro ao carregar dados do jardim</option>";
     }
 }
 
@@ -48,9 +52,9 @@ async function carregarManutencoes(termoPesquisa = "") {
         let manutencoes = await resposta.json();
         listaManutencoesDiv.innerHTML = "";
 
-        // Filtro local adaptado para os campos reais do seu Java
+        // Filtro local da barra de pesquisa
         if (termoPesquisa) {
-            const termo = termoPesquisa.toLowerCase();
+            const termo = termoPesquisa.toLowerCase().trim();
             manutencoes = manutencoes.filter(m => 
                 (m.descricao && m.descricao.toLowerCase().includes(termo))
             );
@@ -65,25 +69,28 @@ async function carregarManutencoes(termoPesquisa = "") {
             const itemDiv = document.createElement("div");
             itemDiv.className = "planta-item";
 
-            // Tratamento correto do campo dataRegistro vindo do Java DTO
+            // Formatação amigável da data (AAAA-MM-DD para DD/MM/AAAA)
             let dataFormatada = manutencao.dataRegistro;
             if (manutencao.dataRegistro && manutencao.dataRegistro.includes("-")) {
                 const partes = manutencao.dataRegistro.split("-");
                 dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
             }
 
-            // Acha o nome do jardim correspondente para mostrar na tela
-            const jardimObj = listaJardinsLocal.find(j => j.id === manutencao.jardimId);
-            const nomeJardim = jardimObj ? jardimObj.nome : "Jardim não identificado";
+            // Confere se o ID mapeia com o jardim único que temos carregado
+            const nomeJardim = (jardimUnicoLocal && jardimUnicoLocal.id === manutencao.jardimId) 
+                ? jardimUnicoLocal.nome 
+                : "Jardim Cadastrado";
 
             itemDiv.innerHTML = `
-                <span>
-                    🛠️ <strong>${nomeJardim}</strong> - (${dataFormatada || 'Sem data'})
-                    <br><small style="color: #666;">Procedimento: ${manutencao.descricao}</small>
-                </span>
-                <div class="acoes">
-                    <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(manutencao).replace(/"/g, '&quot;')})">Editar</button>
-                    <button class="btn-excluir" onclick="excluirManutencao(${manutencao.id})">Excluir</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span>
+                        🛠️ <strong>${nomeJardim}</strong> - (${dataFormatada || 'Sem data'})
+                        <br><small style="color: #666;">Procedimento: ${manutencao.descricao}</small>
+                    </span>
+                    <div class="acoes">
+                        <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(manutencao).replace(/"/g, '&quot;')})" style="background-color: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">✏️ Editar</button>
+                        <button class="btn-excluir" onclick="excluirManutencao(${manutencao.id})" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">🗑️ Excluir</button>
+                    </div>
                 </div>
             `;
             listaManutencoesDiv.appendChild(itemDiv);
@@ -117,7 +124,13 @@ function prepararEdicao(manutencao) {
 formCadastro.addEventListener("submit", async function (event) {
     event.preventDefault();
 
+    if (!selectJardim.value) {
+        alert("Erro: É obrigatório associar a manutenção a um jardim de origem.");
+        return;
+    }
+
     const dadosManutencao = {
+        id: manutencaoEmEdicaoId ? manutencaoEmEdicaoId : null,
         dataRegistro: document.getElementById("data").value,
         descricao: document.getElementById("descricao").value.trim(),
         jardimId: parseInt(selectJardim.value)
@@ -125,6 +138,7 @@ formCadastro.addEventListener("submit", async function (event) {
 
     try {
         let resposta;
+        // Sincronizado perfeitamente com seu ManutencaoController.java
         const url = manutencaoEmEdicaoId ? `${API_MANUTENCOES}/${manutencaoEmEdicaoId}` : API_MANUTENCOES;
         const metodo = manutencaoEmEdicaoId ? "PUT" : "POST";
 
@@ -139,9 +153,12 @@ formCadastro.addEventListener("submit", async function (event) {
             formCadastro.reset();
             manutencaoEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Registro";
+            
+            // Recarrega o select e a lista de forma limpa
+            await carregarSelectJardins();
             carregarManutencoes();
         } else {
-            alert("❌ Erro ao processar dados no servidor. Verifique os campos.");
+            alert("❌ Erro ao processar dados no servidor. Verifique se as informações estão preenchidas corretamente.");
         }
     } catch (erro) {
         alert("🔌 Erro de conexão com o servidor!");
@@ -172,7 +189,7 @@ formPesquisa.addEventListener("submit", function (event) {
     carregarManutencoes(document.getElementById("pesquisa").value.trim());
 });
 
-// Inicialização segura
+// Inicialização sequencial segura
 async function inicializar() {
     await carregarSelectJardins();
     await carregarManutencoes();

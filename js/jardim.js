@@ -1,52 +1,100 @@
 const API_URL = "http://localhost:8080/api/jardins";
 
 const formCadastro = document.getElementById("formCadastro");
-const formPesquisa = document.getElementById("formPesquisa");
 const listaJardinsDiv = document.getElementById("listaJardins");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
-let jardimEmEdicaoId = null;
+// Como o jardim é único, guardamos os dados dele aqui
+let jardimUnico = null;
 
-// ======================================================\r
-// 1. CARREGAR E LISTAR JARDINS (AGORA FILTRANDO NO BACK-END)\r
-// ======================================================\r
-async function carregarJardins(termoPesquisa = "") {
+// 1. CARREGAR O JARDIM ÚNICO DO SERVIDOR
+async function carregarJardimUnico() {
     try {
-        let url = API_URL;
+        const resposta = await fetch(API_URL);
+        if (!resposta.ok) throw new Error("Erro ao buscar dados do jardim");
+
+        // O back-end envia um objeto direto, e não uma lista []
+        jardimUnico = await resposta.json();
         
-        // Se houver termo, anexa à requisição HTTP
-        if (termoPesquisa.trim() !== "") {
-            url += `?pesquisa=${encodeURIComponent(termoPesquisa)}`;
-        }
-
-        const resposta = await fetch(url);
-        if (!resposta.ok) throw new Error("Erro ao buscar jardins");
-
-        const jardins = await resposta.json();
-        listaJardinsDiv.innerHTML = "";
-
-        if (jardins.length === 0) {
-            listaJardinsDiv.innerHTML = "<p>Nenhum jardim encontrado.</p>";
-            return;
-        }
-
-        jardins.forEach(jardim => {
-            const itemDiv = document.createElement("div");
-            itemDiv.className = "planta-card"; // Reutilizando a classe CSS de listagem antiga
-            itemDiv.innerHTML = `
+        // Renderiza o jardim único na tela
+        listaJardinsDiv.innerHTML = `
+            <div class="planta-card">
                 <div>
-                    <strong>${jardim.nome}</strong> - <small>${jardim.localizacao || 'Sem localização'}</small>
-                    <p>${jardim.descricao || 'Sem descrição.'}</p>
+                    <strong>🌳 ${jardimUnico.nome}</strong> - <small>${jardimUnico.localizacao || 'Sem localização'}</small>
+                    <p>${jardimUnico.descricao || 'Sem descrição.'}</p>
                 </div>
                 <div class="acoes">
-                    <button class="btn-editar" onclick="prepararEdicao(${jardim.id}, '${jardim.nome}', '${jardim.localizacao || ''}', '${jardim.descricao || ''}')">✏️ Editar</button>
-                    <button class="btn-excluir" onclick="excluirJardim(${jardim.id})">🗑️ Excluir</button>
+                    <button class="btn-editar" onclick="prepararEdicao()">✏️ Editar Dados</button>
                 </div>
-            `;
-            listaJardinsDiv.appendChild(itemDiv);
-        });
+            </div>
+        `;
+
+        // Salva o ID no localStorage para que a página de plantas saiba a quem se vincular!
+        if (jardimUnico && jardimUnico.id) {
+            localStorage.setItem("jardimPadraoId", jardimUnico.id);
+        }
+
     } catch (erro) {
-        console.error("Erro ao carregar jardins:", erro);
-        listaJardinsDiv.innerHTML = "<p style='color:red;'>Erro ao carregar a lista de jardins.</p>";
+        console.error("Erro ao carregar jardim:", erro);
+        listaJardinsDiv.innerHTML = "<p style='color:red;'>Erro ao carregar os dados do jardim no servidor.</p>";
     }
 }
+
+// 2. COLOCAR OS DADOS NO FORMULÁRIO PARA EDITAR
+function prepararEdicao() {
+    if (!jardimUnico) return;
+
+    // Preenche os inputs do formulário com os dados atuais do jardim
+    document.getElementById("nome").value = jardimUnico.nome;
+    document.getElementById("localizacao").value = jardimUnico.localizacao || "";
+    document.getElementById("descricao").value = jardimUnico.descricao || "";
+
+    // Altera o título da seção de cadastro para fazer sentido visual
+    const tituloCadastro = document.querySelector(".cadastro h3");
+    if (tituloCadastro) tituloCadastro.innerText = "Editar Dados do Jardim";
+    btnSubmit.innerText = "Salvar Alterações";
+}
+
+// 3. ENVIAR AS ATUALIZAÇÕES (SALVAR)
+formCadastro.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+
+    const dadosAtualizados = {
+        id: jardimUnico ? jardimUnico.id : null, // Envia o ID para manter o mesmo registro
+        nome: document.getElementById("nome").value,
+        localizacao: document.getElementById("localizacao").value,
+        descricao: document.getElementById("descricao").value
+    };
+
+    try {
+        const resposta = await fetch(API_URL, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+                // Se seu Spring Security já estiver ativo, descomente a linha abaixo:
+                // "Authorization": `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(dadosAtualizados)
+        });
+
+        if (!resposta.ok) throw new Error("Erro ao atualizar o jardim");
+
+        alert("Dados do jardim atualizados com sucesso!");
+        
+        // Limpa o formulário e restaura o estado visual
+        formCadastro.reset();
+        const tituloCadastro = document.querySelector(".cadastro h3");
+        if (tituloCadastro) tituloCadastro.innerText = "Cadastrar Novo Jardim";
+        btnSubmit.innerText = "Confirmar Cadastro";
+
+        // Recarrega os dados atualizados na tela
+        carregarJardimUnico();
+
+    } catch (erro) {
+        console.error("Erro ao salvar jardim:", erro);
+        alert("Falha ao salvar as alterações do jardim.");
+    }
+});
+
+// Executa automaticamente ao carregar a página
+document.addEventListener("DOMContentLoaded", carregarJardimUnico);

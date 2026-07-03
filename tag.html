@@ -33,98 +33,47 @@
                 <p>Gerencie as tags NFC vinculadas às plantas.</p>
             </div>
 
-            <!-- PESQUISA -->
-
             <section class="pesquisa">
-
                 <h3>Pesquisar Tag</h3>
-
                 <form id="formPesquisa">
-
-                    <input type="text" id="pesquisa" placeholder="Digite o código NFC">
-
-                    <button type="submit" class="btn-pesquisar">
-
-                        🔍 Pesquisar
-
-                    </button>
-
+                    <input type="text" id="pesquisa" placeholder="Digite o código NFC ou nome da planta">
+                    <button type="submit" class="btn-pesquisar">🔍 Pesquisar</button>
                 </form>
-
             </section>
-
-            <!-- LISTA -->
 
             <section class="lista-plantas">
-
                 <h3>Tags cadastradas</h3>
-
                 <div id="listaTags">
-
-                    <div class="planta-item">
-
-                        <span>
-                            📱 NFC0001 - Lavanda
-                        </span>
-
-                        <div class="acoes">
-
-                            <button class="btn-editar">
-                                Editar
-                            </button>
-
-                            <button class="btn-excluir">
-                                Excluir
-                            </button>
-
-                        </div>
-
                     </div>
-
-                </div>
-
             </section>
 
-            <!-- CADASTRO -->
-
             <section class="cadastro">
-
                 <h3>Cadastrar Nova Tag</h3>
-
                 <form id="formCadastro">
 
                     <label for="codigo">
                         Código NFC
                     </label>
-
                     <input type="text" id="codigo" placeholder="Ex.: NFC0001" required>
 
                     <label for="planta">
                         Planta vinculada
                     </label>
-
-                    <select id="planta">
-
-                        <option>Selecione uma planta</option>
-                        <option>Lavanda</option>
-                        <option>Samambaia</option>
-                        <option>Rosa</option>
-
-                    </select>
+                    <select id="planta" required>
+                        <option value="">Carregando plantas...</option>
+                        </select>
 
                     <button type="submit" class="btn-principal">
-
                         Confirmar Cadastro
-
                     </button>
 
                 </form>
-
             </section>
 
         </div>
 
     </main>
+
     <footer id="rodapeGlobal">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
@@ -133,7 +82,6 @@
     </footer>
 
     <script src="js/tag.js"></script>
-
 </body>
 
 </html>

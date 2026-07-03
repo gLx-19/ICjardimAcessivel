@@ -7,7 +7,6 @@ const listaTagsDiv = document.getElementById("listaTags");
 const selectPlanta = document.getElementById("planta");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
-// Lista local para cruzarmos o ID da planta com o Nome na renderização
 let listaPlantasLocal = [];
 let tagEmEdicaoId = null;
 
@@ -39,24 +38,38 @@ async function carregarSelectPlantas() {
 }
 
 // ======================================================
-// 2. CARREGAR E FILTRAR A LISTA DE TAGS NFC
+// 2. CARREGAR E FILTRAR A LISTA DE TAGS NFC (SÓ EXIBE APÓS BUSCA)
 // ======================================================
 async function carregarTags(termoPesquisa = "") {
     try {
+        // Se não houver termo digitado, limpa a área de listagem e não exibe nada por default
+        if (!termoPesquisa.trim()) {
+            listaTagsDiv.innerHTML = "<p>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
+            return;
+        }
+
         const resposta = await fetch(API_TAGS);
         if (!resposta.ok) throw new Error("Erro ao buscar tags");
 
         let tags = await resposta.json();
         listaTagsDiv.innerHTML = "";
 
-        // Filtro local feito no front-end por código da Tag
-        if (termoPesquisa) {
-            const termo = termoPesquisa.toLowerCase();
-            tags = tags.filter(t => t.id && t.id.toLowerCase().includes(termo));
-        }
+        const termo = termoPesquisa.toLowerCase().trim();
+
+        // FILTRO EXPANDIDO: Filtra por Código NFC OU pelo Nome Popular da Planta vinculada
+        tags = tags.filter(tag => {
+            const codigoBate = tag.id && tag.id.toLowerCase().includes(termo);
+            
+            const plantaCorrespondente = listaPlantasLocal.find(p => p.id === tag.plantaId);
+            const nomePlantaBate = plantaCorrespondente && 
+                                   plantaCorrespondente.nome && 
+                                   plantaCorrespondente.nome.toLowerCase().includes(termo);
+
+            return codigoBate || nomePlantaBate;
+        });
 
         if (tags.length === 0) {
-            listaTagsDiv.innerHTML = "<p>Nenhuma Tag NFC cadastrada.</p>";
+            listaTagsDiv.innerHTML = "<p>Nenhuma Tag NFC encontrada para os critérios informados.</p>";
             return;
         }
 
@@ -64,17 +77,18 @@ async function carregarTags(termoPesquisa = "") {
             const itemDiv = document.createElement("div");
             itemDiv.className = "planta-item";
 
-            // Encontra o nome da planta correspondente na nossa lista local
             const plantaCorrespondente = listaPlantasLocal.find(p => p.id === tag.plantaId);
             const nomePlanta = plantaCorrespondente ? (plantaCorrespondente.nome || "Sem nome") : "Nenhuma planta vinculada";
 
             itemDiv.innerHTML = `
-                <span>
-                    📱 ${tag.id} - ${nomePlanta}
-                </span>
-                <div class="acoes">
-                    <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(tag).replace(/"/g, '&quot;')})">Editar</button>
-                    <button class="btn-excluir" onclick="excluirTag('${tag.id}')">Excluir</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span>
+                        📱 <strong>Código:</strong> ${tag.id} - 🌿 <strong>Planta:</strong> ${nomePlanta}
+                    </span>
+                    <div class="acoes">
+                        <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(tag).replace(/"/g, '&quot;')})" style="background-color: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">✏️ Editar</button>
+                        <button class="btn-excluir" onclick="excluirTag('${tag.id}')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">🗑️ Excluir</button>
+                    </div>
                 </div>
             `;
             listaTagsDiv.appendChild(itemDiv);
@@ -82,17 +96,15 @@ async function carregarTags(termoPesquisa = "") {
 
     } catch (erro) {
         console.error("Erro ao carregar tags:", erro);
-        listaTagsDiv.innerHTML = "<p style='color:red;'>Erro ao carregar dados do servidor.</p>";
+        listaTagsDiv.innerHTML = "<p style='color:red;'>Erro ao processar dados no servidor.</p>";
     }
 }
 
 // ======================================================
-// 3. PREPARAR EDIÇÃO (Puxa os dados de volta para a tela)
+// 3. PREPARAR EDIÇÃO
 // ======================================================
 function prepararEdicao(tag) {
     document.getElementById("codigo").value = tag.id || "";
-    
-    // Bloqueia o campo de ID (código nfc) na edição se for chave primária imutável
     document.getElementById("codigo").disabled = true;
 
     if (tag.plantaId) {
@@ -103,7 +115,6 @@ function prepararEdicao(tag) {
 
     tagEmEdicaoId = tag.id;
     btnSubmit.textContent = "💾 Salvar Alterações";
-    
     formCadastro.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -116,21 +127,19 @@ formCadastro.addEventListener("submit", async function (event) {
     const dadosTag = {
         id: document.getElementById("codigo").value.trim(),
         plantaId: selectPlanta.value ? parseInt(selectPlanta.value) : null,
-        dataVinculo: null // O back-end tratará ou gerará automaticamente
+        dataVinculo: null
     };
 
     try {
         let resposta;
         
         if (tagEmEdicaoId) {
-            // Tentativa de Edição (Envia PUT)
             resposta = await fetch(`${API_TAGS}/${tagEmEdicaoId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dadosTag)
             });
         } else {
-            // Cadastro de nova Tag (Envia POST)
             resposta = await fetch(API_TAGS, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -143,17 +152,15 @@ formCadastro.addEventListener("submit", async function (event) {
             
             formCadastro.reset();
             document.getElementById("codigo").disabled = false;
+            const termoPesquisadoAntigo = document.getElementById("pesquisa").value;
             tagEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
             
-            carregarTags();
+            // Recarrega os dados com base no último termo pesquisado
+            carregarTags(termoPesquisadoAntigo);
         } else {
-            if (tagEmEdicaoId) {
-                alert("⚠️ O Front-end enviou o PUT, mas sua dupla precisa criar a rota @PutMapping no TagController do Java.");
-            } else {
-                const erroTexto = await resposta.text();
-                alert(`❌ Erro: ${erroTexto || "Verifique se a planta já possui tag ou se o código já existe."}`);
-            }
+            const erroTexto = await resposta.text();
+            alert(`❌ Erro: ${erroTexto || "Verifique se a planta já possui tag ou se o código já existe."}`);
         }
     } catch (erro) {
         alert("🔌 Erro de conexão com o servidor!");
@@ -170,7 +177,8 @@ async function excluirTag(id) {
         const resposta = await fetch(`${API_TAGS}/${id}`, { method: "DELETE" });
         if (resposta.ok) {
             alert("🗑️ Tag NFC removida com sucesso!");
-            carregarTags();
+            document.getElementById("pesquisa").value = "";
+            carregarTags("");
         } else {
             alert("❌ Erro ao tentar excluir a tag.");
         }
@@ -188,10 +196,11 @@ formPesquisa.addEventListener("submit", function (event) {
     carregarTags(termo);
 });
 
-// Inicialização síncrona: carrega primeiro as plantas para que os nomes apareçam na listagem de tags
+// Inicialização síncrona: Apenas carrega as plantas, a lista inicia limpa
 async function inicializar() {
     await carregarSelectPlantas();
-    await carregarTags();
+    // Mensagem orientativa inicial
+    listaTagsDiv.innerHTML = "<p>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
 }
 
 inicializar();
