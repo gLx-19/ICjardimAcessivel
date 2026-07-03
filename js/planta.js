@@ -3,7 +3,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const idDaPlanta = urlParams.get("id");
 
 // URL da API para buscar uma planta específica
-const API_URL = `http://localhost:8080/api/plantas/${idDaPlanta}`;
+const API_URL = `https://icjardimacessivel.onrender.com/api/plantas/${idDaPlanta}`;
 
 // ======================================================
 // Busca as informações da planta no servidor

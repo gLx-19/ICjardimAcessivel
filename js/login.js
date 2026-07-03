@@ -18,7 +18,7 @@ async function autenticar() {
 
     try {
         // 4. Faz a requisição POST para a rota do PessoaController no Java
-        const resposta = await fetch("http://localhost:8080/api/pessoas/login", {
+        const resposta = await fetch("https://icjardimacessivel.onrender.com/api/pessoas/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

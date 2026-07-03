@@ -10,7 +10,7 @@ formCadastroUsuario.addEventListener("submit", async function(event) {
     };
 
     try {
-        const resposta = await fetch("http://localhost:8080/api/pessoas", {
+        const resposta = await fetch("https://icjardimacessivel.onrender.com/api/pessoas", {
             method: "POST", 
             headers: {
                 "Content-Type": "application/json"

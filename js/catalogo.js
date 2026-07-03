@@ -3,7 +3,7 @@ const inputPesquisa = document.getElementById('pesquisa');
 const formPesquisa = document.getElementById('formPesquisa');
 
 // URL da API Spring Boot
-const API_URL = "http://localhost:8080/api/plantas";
+const API_URL = "https://icjardimacessivel.onrender.com/api/plantas";
 
 // ======================================================
 // 1. CARREGAMENTO INICIAL DA PÁGINA (CABEÇALHO E RODAPÉ)
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (jardimId) {
         try {
-            const resposta = await fetch(`http://localhost:8080/api/jardins/${jardimId}`);
+            const resposta = await fetch(`https://icjardimacessivel.onrender.com/api/jardins/${jardimId}`);
             if (resposta.ok) {
                 const jardim = await resposta.json();
                 

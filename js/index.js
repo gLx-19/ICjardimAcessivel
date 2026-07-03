@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (selectJardim) {
         try {
             // Vai ao Java buscar os jardins
-            const resposta = await fetch("http://localhost:8080/api/jardins");
+            const resposta = await fetch("https://icjardimacessivel.onrender.com/api/jardins");
             if (!resposta.ok) throw new Error("Erro ao buscar jardins");
             
             const jardins = await resposta.json();

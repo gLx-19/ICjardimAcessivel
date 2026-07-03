@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:8080/api/plantas";
-const API_JARDINS = "http://localhost:8080/api/jardins";
+const API_URL = "https://icjardimacessivel.onrender.com/api/plantas";
+const API_JARDINS = "https://icjardimacessivel.onrender.com/api/jardins";
 
 const formCadastro = document.getElementById("formCadastro");
 const formPesquisa = document.getElementById("formPesquisa");

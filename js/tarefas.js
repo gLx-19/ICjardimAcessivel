@@ -1,4 +1,4 @@
-const API_TAREFAS = "http://localhost:8080/api/tarefas";
+const API_TAREFAS = "https://icjardimacessivel.onrender.com/api/tarefas";
 
 const formCadastro = document.getElementById("formCadastro");
 const formPesquisa = document.getElementById("formPesquisa");
