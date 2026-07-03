@@ -41,6 +41,7 @@ async function carregarJardins(termoPesquisa = "") {
                     <p>${jardim.descricao || 'Sem descrição.'}</p>
                 </div>
                 <div class="acoes">
+                <button class="btn-ver" onclick="window.location.href='catalogo.html?jardimId=${jardim.id}'">👁️ Ver</button>
                     <button class="btn-editar" onclick="prepararEdicao(${jardim.id}, '${jardim.nome}', '${jardim.localizacao || ''}', '${jardim.descricao || ''}')">✏️ Editar</button>
                     <button class="btn-excluir" onclick="excluirJardim(${jardim.id})">🗑️ Excluir</button>
                 </div>

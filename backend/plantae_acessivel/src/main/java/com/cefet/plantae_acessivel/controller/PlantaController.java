@@ -33,6 +33,11 @@ public class PlantaController {
         return service.cadastrar(dto);
     }
 
+    @PutMapping("/{id}")
+    public PlantaDTO atualizar(@PathVariable Long id, @Valid @RequestBody PlantaDTO dto) {
+        return service.atualizar(id, dto); // Garanta que o PlantaService tem esse método atualizar!
+    }
+
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id) {
         service.excluir(id);

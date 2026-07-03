@@ -23,6 +23,7 @@ public class Planta {
     private String poda;
     private String luminosidade;
     private String familia;
+    @Column(length = 1000) // URL pode ser grande
     private String imagemUrl;
 
     // a planta obrigatoriamente pertence a um Jardim

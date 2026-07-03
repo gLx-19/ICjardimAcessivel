@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class JardimService {
@@ -17,34 +18,43 @@ public class JardimService {
         this.repository = repository;
     }
 
-    @Transactional
-    public JardimDTO obterJardimUnico() {
-        List<Jardim> jardins = repository.findAll();
+    @Transactional(readOnly = true)
+    public List<JardimDTO> listarTodos(String pesquisa) {
+        List<Jardim> lista;
         
-        // Se o banco de dados estiver vazio, cria o jardim único automaticamente
-        if (jardins.isEmpty()) {
-            Jardim unico = new Jardim();
-            unico.setNome("Jardim Plantae Acessível");
-            unico.setDescricao("Espaço botânico adaptado para acessibilidade.");
-            unico.setLocalizacao("Campus VII - Timóteo");
-            unico = repository.save(unico);
-            return new JardimDTO(unico);
+        // Se a Sabrina enviar um texto no Front-end, filtra pelo nome
+        if (pesquisa != null && !pesquisa.isBlank()) {
+            lista = repository.findByNomeContainingIgnoreCase(pesquisa);
+        } else {
+            // Se não enviar nada, lista todos
+            lista = repository.findAll();
         }
         
-        // Retorna sempre o primeiro e único jardim
-        return new JardimDTO(jardins.get(0));
+        return lista.stream().map(JardimDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public JardimDTO buscarPorId(Long id) {
+        Jardim entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Jardim não encontrado!"));
+        return new JardimDTO(entity);
     }
 
     @Transactional
-    public JardimDTO atualizar(JardimDTO dto) {
-        List<Jardim> jardins = repository.findAll();
-        Jardim entity;
+    public JardimDTO cadastrar(JardimDTO dto) {
+        Jardim entity = new Jardim();
+        entity.setNome(dto.getNome());
+        entity.setDescricao(dto.getDescricao());
+        entity.setLocalizacao(dto.getLocalizacao());
         
-        if (jardins.isEmpty()) {
-            entity = new Jardim();
-        } else {
-            entity = jardins.get(0);
-        }
+        entity = repository.save(entity);
+        return new JardimDTO(entity);
+    }
+
+    @Transactional
+    public JardimDTO atualizar(Long id, JardimDTO dto) {
+        Jardim entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Jardim não encontrado!"));
         
         entity.setNome(dto.getNome());
         entity.setDescricao(dto.getDescricao());
@@ -52,5 +62,10 @@ public class JardimService {
         
         entity = repository.save(entity);
         return new JardimDTO(entity);
+    }
+
+    @Transactional
+    public void excluir(Long id) {
+        repository.deleteById(id);
     }
 }

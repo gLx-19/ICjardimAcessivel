@@ -54,7 +54,24 @@ async function carregarDetalhesInformacoes() {
 
         document.getElementById("familia").innerText =
             planta.familia;
+        // --------------------------------------------------------
+        // 1. ARRUMA O BOTÃO DE VOLTAR PARA O CATÁLOGO DO JARDIM CERTO
+        // --------------------------------------------------------
+        const linkVoltarCatalogo = document.querySelector(".menu-nav a");
+        if (linkVoltarCatalogo && planta.jardimId) {
+            linkVoltarCatalogo.href = `catalogo.html?jardimId=${planta.jardimId}`;
+        }
 
+        // --------------------------------------------------------
+        // 2. INJETA O BOTÃO DE PAINEL SE FOR ADMIN/JARDINEIRO
+        // --------------------------------------------------------
+        const perfil = localStorage.getItem("perfil");
+        if (perfil === "ADMIN" || perfil === "JARDINEIRO") {
+            const nav = document.querySelector(".menu-nav");
+            if (nav) {
+                nav.innerHTML += ` <a href="menuUsuario.html" style="margin-left: 15px; color: white; text-decoration: none; font-weight: bold;">🏠 Painel de Gestão</a>`;
+            }
+        }
     } catch (erro) {
 
         console.error("Erro:", erro);

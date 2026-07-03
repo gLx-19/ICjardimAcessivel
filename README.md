@@ -1,196 +1,30 @@
-catalogo.html
-Já possui
-✅ Campo de pesquisa
-✅ Estrutura para vários cards
-✅ Layout responsivo
-✅ Área para carregamento dinâmico
+# 🌿 Plantae Acessível
 
-✅ Pesquisa funcionar
-😊 Buscar plantas cadastradas
-✅ Mostrar vários cards automaticamente
-✅ Botão "Saber Mais" abrir planta.html
-😊 Carregar informações dinamicamente
+O **Plantae Acessível** é um sistema web desenvolvido com foco em acessibilidade. A plataforma permite o gerenciamento completo de jardins, oferecendo recursos interativos para visitantes e ferramentas robustas de gestão para administradores e jardineiros.
 
-Status: ⏳ HTML e CSS concluídos. Js concluído até antes de ter o banco de dados.
+## 🚀 Funcionalidades
 
-________________________________________________
+* **Catálogo Público Dinâmico:** Visitantes podem explorar os jardins e visualizar os detalhes, cuidados e fotos de cada planta.
+* **Acessibilidade:** Suporte planejado para Audiodescrição e Libras (via interface).
+* **Painel de Gestão (Admin/Jardineiro):** * 🌳 **Jardins:** CRUD completo para mapear múltiplos espaços físicos.
+  * 🌿 **Plantas:** Gestão de espécies, integrando URLs de imagens e informações de cuidados botânicos.
+  * 🛠️ **Manutenções:** Registro de atividades realizadas nos jardins.
+  * 📋 **Tarefas:** Controle de demandas pendentes e concluídas com definição de prazos.
+  * 📱 **Tags NFC:** Vínculo inteligente (Filtros em Cascata) entre plantas e identificadores NFC para interação física no jardim.
 
-planta.html
-Já possui
-✅ Imagem
-✅ Nome
-✅ Nome científico
-✅ Descrição
-✅ Botão Audiodescrição
-✅ Botão Libras
-✅ Frequência de rega
-✅ Frequência de poda
-✅ Luminosidade
-✅ Família botânica
-✅ Navegação entre plantas
+## 🛠️ Tecnologias Utilizadas
 
-Falta (JavaScript)
-❌ Reproduzir áudio da descrição
-❌ Exibir vídeo em Libras
-😊 Carregar dados da planta dinamicamente
-❌ Navegação entre plantas funcionar
+**Front-end:**
+* HTML5, CSS3 e JavaScript Vanilla.
+* Consumo de API via `fetch`.
 
-Status: ✅ HTML e CSS concluídos. Js concluido até antes de ter o banco de dados
+**Back-end:**
+* Java 21+
+* Spring Boot (Spring Web, Spring Data JPA, Validation)
+* Banco de Dados: MySQL (Local) / PostgreSQL (Nuvem)
 
-_______________________________________________
+## ⚙️ Como Executar o Projeto Localmente
 
-plantas-admin.html
-Já possui
-✅ Pesquisa
-✅ Lista
-✅ Cadastro
-✅ Botão Ver
-✅ Botão Editar
-✅ Botão Excluir
-✅ Campo Frequência de poda
-✅ Upload de conteúdo em áudio
-✅ Upload de conteúdo em Libras
-Falta (CRUD / JavaScript)
-❌ Botão Ver abrir planta.html
-❌ Botão Editar editar registro
-❌ Botão Excluir realmente excluir
-❌ Persistência (localStorage ou banco de dados)
-
-Status: ✅ HTML e CSS concluídos.
-
-__________________________________________________
-
-jardim.html
-Já possui
-✅ Página criada
-✅ Cadastro
-✅ Pesquisa
-✅ Lista de jardins
-✅ Campo Nome
-✅ Campo Localização
-✅ Campo Descrição
-✅ Botão Editar
-✅ Botão Excluir
-Falta (CRUD / JavaScript)
-❌ Cadastrar jardim
-❌ Pesquisar jardim
-❌ Editar jardim
-❌ Excluir jardim
-❌ Persistência (localStorage ou banco de dados)
-
-Status: ✅ HTML e CSS concluídos.
-
-_____________________________________________________
-
-
-manutencao.html
-Já possui
-✅ Página criada
-✅ Campo Data
-✅ Campo Tipo
-✅ Campo Descrição
-✅ Campo Responsável
-✅ Campo Planta
-✅ Pesquisa
-✅ Lista
-✅ Botão Editar
-✅ Botão Excluir
-Falta (CRUD / JavaScript)
-❌ Cadastrar manutenção
-❌ Pesquisar manutenção
-❌ Editar manutenção
-❌ Excluir manutenção
-❌ Persistência (localStorage ou banco de dados)
-
-Status: ✅ HTML e CSS concluídos.
-
-____________________________________________________
-
-tarefas.html
-Já possui
-✅ Página criada
-✅ Campo Descrição
-✅ Campo Prazo
-✅ Campo Status
-✅ Campo Data realizada
-✅ Pesquisa
-✅ Lista
-✅ Botão Status
-✅ Botão Editar
-✅ Botão Excluir
-Falta (CRUD / JavaScript)
-❌ Cadastrar tarefa
-❌ Editar tarefa
-❌ Excluir tarefa
-❌ Alterar status
-❌ Persistência (localStorage ou banco de dados)
-
-Status: ✅ HTML e CSS concluídos.
-
-tag.html
-Já possui
-✅ Página criada
-✅ Campo Código NFC
-✅ Campo Planta vinculada
-✅ Pesquisa
-✅ Lista
-✅ Botão Editar
-✅ Botão Excluir
-Falta (CRUD / JavaScript)
-❌ Cadastrar Tag
-❌ Editar Tag
-❌ Excluir Tag
-❌ Vincular planta
-❌ Persistência (localStorage ou banco de dados)
-
-Status: ✅ HTML e CSS concluídos.
-
-_______________________________________________________
-
-
-JavaScript
-
-Ainda falta praticamente toda a lógica.
-
-Login
-autenticar()
-
-Plantas
-cadastrarPlanta()
-editarPlanta()
-excluirPlanta()
-pesquisarPlanta()
-
-Jardim
-cadastrarJardim()
-editarJardim()
-excluirJardim()
-
-Manutenção
-cadastrarManutencao()
-editarManutencao()
-excluirManutencao()
-
-Tarefas
-cadastrarTarefa()
-editarTarefa()
-excluirTarefa()
-alterarStatus()
-
-Tag
-cadastrarTag()
-editarTag()
-excluirTag()
-
-___________________________________________________________
-
-Persistência
-
-Você também precisa escolher onde os dados serão armazenados:
-
-❌ LocalStorage (mais simples, recomendado para protótipo)
-❌ Banco de dados (MySQL/PHP, se o trabalho exigir backend)
-
-
-IMPORTANTE!!!!!!!!!!!!!!!!!!!!!!!!!
-pensar em arrumar no HTML+BACKEND do menuUsuario para distinguir jardineiro de admin
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/sabrinaev/ICjardimAcessivel.git](https://github.com/sabrinaev/ICjardimAcessivel.git)

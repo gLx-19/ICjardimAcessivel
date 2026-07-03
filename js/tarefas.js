@@ -11,7 +11,6 @@ const btnNovaTarefa = document.getElementById("btnNovaTarefa");
 
 let tarefaEmEdicaoId = null;
 
-// Controla a abertura do formulário para uma NOVA tarefa (Igual ao da Tag)
 if (btnNovaTarefa) {
     btnNovaTarefa.addEventListener("click", () => {
         tarefaEmEdicaoId = null;
@@ -56,9 +55,10 @@ async function carregarTarefas(termoPesquisa = "") {
             const itemDiv = document.createElement("div");
             itemDiv.className = "planta-item";
 
-            let prazoFormatado = tarefa.prazo;
-            if (tarefa.prazo && tarefa.prazo.includes("-")) {
-                const partes = tarefa.prazo.split("-");
+            // O Java devolve 'dataPrevista'
+            let prazoFormatado = tarefa.dataPrevista || tarefa.prazo;
+            if (prazoFormatado && prazoFormatado.includes("-")) {
+                const partes = prazoFormatado.split("-");
                 prazoFormatado = `${partes[2]}/${partes[1]}/${partes[0]}`;
             }
 
@@ -67,7 +67,7 @@ async function carregarTarefas(termoPesquisa = "") {
             itemDiv.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <span>
-                        ${statusIcone} <strong>${tarefa.titulo}</strong> - <small>Prazo: ${prazoFormatado}</small>
+                        ${statusIcone} <strong>${tarefa.titulo}</strong> - <small>Prazo: ${prazoFormatado || 'Sem data'}</small>
                         <br><small style="color: #666;">${tarefa.descricao}</small>
                     </span>
                     <div class="acoes">
@@ -87,12 +87,15 @@ async function carregarTarefas(termoPesquisa = "") {
 }
 
 // ======================================================
-// 2. PREPARAR EDIÇÃO (MOSTRA O FORMULÁRIO DINAMICAMENTE)
+// 2. PREPARAR EDIÇÃO 
 // ======================================================
 function prepararEdicao(tarefa) {
+    // A MÁGICA QUE FALTAVA ESTÁ AQUI: O Front-end agora lembra quem está editando!
+    tarefaEmEdicaoId = tarefa.id;
+
     document.getElementById("titulo").value = tarefa.titulo || "";
     document.getElementById("descricao").value = tarefa.descricao || "";
-    document.getElementById("prazo").value = tarefa.prazo || "";
+    document.getElementById("prazo").value = tarefa.dataPrevista || tarefa.prazo || "";
     document.getElementById("status").value = tarefa.status || "Pendente";
 
     const tituloForm = document.getElementById("tituloFormulario");
@@ -115,7 +118,8 @@ formCadastro.addEventListener("submit", async function (event) {
         id: tarefaEmEdicaoId ? tarefaEmEdicaoId : null,
         titulo: document.getElementById("titulo").value.trim(),
         descricao: document.getElementById("descricao").value.trim(),
-        prazo: document.getElementById("prazo").value,
+        // A MÁGICA FOI AQUI: Alterado de 'prazo' para 'dataPrevista'
+        dataPrevista: document.getElementById("prazo").value, 
         status: document.getElementById("status").value
     };
 
@@ -138,7 +142,6 @@ formCadastro.addEventListener("submit", async function (event) {
             const tituloForm = document.getElementById("tituloFormulario");
             if (tituloForm) tituloForm.innerText = "Cadastrar Nova Tarefa";
 
-            // ESCONDE O FORMULÁRIO DE NOVO APÓS SALVAR (IGUAL AO DA TAG)
             if (secaoCadastroTarefa) {
                 secaoCadastroTarefa.style.display = "none";
             }

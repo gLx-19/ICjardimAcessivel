@@ -1,7 +1,7 @@
 // Função chamada ao clicar no botão Login
 async function autenticar() {
     // 1. Pega os valores digitados nos campos de CPF e Senha do seu login.html
-    const cpfDigitado = document.getElementById("cpf").value.trim();
+    let cpfDigitado = document.getElementById("cpf").value.trim();
     const senhaDigitada = document.getElementById("senha").value.trim();
 
     // 2. Verifica se os campos estão vazios
@@ -30,18 +30,23 @@ async function autenticar() {
         if (resposta.ok) {
             const usuarioDados = await resposta.json();
 
-            // Salva na memória do navegador que o login deu certo
-            sessionStorage.setItem("usuarioLogado", "true");
-            
+            // Salva no localStorage (Memória permanente do navegador)
+            localStorage.setItem("usuarioLogado", "true");
+
             if (usuarioDados.nome) {
-                sessionStorage.setItem("nomeUsuario", usuarioDados.nome); 
+                localStorage.setItem("nomeUsuario", usuarioDados.nome);
+            }
+
+            // AQUI ESTÁ A MÁGICA PARA OS BOTÕES FUNCIONAREM:
+            if (usuarioDados.perfil) {
+                localStorage.setItem("perfil", usuarioDados.perfil);
             }
 
             alert(`✅ Login realizado com sucesso! Bem-vindo(a), ${usuarioDados.nome || "Usuário"}.`);
-            
+
             // Redireciona para o menu principal do usuário
-            window.location.href = "menuUsuario.html"; 
-            
+            window.location.href = "menuUsuario.html";
+
         } else {
             // Se o Java responder que a senha ou usuário estão errados (erro 401 ou 404)
             alert("❌ CPF ou senha incorretos. Verifique os dados.");

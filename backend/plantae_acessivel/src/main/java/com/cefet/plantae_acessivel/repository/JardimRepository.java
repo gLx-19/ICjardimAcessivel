@@ -5,9 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface JardimRepository extends JpaRepository<Jardim, Long> {
-    // verifica se já existe um jardim com esse nome para evitar duplicatas
-    boolean existsByNome(String nome);
-
-    // Nova busca para o filtro no banco de dados
+    
+    // Método mágico do Spring que faz o filtro de pesquisa pelo nome da Sabibi funcionar
     List<Jardim> findByNomeContainingIgnoreCase(String nome);
+    
 }

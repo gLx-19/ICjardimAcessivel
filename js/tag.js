@@ -9,14 +9,12 @@ const selectPlanta = document.getElementById("planta");
 const selectJardimTag = document.getElementById("jardimTag");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
-// Captura a seção inteira do formulário para controlar a exibição (display: none/block)
 const secaoCadastroTag = formCadastro.closest(".cadastro");
 const btnNovaTag = document.getElementById("btnNovaTag"); 
 
 let listaPlantasLocal = [];
 let tagEmEdicaoId = null;
 
-// Controla a abertura do formulário para uma NOVA tag
 if (btnNovaTag) {
     btnNovaTag.addEventListener("click", () => {
         tagEmEdicaoId = null;
@@ -24,9 +22,7 @@ if (btnNovaTag) {
         document.getElementById("codigo").disabled = false;
         btnSubmit.textContent = "Confirmar Cadastro";
         
-        // Inicializa preenchimentos automáticos
         carregarJardimCadastro();
-        carregarSelectPlantas();
         
         if (secaoCadastroTag) {
             secaoCadastroTag.style.display = "block";
@@ -36,61 +32,77 @@ if (btnNovaTag) {
 }
 
 // ======================================================
-// 1. CARREGAR O JARDIM ÚNICO NO SELECT DE CADASTRO
+// 1. CARREGAR JARDINS (E BLOQUEAR PLANTAS INICIALMENTE)
 // ======================================================
 async function carregarJardimCadastro() {
     try {
         const resposta = await fetch(API_JARDINS);
-        if (!resposta.ok) throw new Error("Erro ao buscar jardim");
+        if (!resposta.ok) throw new Error("Erro ao buscar jardins");
         
-        const jardimUnico = await resposta.json();
-        selectJardimTag.innerHTML = "";
+        const listaJardins = await resposta.json();
+        
+        selectJardimTag.innerHTML = "<option value=''>Selecione o Jardim...</option>";
 
-        if (!jardimUnico || !jardimUnico.id) {
+        if (!listaJardins || listaJardins.length === 0) {
             selectJardimTag.innerHTML = "<option value=''>Nenhum jardim cadastrado</option>";
             return;
         }
 
-        const option = document.createElement("option");
-        option.value = jardimUnico.id;
-        option.textContent = jardimUnico.nome;
-        selectJardimTag.appendChild(option);
-        selectJardimTag.value = jardimUnico.id;
+        listaJardins.forEach(jardim => {
+            const option = document.createElement("option");
+            option.value = jardim.id;
+            option.textContent = jardim.nome;
+            selectJardimTag.appendChild(option);
+        });
+
+        // Bloqueia e limpa a lista de plantas até um jardim ser escolhido
+        selectPlanta.innerHTML = "<option value=''>Selecione um jardim primeiro</option>";
+        selectPlanta.disabled = true;
+
     } catch (erro) {
         console.error("Erro ao carregar jardim no cadastro:", erro);
-        selectJardimTag.innerHTML = "<option value=''>Erro ao carregar jardim</option>";
     }
 }
 
 // ======================================================
-// 2. CARREGAR AS PLANTAS NO SELECT DE CADASTRO
+// 2. A MÁGICA DA CASCATA: OUVIR A MUDANÇA DO JARDIM
 // ======================================================
-async function carregarSelectPlantas() {
-    try {
-        const resposta = await fetch(API_PLANTAS);
-        if (!resposta.ok) throw new Error("Erro ao buscar plantas");
-        
-        listaPlantasLocal = await resposta.json();
-        selectPlanta.innerHTML = "<option value=''>Selecione uma planta</option>"; 
+selectJardimTag.addEventListener("change", function(event) {
+    const jardimSelecionado = event.target.value;
+    carregarSelectPlantas(jardimSelecionado);
+});
 
-        if (listaPlantasLocal.length === 0) {
-            selectPlanta.innerHTML = "<option value=''>Nenhum planta cadastrada</option>";
-            return;
-        }
-
-        listaPlantasLocal.forEach(planta => {
-            const option = document.createElement("option");
-            option.value = planta.id; 
-            option.textContent = planta.nome || "Planta sem nome";
-            selectPlanta.appendChild(option);
-        });
-    } catch (erro) {
-        console.error("Erro ao carregar select de plantas:", erro);
+// ======================================================
+// 3. PREENCHER PLANTAS COM BASE NO JARDIM ESCOLHIDO
+// ======================================================
+function carregarSelectPlantas(jardimId) {
+    if (!jardimId) {
+        selectPlanta.innerHTML = "<option value=''>Selecione um jardim primeiro</option>";
+        selectPlanta.disabled = true;
+        return;
     }
+
+    selectPlanta.disabled = false;
+    selectPlanta.innerHTML = "<option value=''>Selecione a planta...</option>"; 
+
+    // Filtra apenas as plantas que pertencem ao Jardim ID escolhido!
+    const plantasFiltradas = listaPlantasLocal.filter(p => p.jardimId == jardimId);
+
+    if (plantasFiltradas.length === 0) {
+        selectPlanta.innerHTML = "<option value=''>Nenhuma planta cadastrada neste jardim</option>";
+        return;
+    }
+
+    plantasFiltradas.forEach(planta => {
+        const option = document.createElement("option");
+        option.value = planta.id; 
+        option.textContent = planta.nome || "Planta sem nome";
+        selectPlanta.appendChild(option);
+    });
 }
 
 // ======================================================
-// 3. CARREGAR E FILTRAR A LISTA DE TAGS NFC (SÓ EXIBE APÓS BUSCA)
+// 4. CARREGAR E FILTRAR A LISTA DE TAGS NFC
 // ======================================================
 async function carregarTags(termoPesquisa = "") {
     try {
@@ -107,7 +119,6 @@ async function carregarTags(termoPesquisa = "") {
 
         const termo = termoPesquisa.toLowerCase().trim();
 
-        // Filtro pelo Código NFC ou pelo Nome Popular da planta
         tags = tags.filter(tag => {
             const codigoBate = tag.id && tag.id.toLowerCase().includes(termo);
             const plantaCorrespondente = listaPlantasLocal.find(p => p.id === tag.plantaId);
@@ -151,19 +162,24 @@ async function carregarTags(termoPesquisa = "") {
 }
 
 // ======================================================
-// 4. PREPARAR EDIÇÃO (EXIBE FORMULÁRIO DINAMICAMENTE)
+// 5. PREPARAR EDIÇÃO 
 // ======================================================
 async function prepararEdicao(tag) {
     document.getElementById("codigo").value = tag.id || "";
     document.getElementById("codigo").disabled = true;
 
     await carregarJardimCadastro();
-    await carregarSelectPlantas();
 
-    if (tag.plantaId) {
+    // Descobre qual é o jardim dessa planta e força os selects a se atualizarem
+    const plantaDaTag = listaPlantasLocal.find(p => p.id === tag.plantaId);
+    if (plantaDaTag) {
+        selectJardimTag.value = plantaDaTag.jardimId;
+        carregarSelectPlantas(plantaDaTag.jardimId);
         selectPlanta.value = tag.plantaId;
     } else {
-        selectPlanta.value = "";
+        selectJardimTag.value = "";
+        selectPlanta.innerHTML = "<option value=''>Selecione um jardim primeiro</option>";
+        selectPlanta.disabled = true;
     }
 
     tagEmEdicaoId = tag.id;
@@ -176,7 +192,7 @@ async function prepararEdicao(tag) {
 }
 
 // ======================================================
-// 5. CADASTRAR OU ATUALIZAR TAG NFC
+// 6. CADASTRAR OU ATUALIZAR TAG NFC
 // ======================================================
 formCadastro.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -212,7 +228,6 @@ formCadastro.addEventListener("submit", async function (event) {
             tagEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
             
-            // Oculta a área do formulário de novo após salvar
             if (secaoCadastroTag) {
                 secaoCadastroTag.style.display = "none";
             }
@@ -228,7 +243,7 @@ formCadastro.addEventListener("submit", async function (event) {
 });
 
 // ======================================================
-// 6. EXCLUIR TAG NFC
+// 7. EXCLUIR TAG NFC
 // ======================================================
 async function excluirTag(id) {
     if (!confirm(`Deseja mesmo remover a Tag ${id}?`)) return;
@@ -255,7 +270,6 @@ formPesquisa.addEventListener("submit", function (event) {
 
 // Inicialização segura
 async function inicializar() {
-    // Inicia ocultando o formulário por padrão
     if (secaoCadastroTag) {
         secaoCadastroTag.style.display = "none";
     }
