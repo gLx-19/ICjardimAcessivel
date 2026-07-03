@@ -2,6 +2,9 @@ package com.cefet.plantae_acessivel.controller;
 
 import com.cefet.plantae_acessivel.dto.ManutencaoDTO;
 import com.cefet.plantae_acessivel.service.ManutencaoService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +26,7 @@ public class ManutencaoController {
     }
 
     @PostMapping
-    public ManutencaoDTO cadastrar(@RequestBody ManutencaoDTO dto) {
+    public ManutencaoDTO cadastrar(@Valid @RequestBody ManutencaoDTO dto) {
         return service.cadastrar(dto);
     }
 

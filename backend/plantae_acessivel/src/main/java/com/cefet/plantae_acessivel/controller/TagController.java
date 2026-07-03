@@ -2,6 +2,9 @@ package com.cefet.plantae_acessivel.controller;
 
 import com.cefet.plantae_acessivel.dto.TagDTO;
 import com.cefet.plantae_acessivel.service.TagService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +31,7 @@ public class TagController {
     }
 
     @PostMapping
-    public TagDTO cadastrar(@RequestBody TagDTO dto) {
+    public TagDTO cadastrar(@Valid @RequestBody TagDTO dto) {
         return service.cadastrar(dto);
     }
 

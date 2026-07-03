@@ -1,77 +1,56 @@
 package com.cefet.plantae_acessivel.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.cefet.plantae_acessivel.dto.JardimDTO;
 import com.cefet.plantae_acessivel.entity.Jardim;
 import com.cefet.plantae_acessivel.repository.JardimRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class JardimService {
 
     private final JardimRepository repository;
 
-    JardimService(JardimRepository repository) {
+    public JardimService(JardimRepository repository) {
         this.repository = repository;
     }
 
-    @Transactional(readOnly = true)
-    public List<JardimDTO> listarTodos(String pesquisa) {
-        List<Jardim> lista;
+    @Transactional
+    public JardimDTO obterJardimUnico() {
+        List<Jardim> jardins = repository.findAll();
         
-        if (pesquisa != null && !pesquisa.trim().isEmpty()) {
-            lista = repository.findByNomeContainingIgnoreCase(pesquisa);
+        // Se o banco de dados estiver vazio, cria o jardim único automaticamente
+        if (jardins.isEmpty()) {
+            Jardim unico = new Jardim();
+            unico.setNome("Jardim Plantae Acessível");
+            unico.setDescricao("Espaço botânico adaptado para acessibilidade.");
+            unico.setLocalizacao("Campus VII - Timóteo");
+            unico = repository.save(unico);
+            return new JardimDTO(unico);
+        }
+        
+        // Retorna sempre o primeiro e único jardim
+        return new JardimDTO(jardins.get(0));
+    }
+
+    @Transactional
+    public JardimDTO atualizar(JardimDTO dto) {
+        List<Jardim> jardins = repository.findAll();
+        Jardim entity;
+        
+        if (jardins.isEmpty()) {
+            entity = new Jardim();
         } else {
-            lista = repository.findAll();
+            entity = jardins.get(0);
         }
         
-        return lista.stream().map(JardimDTO::new).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public JardimDTO buscarPorId(Long id) {
-        Jardim entity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Jardim não encontrado."));
-        return new JardimDTO(entity);
-    }
-
-    @Transactional
-    public JardimDTO cadastrar(JardimDTO dto) {
-        if (repository.existsByNome(dto.getNome())) {
-            throw new RuntimeException("Já existe um jardim cadastrado com esse nome.");
-        }
-
-        Jardim entity = new Jardim();
         entity.setNome(dto.getNome());
         entity.setDescricao(dto.getDescricao());
         entity.setLocalizacao(dto.getLocalizacao());
-
+        
         entity = repository.save(entity);
         return new JardimDTO(entity);
-    }
-
-    @Transactional
-    public JardimDTO atualizar(Long id, JardimDTO dto) {
-        Jardim entity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Jardim não encontrado."));
-
-        entity.setNome(dto.getNome());
-        entity.setDescricao(dto.getDescricao());
-        entity.setLocalizacao(dto.getLocalizacao());
-
-        entity = repository.save(entity);
-        return new JardimDTO(entity);
-    }
-
-    @Transactional
-    public void excluir(Long id) {
-        if (!repository.existsById(id)) {
-            throw new RuntimeException("Jardim não encontrado.");
-        }
-        repository.deleteById(id);
     }
 }

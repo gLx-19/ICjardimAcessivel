@@ -1,19 +1,30 @@
 package com.cefet.plantae_acessivel.dto;
 
 import com.cefet.plantae_acessivel.entity.Planta;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class PlantaDTO {
 
     private Long id;
+
+    @NotBlank(message = "O nome popular da planta é obrigatório.")
     private String nome;
+
+    @NotBlank(message = "O nome científico é obrigatório.")
     private String nomeCientifico;
+
+    @NotBlank(message = "A descrição da planta é obrigatória.")
     private String descricao;
+
     private String rega;
     private String poda;
     private String luminosidade;
     private String familia;
     private String imagemUrl;
-    private Long jardimId; // referência da chave estrangeira
+
+    @NotNull(message = "Toda planta precisa estar vinculada a um Jardim (jardimId não pode ser nulo).")
+    private Long jardimId;
 
     public PlantaDTO() {
     }

@@ -1,12 +1,19 @@
 package com.cefet.plantae_acessivel.dto;
 
 import com.cefet.plantae_acessivel.entity.Jardim;
+import jakarta.validation.constraints.NotBlank;
 
 public class JardimDTO {
 
     private Long id;
+
+    @NotBlank(message = "O nome do jardim é obrigatório.")
     private String nome;
+
+    @NotBlank(message = "A descrição do jardim não pode ficar em branco.")
     private String descricao;
+
+    @NotBlank(message = "A localização é obrigatória.")
     private String localizacao;
 
     public JardimDTO() {

@@ -2,6 +2,9 @@ package com.cefet.plantae_acessivel.controller;
 
 import com.cefet.plantae_acessivel.dto.TarefaJardimDTO;
 import com.cefet.plantae_acessivel.service.TarefaJardimService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +26,7 @@ public class TarefaJardimController {
     }
 
     @PostMapping
-    public TarefaJardimDTO cadastrar(@RequestBody TarefaJardimDTO dto) {
+    public TarefaJardimDTO cadastrar(@Valid @RequestBody TarefaJardimDTO dto) {
         return service.cadastrar(dto);
     }
 

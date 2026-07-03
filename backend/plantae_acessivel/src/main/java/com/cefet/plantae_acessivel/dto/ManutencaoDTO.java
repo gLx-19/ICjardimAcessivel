@@ -1,13 +1,20 @@
 package com.cefet.plantae_acessivel.dto;
 
 import com.cefet.plantae_acessivel.entity.Manutencao;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class ManutencaoDTO {
 
     private Long id;
+
+    @NotBlank(message = "A descrição da manutenção não pode ficar em branco.")
     private String descricao;
+
     private LocalDate dataRegistro;
+
+    @NotNull(message = "A manutenção precisa ser associada a um Jardim.")
     private Long jardimId;
 
     public ManutencaoDTO() {
@@ -17,12 +24,10 @@ public class ManutencaoDTO {
         this.id = entity.getId();
         this.descricao = entity.getDescricao();
         this.dataRegistro = entity.getDataRegistro();
-        if (entity.getJardim() != null) {
+        if (entity.getJardim() != null)
             this.jardimId = entity.getJardim().getId();
-        }
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

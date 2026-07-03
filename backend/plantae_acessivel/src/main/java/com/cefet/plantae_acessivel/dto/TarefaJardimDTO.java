@@ -1,15 +1,26 @@
 package com.cefet.plantae_acessivel.dto;
 
 import com.cefet.plantae_acessivel.entity.TarefaJardim;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class TarefaJardimDTO {
 
     private Long id;
+
+    @NotBlank(message = "A descrição do vínculo da tarefa com o jardim é obrigatória.")
     private String descricao;
+
+    @NotNull(message = "A data prevista é obrigatória.")
     private LocalDate dataPrevista;
+
     private LocalDate dataRealizacao;
+
+    @NotNull(message = "O ID do Jardim é obrigatório.")
     private Long jardimId;
+
+    @NotNull(message = "O ID da Tarefa base é obrigatório.")
     private Long tarefaId;
 
     public TarefaJardimDTO() {
@@ -20,15 +31,13 @@ public class TarefaJardimDTO {
         this.descricao = entity.getDescricao();
         this.dataPrevista = entity.getDataPrevista();
         this.dataRealizacao = entity.getDataRealizacao();
-        if (entity.getJardim() != null) {
+        if (entity.getJardim() != null)
             this.jardimId = entity.getJardim().getId();
-        }
-        if (entity.getTarefa() != null) {
+        if (entity.getTarefa() != null)
             this.tarefaId = entity.getTarefa().getId();
-        }
     }
 
-    // Getters e Setters
+    // Mantenha os Getters e Setters como estão...
     public Long getId() {
         return id;
     }

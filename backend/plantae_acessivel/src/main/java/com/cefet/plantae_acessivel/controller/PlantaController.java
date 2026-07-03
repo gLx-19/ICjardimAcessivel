@@ -2,6 +2,7 @@ package com.cefet.plantae_acessivel.controller;
 
 import com.cefet.plantae_acessivel.dto.PlantaDTO;
 import com.cefet.plantae_acessivel.service.PlantaService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,17 +29,12 @@ public class PlantaController {
     }
 
     @PostMapping
-    public PlantaDTO cadastrar(@RequestBody PlantaDTO dto) {
+    public PlantaDTO cadastrar(@Valid @RequestBody PlantaDTO dto) {
         return service.cadastrar(dto);
     }
 
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id) {
         service.excluir(id);
-    }
-
-    @PutMapping("/{id}")
-    public PlantaDTO atualizar(@PathVariable Long id, @RequestBody PlantaDTO dto) {
-        return service.atualizar(id, dto);
     }
 }

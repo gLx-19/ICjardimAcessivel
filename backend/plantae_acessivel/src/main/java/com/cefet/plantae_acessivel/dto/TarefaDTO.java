@@ -1,14 +1,22 @@
 package com.cefet.plantae_acessivel.dto;
 
 import com.cefet.plantae_acessivel.entity.Tarefa;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class TarefaDTO {
 
     private Long id;
+
+    @NotBlank(message = "O título da tarefa é obrigatório.")
     private String titulo;
+
     private String descricao;
+
+    @NotNull(message = "A data prevista é obrigatória.")
     private LocalDate dataPrevista;
+
     private boolean concluida;
 
     public TarefaDTO() {
@@ -22,6 +30,7 @@ public class TarefaDTO {
         this.concluida = entity.isConcluida();
     }
 
+    // Mantenha os Getters e Setters como estão...
     public Long getId() {
         return id;
     }
