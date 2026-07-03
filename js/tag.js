@@ -1,17 +1,69 @@
 const API_TAGS = "http://localhost:8080/api/tags";
 const API_PLANTAS = "http://localhost:8080/api/plantas";
+const API_JARDINS = "http://localhost:8080/api/jardins";
 
 const formCadastro = document.getElementById("formCadastro");
 const formPesquisa = document.getElementById("formPesquisa");
 const listaTagsDiv = document.getElementById("listaTags");
 const selectPlanta = document.getElementById("planta");
+const selectJardimTag = document.getElementById("jardimTag");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
+
+// Captura a seção inteira do formulário para controlar a exibição (display: none/block)
+const secaoCadastroTag = formCadastro.closest(".cadastro");
+const btnNovaTag = document.getElementById("btnNovaTag"); 
 
 let listaPlantasLocal = [];
 let tagEmEdicaoId = null;
 
+// Controla a abertura do formulário para uma NOVA tag
+if (btnNovaTag) {
+    btnNovaTag.addEventListener("click", () => {
+        tagEmEdicaoId = null;
+        formCadastro.reset();
+        document.getElementById("codigo").disabled = false;
+        btnSubmit.textContent = "Confirmar Cadastro";
+        
+        // Inicializa preenchimentos automáticos
+        carregarJardimCadastro();
+        carregarSelectPlantas();
+        
+        if (secaoCadastroTag) {
+            secaoCadastroTag.style.display = "block";
+            secaoCadastroTag.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+}
+
 // ======================================================
-// 1. CARREGAR AS PLANTAS DO BANCO NO SELECT DE CADASTRO
+// 1. CARREGAR O JARDIM ÚNICO NO SELECT DE CADASTRO
+// ======================================================
+async function carregarJardimCadastro() {
+    try {
+        const resposta = await fetch(API_JARDINS);
+        if (!resposta.ok) throw new Error("Erro ao buscar jardim");
+        
+        const jardimUnico = await resposta.json();
+        selectJardimTag.innerHTML = "";
+
+        if (!jardimUnico || !jardimUnico.id) {
+            selectJardimTag.innerHTML = "<option value=''>Nenhum jardim cadastrado</option>";
+            return;
+        }
+
+        const option = document.createElement("option");
+        option.value = jardimUnico.id;
+        option.textContent = jardimUnico.nome;
+        selectJardimTag.appendChild(option);
+        selectJardimTag.value = jardimUnico.id;
+    } catch (erro) {
+        console.error("Erro ao carregar jardim no cadastro:", erro);
+        selectJardimTag.innerHTML = "<option value=''>Erro ao carregar jardim</option>";
+    }
+}
+
+// ======================================================
+// 2. CARREGAR AS PLANTAS NO SELECT DE CADASTRO
 // ======================================================
 async function carregarSelectPlantas() {
     try {
@@ -22,7 +74,7 @@ async function carregarSelectPlantas() {
         selectPlanta.innerHTML = "<option value=''>Selecione uma planta</option>"; 
 
         if (listaPlantasLocal.length === 0) {
-            selectPlanta.innerHTML = "<option value=''>Nenhuma planta cadastrada</option>";
+            selectPlanta.innerHTML = "<option value=''>Nenhum planta cadastrada</option>";
             return;
         }
 
@@ -38,11 +90,10 @@ async function carregarSelectPlantas() {
 }
 
 // ======================================================
-// 2. CARREGAR E FILTRAR A LISTA DE TAGS NFC (SÓ EXIBE APÓS BUSCA)
+// 3. CARREGAR E FILTRAR A LISTA DE TAGS NFC (SÓ EXIBE APÓS BUSCA)
 // ======================================================
 async function carregarTags(termoPesquisa = "") {
     try {
-        // Se não houver termo digitado, limpa a área de listagem e não exibe nada por default
         if (!termoPesquisa.trim()) {
             listaTagsDiv.innerHTML = "<p>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
             return;
@@ -56,10 +107,9 @@ async function carregarTags(termoPesquisa = "") {
 
         const termo = termoPesquisa.toLowerCase().trim();
 
-        // FILTRO EXPANDIDO: Filtra por Código NFC OU pelo Nome Popular da Planta vinculada
+        // Filtro pelo Código NFC ou pelo Nome Popular da planta
         tags = tags.filter(tag => {
             const codigoBate = tag.id && tag.id.toLowerCase().includes(termo);
-            
             const plantaCorrespondente = listaPlantasLocal.find(p => p.id === tag.plantaId);
             const nomePlantaBate = plantaCorrespondente && 
                                    plantaCorrespondente.nome && 
@@ -101,11 +151,14 @@ async function carregarTags(termoPesquisa = "") {
 }
 
 // ======================================================
-// 3. PREPARAR EDIÇÃO
+// 4. PREPARAR EDIÇÃO (EXIBE FORMULÁRIO DINAMICAMENTE)
 // ======================================================
-function prepararEdicao(tag) {
+async function prepararEdicao(tag) {
     document.getElementById("codigo").value = tag.id || "";
     document.getElementById("codigo").disabled = true;
+
+    await carregarJardimCadastro();
+    await carregarSelectPlantas();
 
     if (tag.plantaId) {
         selectPlanta.value = tag.plantaId;
@@ -115,11 +168,15 @@ function prepararEdicao(tag) {
 
     tagEmEdicaoId = tag.id;
     btnSubmit.textContent = "💾 Salvar Alterações";
-    formCadastro.scrollIntoView({ behavior: 'smooth' });
+    
+    if (secaoCadastroTag) {
+        secaoCadastroTag.style.display = "block";
+        secaoCadastroTag.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 // ======================================================
-// 4. CADASTRAR OU ATUALIZAR TAG NFC
+// 5. CADASTRAR OU ATUALIZAR TAG NFC
 // ======================================================
 formCadastro.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -132,7 +189,6 @@ formCadastro.addEventListener("submit", async function (event) {
 
     try {
         let resposta;
-        
         if (tagEmEdicaoId) {
             resposta = await fetch(`${API_TAGS}/${tagEmEdicaoId}`, {
                 method: "PUT",
@@ -156,7 +212,11 @@ formCadastro.addEventListener("submit", async function (event) {
             tagEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
             
-            // Recarrega os dados com base no último termo pesquisado
+            // Oculta a área do formulário de novo após salvar
+            if (secaoCadastroTag) {
+                secaoCadastroTag.style.display = "none";
+            }
+
             carregarTags(termoPesquisadoAntigo);
         } else {
             const erroTexto = await resposta.text();
@@ -168,7 +228,7 @@ formCadastro.addEventListener("submit", async function (event) {
 });
 
 // ======================================================
-// 5. EXCLUIR TAG NFC
+// 6. EXCLUIR TAG NFC
 // ======================================================
 async function excluirTag(id) {
     if (!confirm(`Deseja mesmo remover a Tag ${id}?`)) return;
@@ -187,19 +247,25 @@ async function excluirTag(id) {
     }
 }
 
-// ======================================================
-// 6. FILTRO DE PESQUISA
-// ======================================================
 formPesquisa.addEventListener("submit", function (event) {
     event.preventDefault();
     const termo = document.getElementById("pesquisa").value;
     carregarTags(termo);
 });
 
-// Inicialização síncrona: Apenas carrega as plantas, a lista inicia limpa
+// Inicialização segura
 async function inicializar() {
-    await carregarSelectPlantas();
-    // Mensagem orientativa inicial
+    // Inicia ocultando o formulário por padrão
+    if (secaoCadastroTag) {
+        secaoCadastroTag.style.display = "none";
+    }
+    
+    // Deixa carregada a lista de plantas local para otimizar os filtros de busca
+    try {
+        const resposta = await fetch(API_PLANTAS);
+        if (resposta.ok) listaPlantasLocal = await resposta.json();
+    } catch(e) { console.error(e); }
+
     listaTagsDiv.innerHTML = "<p>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
 }
 

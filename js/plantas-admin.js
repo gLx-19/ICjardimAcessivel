@@ -7,17 +7,38 @@ const listaPlantasDiv = document.getElementById("listaPlantas");
 const selectJardim = document.getElementById("jardimSelect");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
+// Captura a seção inteira do formulário para controlar a exibição (display: none/block)
+const secaoCadastroPlanta = formCadastro.closest(".cadastro");
+const btnAbrirCadastro = document.getElementById("btnAbrirCadastro"); // ID sugerido para o botão de "Cadastrar Nova Planta" no HTML
+
 let plantaEmEdicaoId = null; 
 
+// Controla a abertura do formulário para uma NOVA planta
+if (btnAbrirCadastro) {
+    btnAbrirCadastro.addEventListener("click", () => {
+        plantaEmEdicaoId = null;
+        formCadastro.reset();
+        btnSubmit.textContent = "Confirmar Cadastro";
+        
+        // Garante que o select do Jardim Único continue preenchido
+        carregarSelectJardins();
+        
+        // Mostra o formulário na tela
+        if (secaoCadastroPlanta) {
+            secaoCadastroPlanta.style.display = "block";
+            secaoCadastroPlanta.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+}
+
 // ======================================================
-// 1. CARREGAR O JARDIM ÚNICO NO SELECT (CORRIGIDO)
+// 1. CARREGAR O JARDIM ÚNICO NO SELECT
 // ======================================================
 async function carregarSelectJardins() {
     try {
         const resposta = await fetch(API_JARDINS);
         if (!resposta.ok) throw new Error("Erro ao buscar jardim");
         
-        // O back-end agora envia um objeto único, não um array []
         const jardimUnico = await resposta.json();
         selectJardim.innerHTML = "";
 
@@ -26,13 +47,11 @@ async function carregarSelectJardins() {
             return;
         }
 
-        // Cria a opção única baseada no objeto recebido do Back-end
         const option = document.createElement("option");
         option.value = jardimUnico.id;
         option.textContent = jardimUnico.nome;
         selectJardim.appendChild(option);
         
-        // Deixa ele selecionado por padrão
         selectJardim.value = jardimUnico.id;
 
     } catch (erro) {
@@ -107,7 +126,7 @@ async function excluirPlanta(id) {
 }
 
 // ======================================================
-// 4. PREPARAR EDIÇÃO
+// 4. PREPARAR EDIÇÃO (MOSTRA O FORMULÁRIO APENAS AQUI)
 // ======================================================
 async function prepararEdicao(id) {
     try {
@@ -131,14 +150,19 @@ async function prepararEdicao(id) {
 
         plantaEmEdicaoId = id;
         btnSubmit.textContent = "💾 Salvar Alterações";
-        formCadastro.scrollIntoView({ behavior: 'smooth' });
+        
+        // Mostra o formulário de forma dinâmica ao clicar em Editar
+        if (secaoCadastroPlanta) {
+            secaoCadastroPlanta.style.display = "block";
+            secaoCadastroPlanta.scrollIntoView({ behavior: 'smooth' });
+        }
     } catch (erro) {
         alert("Erro ao buscar os dados da planta para edição.");
     }
 }
 
 // ======================================================
-// 5. CADASTRAR OU ATUALIZAR PLANTA (CORRIGIDO PARA O SEU CONTROLLER)
+// 5. CADASTRAR OU ATUALIZAR PLANTA
 // ======================================================
 formCadastro.addEventListener("submit", async function (event) {
     event.preventDefault(); 
@@ -148,20 +172,22 @@ formCadastro.addEventListener("submit", async function (event) {
         return;
     }
 
+    // Tratamento dos dados coletados para não mandar strings vazias em campos opcionais
     const dadosDaPlanta = {
-        id: plantaEmEdicaoId ? plantaEmEdicaoId : null, // Passa o ID se for edição para o Spring reaproveitar
-        nome: document.getElementById("nome").value,
-        nomeCientifico: document.getElementById("cientifico").value,
-        familia: document.getElementById("familia").value,
-        descricao: document.getElementById("descricao").value,
-        luminosidade: document.getElementById("luminosidade").value,
-        rega: document.getElementById("rega").value,
-        poda: document.getElementById("poda").value,
-        jardimId: parseInt(selectJardim.value)
+        id: plantaEmEdicaoId ? plantaEmEdicaoId : null,
+        nome: document.getElementById("nome").value.trim(),
+        nomeCientifico: document.getElementById("cientifico").value.trim(),
+        descricao: document.getElementById("descricao").value.trim(),
+        jardimId: parseInt(selectJardim.value),
+        
+        // Garante envio correto de valores para propriedades que podem ser opcionais no banco
+        familia: document.getElementById("familia").value.trim() || null,
+        luminosidade: document.getElementById("luminosidade").value || null,
+        rega: document.getElementById("rega").value.trim() || null,
+        poda: document.getElementById("poda").value.trim() || null
     };
 
     try {
-        // Como o seu PlantaController usa apenas o @PostMapping para salvar/atualizar
         const resposta = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -174,11 +200,15 @@ formCadastro.addEventListener("submit", async function (event) {
             plantaEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
             
-            // Garante que o select do Jardim permaneça preenchido corretamente
+            // Oculta novamente a seção do formulário após o sucesso do salvamento
+            if (secaoCadastroPlanta) {
+                secaoCadastroPlanta.style.display = "none";
+            }
+            
             await carregarSelectJardins();
             carregarPlantas();
         } else {
-            alert("❌ Erro ao salvar. Verifique as informações ou se os campos obrigatórios estão corretos.");
+            alert("❌ Erro ao salvar. Verifique se as informações obrigatórias (Nome, Nome Científico e Descrição) estão preenchidas corretamente.");
         }
     } catch (erro) {
         alert("🔌 Erro de conexão com o servidor!");
@@ -192,6 +222,11 @@ formPesquisa.addEventListener("submit", function (event) {
 
 // Inicialização segura das listas
 async function inicializar() {
+    // Esconde o formulário logo no carregamento inicial da página por padrão
+    if (secaoCadastroPlanta) {
+        secaoCadastroPlanta.style.display = "none";
+    }
+    
     await carregarSelectJardins();
     await carregarPlantas();
 }

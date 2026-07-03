@@ -31,6 +31,10 @@
             <div class="nomes">
                 <h2>📱 Tags NFC</h2>
                 <p>Gerencie as tags NFC vinculadas às plantas.</p>
+                
+                <button id="btnNovaTag" class="btn-principal" style="margin-top: 15px; background-color: #28a745; width: auto; padding: 10px 20px;">
+                    ➕ Cadastrar Nova Tag
+                </button>
             </div>
 
             <section class="pesquisa">
@@ -47,7 +51,7 @@
                     </div>
             </section>
 
-            <section class="cadastro">
+            <section class="cadastro" style="display: none;">
                 <h3>Cadastrar Nova Tag</h3>
                 <form id="formCadastro">
 
@@ -56,12 +60,17 @@
                     </label>
                     <input type="text" id="codigo" placeholder="Ex.: NFC0001" required>
 
+                    <label for="jardimTag">Jardim Vinculado</label>
+                    <select id="jardimTag" required>
+                        <option value="">Carregando jardim...</option>
+                    </select>
+
                     <label for="planta">
                         Planta vinculada
                     </label>
                     <select id="planta" required>
                         <option value="">Carregando plantas...</option>
-                        </select>
+                    </select>
 
                     <button type="submit" class="btn-principal">
                         Confirmar Cadastro

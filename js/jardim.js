@@ -4,10 +4,15 @@ const formCadastro = document.getElementById("formCadastro");
 const listaJardinsDiv = document.getElementById("listaJardins");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
+// Captura a seção inteira do formulário para controlar a exibição (display: none/block)
+const secaoCadastroJardim = formCadastro.closest(".cadastro");
+
 // Como o jardim é único, guardamos os dados dele aqui
 let jardimUnico = null;
 
+// ======================================================
 // 1. CARREGAR O JARDIM ÚNICO DO SERVIDOR
+// ======================================================
 async function carregarJardimUnico() {
     try {
         const resposta = await fetch(API_URL);
@@ -16,7 +21,7 @@ async function carregarJardimUnico() {
         // O back-end envia um objeto direto, e não uma lista []
         jardimUnico = await resposta.json();
         
-        // Renderiza o jardim único na tela
+        // Renderiza o jardim único na tela (SEM o botão de excluir antigo!)
         listaJardinsDiv.innerHTML = `
             <div class="planta-card">
                 <div>
@@ -40,7 +45,9 @@ async function carregarJardimUnico() {
     }
 }
 
-// 2. COLOCAR OS DADOS NO FORMULÁRIO PARA EDITAR
+// ======================================================
+// 2. COLOCAR OS DADOS NO FORMULÁRIO PARA EDITAR (MOSTRA O FORMULÁRIO)
+// ======================================================
 function prepararEdicao() {
     if (!jardimUnico) return;
 
@@ -53,17 +60,25 @@ function prepararEdicao() {
     const tituloCadastro = document.querySelector(".cadastro h3");
     if (tituloCadastro) tituloCadastro.innerText = "Editar Dados do Jardim";
     btnSubmit.innerText = "Salvar Alterações";
+
+    // MOSTRA O FORMULÁRIO APENAS QUANDO CLICA EM EDITAR
+    if (secaoCadastroJardim) {
+        secaoCadastroJardim.style.display = "block";
+        secaoCadastroJardim.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
-// 3. ENVIAR AS ATUALIZAÇÕES (SALVAR)
+// ======================================================
+// 3. ENVIAR AS ATUALIZAÇÕES (SALVAR E OCULTAR FORMULÁRIO)
+// ======================================================
 formCadastro.addEventListener("submit", async (evento) => {
     evento.preventDefault();
 
     const dadosAtualizados = {
         id: jardimUnico ? jardimUnico.id : null, // Envia o ID para manter o mesmo registro
-        nome: document.getElementById("nome").value,
-        localizacao: document.getElementById("localizacao").value,
-        descricao: document.getElementById("descricao").value
+        nome: document.getElementById("nome").value.trim(),
+        localizacao: document.getElementById("localizacao").value.trim(),
+        descricao: document.getElementById("descricao").value.trim()
     };
 
     try {
@@ -79,22 +94,33 @@ formCadastro.addEventListener("submit", async (evento) => {
 
         if (!resposta.ok) throw new Error("Erro ao atualizar o jardim");
 
-        alert("Dados do jardim atualizados com sucesso!");
+        alert("✅ Dados do jardim atualizados com sucesso!");
         
-        // Limpa o formulário e restaura o estado visual
+        // Limpa o formulário e restaura o estado visual original
         formCadastro.reset();
         const tituloCadastro = document.querySelector(".cadastro h3");
         if (tituloCadastro) tituloCadastro.innerText = "Cadastrar Novo Jardim";
         btnSubmit.innerText = "Confirmar Cadastro";
+
+        // ESCONDE O FORMULÁRIO NOVAMENTE APÓS SALVAR
+        if (secaoCadastroJardim) {
+            secaoCadastroJardim.style.display = "none";
+        }
 
         // Recarrega os dados atualizados na tela
         carregarJardimUnico();
 
     } catch (erro) {
         console.error("Erro ao salvar jardim:", erro);
-        alert("Falha ao salvar as alterações do jardim.");
+        alert("❌ Falha ao salvar as alterações do jardim.");
     }
 });
 
 // Executa automaticamente ao carregar a página
-document.addEventListener("DOMContentLoaded", carregarJardimUnico);
+document.addEventListener("DOMContentLoaded", () => {
+    // Esconde o formulário por padrão logo no início do carregamento
+    if (secaoCadastroJardim) {
+        secaoCadastroJardim.style.display = "none";
+    }
+    carregarJardimUnico();
+});
