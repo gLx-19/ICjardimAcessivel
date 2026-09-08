@@ -1,120 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Gestão - Plantas</title>
-
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-
-    <header id="cabecalhoNav">
+    <header id="cabecalhoNav" role="banner">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
-
-            <nav class="menu-nav">
+            <nav class="menu-nav" aria-label="Navegação de retorno">
                 <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-
+    <main class="container" role="main">
         <div class="card">
-
             <div class="nomes">
                 <h2>🌿 Plantas</h2>
                 <p>Pesquise uma planta cadastrada ou registre uma nova.</p>
-                
-                <button id="btnAbrirCadastro" class="btn-principal" style="margin-top: 15px; background-color: #28a745; width: auto; padding: 10px 20px;">
+                <button id="btnAbrirCadastro" class="btn-principal" style="margin-top: 15px; background-color: #28a745; width: auto; padding: 10px 20px;" aria-label="Abrir formulário para cadastrar nova planta">
                     ➕ Cadastrar Nova Planta
                 </button>
             </div>
 
-            <section class="pesquisa">
-                <h3>Pesquisar Planta</h3>
-                <form id="formPesquisa">
-                    <input type="text" id="pesquisa" placeholder="Digite o nome da planta">
-                    <button type="submit" class="btn-pesquisar">
-                        🔍 Pesquisar
-                    </button>
+            <section class="pesquisa" aria-labelledby="tituloPesquisa">
+                <h3 id="tituloPesquisa">Pesquisar Planta</h3>
+                <form id="formPesquisa" role="search" aria-label="Formulário de pesquisa de plantas do catálogo">
+                    <input type="search" id="pesquisa" placeholder="Digite o nome da planta" aria-label="Termo de pesquisa de planta">
+                    <button type="submit" class="btn-pesquisar">🔍 Pesquisar</button>
                 </form>
             </section>
 
-            <section class="lista-plantas">
-                <h3>Plantas cadastradas</h3>
-                <div id="listaPlantas">
-                    </div>
+            <section class="lista-plantas" aria-labelledby="tituloLista">
+                <h3 id="tituloLista">Plantas cadastradas</h3>
+                <div id="listaPlantas" aria-live="polite" aria-label="Lista de resultados de plantas">
+                </div>
             </section>
 
-            <section class="cadastro">
-                <h3>Cadastrar Nova Planta</h3>
-                <form id="formCadastro">
+            <section class="cadastro" aria-labelledby="tituloCadastro">
+                <h3 id="tituloCadastro">Cadastrar Nova Planta</h3>
+                <form id="formCadastro" aria-label="Formulário de cadastro e edição de planta">
+                    <label for="nome">Nome da planta</label>
+                    <input type="text" id="nome" required aria-required="true">
 
-                    <label>Nome da planta</label>
-                    <input type="text" id="nome" required>
+                    <label for="cientifico">Nome científico</label>
+                    <input type="text" id="cientifico" required aria-required="true">
 
-                    <label>Nome científico</label>
-                    <input type="text" id="cientifico" required>
-
-                    <label>Família botânica</label>
+                    <label for="familia">Família botânica</label>
                     <input type="text" id="familia">
 
-                    <label>Descrição</label>
-                    <textarea id="descricao" rows="4" required></textarea>
+                    <label for="descricao">Descrição</label>
+                    <textarea id="descricao" rows="4" required aria-required="true"></textarea>
 
-                    <label>Luminosidade</label>
+                    <label for="luminosidade">Luminosidade</label>
                     <select id="luminosidade">
                         <option>Sol pleno</option>
                         <option>Meia sombra</option>
                         <option>Sombra</option>
                     </select>
 
-                    <label>Frequência de rega</label>
+                    <label for="rega">Frequência de rega</label>
                     <input type="text" id="rega" placeholder="Ex.: 2 vezes por semana">
 
-                    <label>Frequência de poda</label>
+                    <label for="poda">Frequência de poda</label>
                     <input type="text" id="poda" placeholder="Ex.: A cada 3 meses">
 
-                    <label>Conteúdo em áudio</label>
+                    <label for="audio">Conteúdo em áudio</label>
                     <input type="file" id="audio" accept="audio/*">
 
-                    <label>Conteúdo em Libras</label>
+                    <label for="libras">Conteúdo em Libras</label>
                     <input type="file" id="libras" accept="video/*">
 
                     <label for="imagemUrl">Link da Imagem da Planta</label>
-                    <input type="text" id="imagemUrl" placeholder="Cole aqui o link (URL) da foto">
+                    <input type="url" id="imagemUrl" placeholder="Cole aqui o link (URL) da foto">
 
                     <label for="jardimSelect">Jardim de Origem</label>
-                    <select id="jardimSelect" required>
-                        </select>
+                    <select id="jardimSelect" required aria-required="true">
+                    </select>
 
-                    <button type="submit" class="btn-principal">
-                        Confirmar Cadastro
-                    </button>
-
+                    <button type="submit" class="btn-principal">Confirmar Cadastro</button>
                 </form>
             </section>
-
         </div>
-
     </main>
 
-    <footer id="rodapeGlobal">
+    <footer id="rodapeGlobal" role="contentinfo">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
         </div>
     </footer>
-
     <script src="js/plantas-admin.js"></script>
-
 </body>
-
 </html>

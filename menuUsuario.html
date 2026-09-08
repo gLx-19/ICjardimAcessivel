@@ -1,74 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantae Acessível</title>
+    <title>Plantae Acessível - Painel de Gestão</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-
-
-    <header id="cabecalhoNav">
+    <header id="cabecalhoNav" role="banner">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
-
-            <nav class="menu-nav">
+            <nav class="menu-nav" aria-label="Navegação principal">
                 <a href="index.html">Início</a>
                 <a href="catalogo.html">Catálogo</a>
-                <a href="login.html" class="btn-login-header">Sair</a>
+                <a href="login.html" class="btn-login-header" aria-label="Sair do sistema">Sair</a>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-
+    <main class="container" role="main">
         <div class="card">
-
             <div class="nomes">
                 <h2>Painel de Gestão</h2>
             </div>
-
-            <div class="menu">
-
-                <button class="btn-menu" onclick="window.location.href='plantas-admin.html'">
+            <!-- Uso de navegação estruturada para os botões do painel -->
+            <nav class="menu" aria-label="Menu de gestão do sistema">
+                <button class="btn-menu" onclick="window.location.href='plantas-admin.html'" aria-label="Gerenciar Plantas">
                     🌿 Plantas
                 </button>
-
-                <button class="btn-menu" onclick="window.location.href='jardim.html'">
+                <button class="btn-menu" onclick="window.location.href='jardim.html'" aria-label="Gerenciar Jardins">
                     🌳 Jardim
                 </button>
-
-                <button class="btn-menu" onclick="window.location.href='manutencao.html'">
+                <button class="btn-menu" onclick="window.location.href='manutencao.html'" aria-label="Gerenciar Manutenções">
                     🛠 Manutenções
                 </button>
-
-                <button class="btn-menu" onclick="window.location.href='tarefas.html'">
+                <button class="btn-menu" onclick="window.location.href='tarefas.html'" aria-label="Gerenciar Tarefas">
                     📋 Tarefas
                 </button>
-
-                <button class="btn-menu" onclick="window.location.href='tag.html'">
+                <button class="btn-menu" onclick="window.location.href='tag.html'" aria-label="Gerenciar Tags NFC">
                     📱 Tag NFC
                 </button>
-
-            </div>
-
+            </nav>
         </div>
-
     </main>
-    <footer id="rodapeGlobal">
+
+    <footer id="rodapeGlobal" role="contentinfo">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
         </div>
     </footer>
-
-
 </body>
-
 </html>

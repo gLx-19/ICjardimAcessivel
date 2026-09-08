@@ -1,127 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantae Acessível - Planta</title>
-
+    <title>Plantae Acessível - Detalhes da Planta</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-   <header id="cabecalhoNav">
+   <header id="cabecalhoNav" role="banner">
     <div class="header-container">
         <div class="logo-area">
-            <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+            <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
             <h1>Plantae Acessível</h1>
         </div>
 
-        <nav class="menu-nav">
-            <a href="catalogo.html">⬅ Voltar ao Catálogo</a>
+        <nav class="menu-nav" aria-label="Navegação de retorno">
+            <a href="catalogo.html" aria-label="Voltar para o catálogo de plantas do jardim">⬅ Voltar ao Catálogo</a>
         </nav>
     </div>
 </header>
 
-    <main class="container">
-
+    <main class="container" role="main" aria-live="polite">
         <div class="card">
-
             <!-- Imagem -->
-
-            <img id="imagemPlanta" src="" alt="">
+            <img id="imagemPlanta" src="" alt="Carregando imagem da planta..." style="width: 100%; border-radius: 12px;">
 
             <!-- Botões de acessibilidade -->
-
-            <button class="audioDescricao">
+            <button class="audioDescricao" aria-label="Reproduzir áudio com a descrição da planta">
                 🔊 Ouvir Audiodescrição
             </button>
-
-            <button class="verLibras">
+            <button class="verLibras" aria-label="Reproduzir vídeo com a tradução em Libras da planta">
                 🤟 Ver em Libras
             </button>
 
             <!-- Nome -->
-
-            <div class="nomes">
-
-                <h2 id="nomePlanta">
-                    Lavanda
-                </h2>
-
-                <p id="nomeCientifico">
-                    Lavandula angustifolia
-                </p>
-
+            <div class="nomes" style="margin-top: 20px;">
+                <h2 id="nomePlanta">A carregar...</h2>
+                <p id="nomeCientifico" aria-label="Nome Científico">A carregar...</p>
             </div>
 
             <!-- Descrição -->
-
-            <div class="informcoes">
-
-                <h3>Descrição</h3>
-
-                <p id="descricaoPlanta">
-
-                    Planta aromática conhecida pelo perfume agradável e pelas
-                    propriedades relaxantes.
-
-                </p>
-
-            </div>
+            <section class="informcoes" aria-labelledby="tituloDescricao">
+                <h3 id="tituloDescricao">Descrição</h3>
+                <p id="descricaoPlanta">Carregando informações da planta...</p>
+            </section>
 
             <!-- Informações -->
-
-            <div class="informcoes">
-
-                <h3>Cuidados</h3>
-
+            <section class="informcoes" aria-labelledby="tituloCuidados">
+                <h3 id="tituloCuidados">Cuidados</h3>
                 <p>
                     <strong>💧 Frequência de rega:</strong>
-                    <span id="rega">
-                        2 vezes por semana
-                    </span>
+                    <span id="rega">Carregando...</span>
                 </p>
-
                 <br>
-
                 <p>
                     <strong>✂ Frequência de poda:</strong>
-                    <span id="poda">
-                        A cada 3 meses
-                    </span>
+                    <span id="poda">Carregando...</span>
                 </p>
-
                 <br>
-
                 <p>
                     <strong>☀ Luminosidade:</strong>
-                    <span id="luminosidade">
-                        Sol pleno
-                    </span>
+                    <span id="luminosidade">Carregando...</span>
                 </p>
-
                 <br>
-
                 <p>
                     <strong>🌿 Família botânica:</strong>
-                    <span id="familia">
-                        Lamiaceae
-                    </span>
+                    <span id="familia">Carregando...</span>
                 </p>
-            </div>
-        
+            </section>
         </div>
-
-        <!-- Navegação -->
-
-
-
-
     </main>
 
-    <footer id="rodapeGlobal">
+    <footer id="rodapeGlobal" role="contentinfo">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
@@ -129,7 +80,5 @@
     </footer>
 
     <script src="js/planta.js"></script>
-
 </body>
-
 </html>

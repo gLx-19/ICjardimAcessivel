@@ -1,61 +1,48 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantae Acessível</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-
-    <header id="cabecalhoNav">
+    <header id="cabecalhoNav" role="banner">
         <div class="header-container">
-
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
-
-            <nav class="menu-nav" id="menuNavegacaoSuperior">
-                <a href="login.html">Entrar</a>
+            <nav class="menu-nav" id="menuNavegacaoSuperior" aria-label="Menu Superior">
+                <a href="login.html" aria-label="Entrar no sistema">Entrar</a>
             </nav>
-
         </div>
     </header>
 
-    <main class="container">
-
+    <main class="container" role="main">
         <div class="card telaInicial">
-
             <h2>🌿 Bem-vindo ao Plantae Acessível!</h2>
-
             <p class="textoInicial">
                 Descubra as espécies presentes em nosso jardim por meio de uma
                 experiência acessível, interativa e educativa.
             </p>
 
             <div style="margin: 25px 0; text-align: left;">
-                <label for="selectJardimPublico"
-                    style="font-weight: bold; color: #198754; display: block; margin-bottom: 8px;">
+                <label for="selectJardimPublico" style="font-weight: bold; color: #198754; display: block; margin-bottom: 8px;">
                     📍 Escolha o jardim que deseja visitar:
                 </label>
-                <select id="selectJardimPublico"
-                    style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #198754; font-size: 16px;">
+                <select id="selectJardimPublico" aria-required="true" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #198754; font-size: 1.1rem;">
                     <option value="">A carregar jardins...</option>
                 </select>
             </div>
 
-            <button class="btn-iniciar" id="btnIniciarExperiencia">
+            <button class="btn-iniciar" id="btnIniciarExperiencia" aria-label="Iniciar experiência no jardim selecionado">
                 🌱 Iniciar Experiência
             </button>
-
         </div>
-
     </main>
 
-    <footer id="rodapeGlobal">
+    <footer id="rodapeGlobal" role="contentinfo">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
@@ -64,5 +51,4 @@
 
     <script src="js/index.js"></script>
 </body>
-
 </html>

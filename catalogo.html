@@ -1,67 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantae Acessível - Catálogo</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-
-    <header id="cabecalhoNav">
+    <header id="cabecalhoNav" role="banner">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
         </div>
     </header>
 
-    <main class="container">
-
+    <main class="container" role="main">
         <div class="card">
-
             <div class="nomes">
                 <h2>Catálogo de Plantas</h2>
                 <p>Explore nosso jardim!</p>
             </div>
 
-            <!-- Pesquisa -->
-
-            <div class="pesquisa">
-
-                <h3>Pesquisar Planta</h3>
-
-                <form id="formPesquisa">
-
-                    <input type="text" id="pesquisa" placeholder="Digite o nome da planta">
-
-                    <button type="submit" class="btn-pesquisar">
+            <section class="pesquisa" aria-labelledby="tituloPesquisa">
+                <h3 id="tituloPesquisa">Pesquisar Planta</h3>
+                <form id="formPesquisa" role="search" aria-label="Formulário de pesquisa de plantas">
+                    <input type="search" id="pesquisa" placeholder="Digite o nome da planta" aria-label="Termo de pesquisa">
+                    <button type="submit" class="btn-pesquisar" aria-label="Buscar plantas">
                         Buscar
                     </button>
-
                 </form>
+            </section>
 
-            </div>
-
-            <!-- Lista de plantas -->
-
-            <div id="listaPlantas" class="catalogo">
-
-                <!--
-                    Os cards serão adicionados aqui
-                    pelo JavaScript.
-                -->
-
-            </div>
-
+            <!-- aria-live="polite" avisa ao leitor de tela quando o JS injetar as plantas aqui -->
+            <section id="listaPlantas" class="catalogo" aria-live="polite" aria-label="Lista de plantas do jardim">
+                <!-- Os cards serão adicionados aqui pelo JavaScript. -->
+            </section>
         </div>
-
     </main>
 
-    <footer id="rodapeGlobal">
+    <footer id="rodapeGlobal" role="contentinfo">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
@@ -70,6 +49,4 @@
 
     <script src="js/catalogo.js"></script>
 </body>
-</body>
-
 </html>

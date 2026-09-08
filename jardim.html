@@ -1,52 +1,50 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantae Acessível - Jardins</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-
-    <header id="cabecalhoNav">        <div class="header-container">
+    <header id="cabecalhoNav" role="banner">
+        <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
-            <nav class="menu-nav">
-                <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
+            <nav class="menu-nav" aria-label="Navegação de retorno">
+                <a href="menuUsuario.html" aria-label="Voltar ao Menu Inicial">⬅ Voltar ao Menu Inicial</a>
             </nav>
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" role="main">
         <div class="card">
             <div class="nomes">
                 <h2>🌳 Jardins</h2>
                 <p>Gerencie os jardins cadastrados.</p>
             </div>
 
-            <section class="pesquisa">
-                <h3>Pesquisar Jardim</h3>
-                <form id="formPesquisa">
-                    <input type="text" id="pesquisa" placeholder="Digite o nome do jardim">
-                    <button type="submit" class="btn-pesquisar">🔍 Pesquisar</button>
+            <section class="pesquisa" aria-labelledby="tituloPesquisa">
+                <h3 id="tituloPesquisa">Pesquisar Jardim</h3>
+                <form id="formPesquisa" role="search" aria-label="Formulário de pesquisa de jardins">
+                    <input type="search" id="pesquisa" placeholder="Digite o nome do jardim" aria-label="Termo de pesquisa do jardim">
+                    <button type="submit" class="btn-pesquisar" aria-label="Buscar jardim">🔍 Pesquisar</button>
                 </form>
             </section>
 
-            <section class="lista-plantas">
-                <h3>Jardins Cadastrados</h3>
-                <div id="listaJardins">
-                    </div>
+            <section class="lista-plantas" aria-labelledby="tituloLista">
+                <h3 id="tituloLista">Jardins Cadastrados</h3>
+                <div id="listaJardins" aria-live="polite" aria-label="Lista de resultados de jardins">
+                </div>
             </section>
 
-            <section class="cadastro" id="secaoCadastroJardim">
+            <section class="cadastro" id="secaoCadastroJardim" aria-labelledby="tituloFormulario">
                 <h3 id="tituloFormulario">Cadastrar Novo Jardim</h3>
-                <form id="formCadastro">
+                <form id="formCadastro" aria-label="Formulário de cadastro e edição de jardim">
                     <label for="nome">Nome</label>
-                    <input type="text" id="nome" required>
+                    <input type="text" id="nome" required aria-required="true">
 
                     <label for="localizacao">Localização</label>
                     <input type="text" id="localizacao" placeholder="Ex.: Bloco A - Entrada">
@@ -60,13 +58,12 @@
         </div>
     </main>
 
-    <footer id="rodapeGlobal">
+    <footer id="rodapeGlobal" role="contentinfo">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
         </div>
     </footer>
-
     <script src="js/jardim.js"></script>
 </body>
 </html>
