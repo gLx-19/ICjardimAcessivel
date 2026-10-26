@@ -5,9 +5,8 @@ const formPesquisa = document.getElementById("formPesquisa");
 const listaTarefasDiv = document.getElementById("listaTarefas");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
-// Captura a seção inteira do formulário para controlar a exibição (display: none/block)
 const secaoCadastroTarefa = formCadastro.closest(".cadastro");
-const btnNovaTarefa = document.getElementById("btnNovaTarefa"); 
+const btnNovaTarefa = document.getElementById("btnNovaTarefa");
 
 let tarefaEmEdicaoId = null;
 
@@ -19,9 +18,9 @@ if (btnNovaTarefa) {
         const tituloForm = document.getElementById("tituloFormulario");
         if (tituloForm) tituloForm.innerText = "Cadastrar Nova Tarefa";
         btnSubmit.textContent = "Confirmar Cadastro";
-        
+
         if (secaoCadastroTarefa) {
-            secaoCadastroTarefa.style.display = "block";
+            secaoCadastroTarefa.hidden = false;
             secaoCadastroTarefa.scrollIntoView({ behavior: 'smooth' });
         }
     });
@@ -32,6 +31,8 @@ if (btnNovaTarefa) {
 // ======================================================
 async function carregarTarefas(termoPesquisa = "") {
     try {
+        if (listaTarefasDiv) listaTarefasDiv.setAttribute("aria-busy", "true");
+
         const resposta = await fetch(API_TAREFAS);
         if (!resposta.ok) throw new Error("Erro ao buscar tarefas");
 
@@ -40,14 +41,14 @@ async function carregarTarefas(termoPesquisa = "") {
 
         if (termoPesquisa) {
             const termo = termoPesquisa.toLowerCase().trim();
-            tarefas = tarefas.filter(t => 
+            tarefas = tarefas.filter(t =>
                 (t.titulo && t.titulo.toLowerCase().includes(termo)) ||
                 (t.descricao && t.descricao.toLowerCase().includes(termo))
             );
         }
 
         if (tarefas.length === 0) {
-            listaTarefasDiv.innerHTML = "<p>Nenhuma tarefa cadastrada.</p>";
+            listaTarefasDiv.innerHTML = "<p class='mensagem-status'>Nenhuma tarefa cadastrada.</p>";
             return;
         }
 
@@ -55,26 +56,25 @@ async function carregarTarefas(termoPesquisa = "") {
             const itemDiv = document.createElement("div");
             itemDiv.className = "planta-item";
 
-            // O Java devolve 'dataPrevista'
             let prazoFormatado = tarefa.dataPrevista || tarefa.prazo;
             if (prazoFormatado && prazoFormatado.includes("-")) {
                 const partes = prazoFormatado.split("-");
                 prazoFormatado = `${partes[2]}/${partes[1]}/${partes[0]}`;
             }
 
-            const statusIcone = tarefa.status === "Concluída" ? "✅" : "⏳";
+            const statusTexto = tarefa.status === "Concluída" ? "Concluída" : "Pendente";
+            const tituloTarefa = tarefa.titulo || "Tarefa sem título";
+            const dadosJson = JSON.stringify(tarefa).replace(/"/g, '&quot;');
 
             itemDiv.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <span>
-                        ${statusIcone} <strong>${tarefa.titulo}</strong> - <small>Prazo: ${prazoFormatado || 'Sem data'}</small>
-                        <br><small style="color: #666;">${tarefa.descricao}</small>
-                    </span>
-                    <div class="acoes">
-                        ${tarefa.status !== "Concluída" ? `<button class="btn-ver" onclick="concluirTarefa(${tarefa.id})">✔️ Concluir</button>` : ''}
-                        <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(tarefa).replace(/"/g, '&quot;')})" style="background-color: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">✏️ Editar</button>
-                        <button class="btn-excluir" onclick="excluirTarefa(${tarefa.id})" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">🗑️ Excluir</button>
-                    </div>
+                <div class="item-conteudo">
+                    <strong>[${statusTexto}] ${tituloTarefa}</strong> - <small class="item-localizacao">Prazo: ${prazoFormatado || 'Sem data'}</small>
+                    <small class="item-subtexto">${tarefa.descricao || ''}</small>
+                </div>
+                <div class="acoes">
+                    ${tarefa.status !== "Concluída" ? `<button type="button" class="btn-ver" onclick="concluirTarefa(${tarefa.id})" aria-label="Concluir tarefa ${tituloTarefa}">Concluir</button>` : ''}
+                    <button type="button" class="btn-editar" onclick="prepararEdicao(${dadosJson})" aria-label="Editar tarefa ${tituloTarefa}">Editar</button>
+                    <button type="button" class="btn-excluir" onclick="excluirTarefa(${tarefa.id})" aria-label="Excluir tarefa ${tituloTarefa}">Excluir</button>
                 </div>
             `;
             listaTarefasDiv.appendChild(itemDiv);
@@ -82,15 +82,16 @@ async function carregarTarefas(termoPesquisa = "") {
 
     } catch (erro) {
         console.error("Erro ao carregar tarefas:", erro);
-        listaTarefasDiv.innerHTML = "<p style='color:red;'>Erro ao carregar dados do servidor.</p>";
+        listaTarefasDiv.innerHTML = "<p class='mensagem-erro' role='alert'>Erro ao carregar dados do servidor.</p>";
+    } finally {
+        if (listaTarefasDiv) listaTarefasDiv.setAttribute("aria-busy", "false");
     }
 }
 
 // ======================================================
-// 2. PREPARAR EDIÇÃO 
+// 2. PREPARAR EDIÇÃO
 // ======================================================
 function prepararEdicao(tarefa) {
-    // A MÁGICA QUE FALTAVA ESTÁ AQUI: O Front-end agora lembra quem está editando!
     tarefaEmEdicaoId = tarefa.id;
 
     document.getElementById("titulo").value = tarefa.titulo || "";
@@ -100,10 +101,10 @@ function prepararEdicao(tarefa) {
 
     const tituloForm = document.getElementById("tituloFormulario");
     if (tituloForm) tituloForm.innerText = "Editar Detalhes da Tarefa";
-    btnSubmit.textContent = "💾 Salvar Alterações";
-    
+    btnSubmit.textContent = "Salvar Alterações";
+
     if (secaoCadastroTarefa) {
-        secaoCadastroTarefa.style.display = "block";
+        secaoCadastroTarefa.hidden = false;
         secaoCadastroTarefa.scrollIntoView({ behavior: 'smooth' });
     }
 }
@@ -118,12 +119,12 @@ formCadastro.addEventListener("submit", async function (event) {
         id: tarefaEmEdicaoId ? tarefaEmEdicaoId : null,
         titulo: document.getElementById("titulo").value.trim(),
         descricao: document.getElementById("descricao").value.trim(),
-        // A MÁGICA FOI AQUI: Alterado de 'prazo' para 'dataPrevista'
-        dataPrevista: document.getElementById("prazo").value, 
+        dataPrevista: document.getElementById("prazo").value,
         status: document.getElementById("status").value
     };
 
     try {
+        formCadastro.setAttribute("aria-busy", "true");
         const url = tarefaEmEdicaoId ? `${API_TAREFAS}/${tarefaEmEdicaoId}` : API_TAREFAS;
         const metodo = tarefaEmEdicaoId ? "PUT" : "POST";
 
@@ -134,24 +135,26 @@ formCadastro.addEventListener("submit", async function (event) {
         });
 
         if (resposta.ok) {
-            alert(tarefaEmEdicaoId ? "✅ Tarefa atualizada com sucesso!" : "✅ Nova tarefa criada com sucesso!");
+            alert(tarefaEmEdicaoId ? "Tarefa atualizada com sucesso!" : "Nova tarefa criada com sucesso!");
             formCadastro.reset();
             tarefaEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
-            
+
             const tituloForm = document.getElementById("tituloFormulario");
             if (tituloForm) tituloForm.innerText = "Cadastrar Nova Tarefa";
 
             if (secaoCadastroTarefa) {
-                secaoCadastroTarefa.style.display = "none";
+                secaoCadastroTarefa.hidden = true;
             }
-            
+
             carregarTarefas();
         } else {
-            alert("❌ Erro ao salvar dados no servidor. Verifique as informações obrigatórias.");
+            alert("Erro ao salvar dados no servidor. Verifique as informações obrigatórias.");
         }
     } catch (erro) {
-        alert("🔌 Erro de conexão com o servidor!");
+        alert("Erro de conexão com o servidor.");
+    } finally {
+        formCadastro.setAttribute("aria-busy", "false");
     }
 });
 
@@ -162,10 +165,10 @@ async function concluirTarefa(id) {
     try {
         const resposta = await fetch(`${API_TAREFAS}/${id}/concluir`, { method: "PATCH" });
         if (resposta.ok) {
-            alert("✅ Tarefa concluída com sucesso!");
+            alert("Tarefa concluída com sucesso!");
             carregarTarefas();
         } else {
-            alert("❌ Falha ao atualizar o status da tarefa.");
+            alert("Falha ao atualizar o status da tarefa.");
         }
     } catch (erro) {
         console.error(erro);
@@ -181,10 +184,10 @@ async function excluirTarefa(id) {
     try {
         const resposta = await fetch(`${API_TAREFAS}/${id}`, { method: "DELETE" });
         if (resposta.ok) {
-            alert("🗑️ Tarefa removida com sucesso!");
+            alert("Tarefa removida com sucesso!");
             carregarTarefas();
         } else {
-            alert("❌ Erro ao excluir a tarefa.");
+            alert("Erro ao excluir a tarefa.");
         }
     } catch (erro) {
         console.error(erro);
@@ -199,7 +202,7 @@ formPesquisa.addEventListener("submit", function (event) {
 // Inicialização segura
 async function inicializar() {
     if (secaoCadastroTarefa) {
-        secaoCadastroTarefa.style.display = "none";
+        secaoCadastroTarefa.hidden = true;
     }
     await carregarTarefas();
 }

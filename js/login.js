@@ -1,23 +1,28 @@
-// Função chamada ao clicar no botão Login
+// Limpa qualquer sessão anterior ao abrir a tela de login para evitar que o
+// smartphone de testes permaneça preso no perfil ADMIN/JARDINEIRO
+document.addEventListener("DOMContentLoaded", () => {
+    localStorage.clear();
+});
+
+// Função chamada ao clicar no botão Entrar
 async function autenticar() {
-    // 1. Pega os valores digitados nos campos de CPF e Senha do seu login.html
+    const formulario = document.getElementById("formulario");
     let cpfDigitado = document.getElementById("cpf").value.trim();
     const senhaDigitada = document.getElementById("senha").value.trim();
 
-    // 2. Verifica se os campos estão vazios
     if (cpfDigitado === "" || senhaDigitada === "") {
-        alert("⚠️ Por favor, preencha todos os campos.");
+        alert("Por favor, preencha todos os campos.");
         return;
     }
 
-    // 3. Monta o JSON exatamente como a rota do PessoaController espera receber (com a chave 'cpf')
     const credenciais = {
         cpf: cpfDigitado,
         senha: senhaDigitada
     };
 
     try {
-        // 4. Faz a requisição POST para a rota do PessoaController no Java
+        if (formulario) formulario.setAttribute("aria-busy", "true");
+
         const resposta = await fetch("https://icjardimacessivel.onrender.com/api/pessoas/login", {
             method: "POST",
             headers: {
@@ -26,35 +31,30 @@ async function autenticar() {
             body: JSON.stringify(credenciais)
         });
 
-        // 5. Verifica se o Java validou o login com sucesso
         if (resposta.ok) {
             const usuarioDados = await resposta.json();
 
-            // Salva no localStorage (Memória permanente do navegador)
             localStorage.setItem("usuarioLogado", "true");
 
             if (usuarioDados.nome) {
                 localStorage.setItem("nomeUsuario", usuarioDados.nome);
             }
 
-            // AQUI ESTÁ A MÁGICA PARA OS BOTÕES FUNCIONAREM:
             if (usuarioDados.perfil) {
                 localStorage.setItem("perfil", usuarioDados.perfil);
             }
 
-            alert(`✅ Login realizado com sucesso! Bem-vindo(a), ${usuarioDados.nome || "Usuário"}.`);
-
-            // Redireciona para o menu principal do usuário
+            alert(`Login realizado com sucesso! Bem-vindo(a), ${usuarioDados.nome || "Usuário"}.`);
             window.location.href = "menuUsuario.html";
 
         } else {
-            // Se o Java responder que a senha ou usuário estão errados (erro 401 ou 404)
-            alert("❌ CPF ou senha incorretos. Verifique os dados.");
+            alert("CPF ou senha incorretos. Verifique os dados informados.");
         }
 
     } catch (erro) {
-        // Se o banco ou o Spring Boot estiverem desligados, vai cair aqui
         console.error("Erro de conexão com o servidor:", erro);
-        alert("🔌 Erro de conexão com o servidor! O Spring Boot está rodando?");
+        alert("Erro de conexão com o servidor. Verifique se o sistema está online.");
+    } finally {
+        if (formulario) formulario.setAttribute("aria-busy", "false");
     }
 }

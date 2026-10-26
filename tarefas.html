@@ -7,33 +7,36 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-   <header id="cabecalhoNav" role="banner">
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
+    <header id="cabecalhoNav">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
             <nav class="menu-nav" aria-label="Navegação de retorno">
-                <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
+                <a href="menuUsuario.html" aria-label="Voltar ao Painel de Gestão">Voltar ao Menu Inicial</a>
             </nav>
         </div>
     </header>
 
-    <main class="container" role="main">
+    <main id="conteudo-principal" class="container" tabindex="-1">
         <div class="card">
             <div class="nomes">
-                <h2>📋 Tarefas</h2>
+                <h2>Tarefas</h2>
                 <p>Gerencie as tarefas do jardim.</p>
-                <button id="btnNovaTarefa" class="btn-principal" style="margin-top: 15px; background-color: #28a745; width: auto; padding: 10px 20px;" aria-label="Abrir formulário para criar nova tarefa">
-                    ➕ Criar Nova Tarefa
+                <button type="button" id="btnNovaTarefa" class="btn-principal btn-acao-topo" aria-label="Abrir formulário para criar nova tarefa">
+                    Criar Nova Tarefa
                 </button>
             </div>
 
             <section class="pesquisa" aria-labelledby="tituloPesquisa">
                 <h3 id="tituloPesquisa">Pesquisar Tarefa</h3>
                 <form id="formPesquisa" role="search" aria-label="Formulário de pesquisa de tarefas">
-                    <input type="search" id="pesquisa" placeholder="Digite o termo de busca para filtrar" aria-label="Termo de pesquisa de tarefa">
-                    <button type="submit" class="btn-pesquisar">🔍 Pesquisar</button>
+                    <label for="pesquisa" class="sr-only">Digite o termo de busca para filtrar</label>
+                    <input type="search" id="pesquisa" placeholder="Digite o termo de busca para filtrar">
+                    <button type="submit" class="btn-pesquisar">Pesquisar</button>
                 </form>
             </section>
 
@@ -43,22 +46,22 @@
                 </div>
             </section>
 
-            <section class="cadastro" aria-labelledby="tituloFormulario">
+            <section class="cadastro" aria-labelledby="tituloFormulario" hidden>
                 <h3 id="tituloFormulario">Cadastrar Nova Tarefa</h3>
                 <form id="formCadastro" aria-label="Formulário de criação e edição de tarefa">
                     <label for="titulo">Título da Tarefa</label>
-                    <input type="text" id="titulo" placeholder="Ex: Regar as Samambaias" required aria-required="true">
+                    <input type="text" id="titulo" placeholder="Ex: Regar as Samambaias" required>
 
                     <label for="descricao">Descrição</label>
-                    <textarea id="descricao" rows="4" placeholder="Descreva os detalhes da tarefa" required aria-required="true"></textarea>
+                    <textarea id="descricao" rows="4" placeholder="Descreva os detalhes da tarefa" required></textarea>
 
                     <label for="prazo">Prazo (Data Prevista)</label>
-                    <input type="date" id="prazo" required aria-required="true">
+                    <input type="date" id="prazo" required>
 
                     <label for="status">Status</label>
                     <select id="status">
-                        <option value="Pendente">⏳ Pendente</option>
-                        <option value="Concluída">✅ Concluída</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Concluída">Concluída</option>
                     </select>
 
                     <button type="submit" class="btn-principal">Confirmar Cadastro</button>
@@ -67,7 +70,7 @@
         </div>
     </main>
 
-    <footer id="rodapeGlobal" role="contentinfo">
+    <footer id="rodapeGlobal">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>

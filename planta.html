@@ -7,78 +7,86 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
 
-   <header id="cabecalhoNav" role="banner">
-    <div class="header-container">
-        <div class="logo-area">
-            <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
-            <h1>Plantae Acessível</h1>
-        </div>
-
-        <nav class="menu-nav" aria-label="Navegação de retorno">
-            <a href="catalogo.html" aria-label="Voltar para o catálogo de plantas do jardim">⬅ Voltar ao Catálogo</a>
-        </nav>
-    </div>
-</header>
-
-    <main class="container" role="main" aria-live="polite">
-        <div class="card">
-            <!-- Imagem -->
-            <img id="imagemPlanta" src="" alt="Carregando imagem da planta..." style="width: 100%; border-radius: 12px;">
-
-            <!-- Botões de acessibilidade -->
-            <button class="audioDescricao" aria-label="Reproduzir áudio com a descrição da planta">
-                🔊 Ouvir Audiodescrição
-            </button>
-            <button class="verLibras" aria-label="Reproduzir vídeo com a tradução em Libras da planta">
-                🤟 Ver em Libras
-            </button>
-
-            <!-- Nome -->
-            <div class="nomes" style="margin-top: 20px;">
-                <h2 id="nomePlanta">A carregar...</h2>
-                <p id="nomeCientifico" aria-label="Nome Científico">A carregar...</p>
+    <header id="cabecalhoNav">
+        <div class="header-container">
+            <div class="logo-area">
+                <img src="imagens/logo.png" alt="Logotipo do Plantae Acessível" class="logo-img">
+                <h1>Plantae Acessível</h1>
             </div>
 
-            <!-- Descrição -->
+            <nav class="menu-nav" aria-label="Navegação de retorno">
+                <a href="catalogo.html" id="linkVoltarCatalogo" aria-label="Voltar para o catálogo de plantas do jardim">Voltar ao Catálogo</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="conteudo-principal" class="container" tabindex="-1" aria-busy="true">
+        <div class="card">
+            <img id="imagemPlanta" class="imagem-planta-detalhe" src="imagens/logo.png" alt="">
+
+            <button type="button" id="btnAudioDescricao" class="audioDescricao" aria-pressed="false">
+                Ouvir Audiodescrição
+            </button>
+            <button type="button" id="btnVerLibras" class="verLibras">
+                Ver em Libras
+            </button>
+
+            <div class="nomes nomes-detalhe">
+                <h2 id="nomePlanta"></h2>
+                <p id="nomeCientifico" aria-label="Nome Científico"></p>
+            </div>
+
             <section class="informcoes" aria-labelledby="tituloDescricao">
                 <h3 id="tituloDescricao">Descrição</h3>
-                <p id="descricaoPlanta">Carregando informações da planta...</p>
+                <p id="descricaoPlanta"></p>
             </section>
 
-            <!-- Informações -->
             <section class="informcoes" aria-labelledby="tituloCuidados">
                 <h3 id="tituloCuidados">Cuidados</h3>
-                <p>
-                    <strong>💧 Frequência de rega:</strong>
-                    <span id="rega">Carregando...</span>
+                <p id="linhaRega">
+                    <strong>Frequência de rega:</strong>
+                    <span id="rega"></span>
                 </p>
-                <br>
-                <p>
-                    <strong>✂ Frequência de poda:</strong>
-                    <span id="poda">Carregando...</span>
+                <p id="linhaPoda">
+                    <strong>Frequência de poda:</strong>
+                    <span id="poda"></span>
                 </p>
-                <br>
-                <p>
-                    <strong>☀ Luminosidade:</strong>
-                    <span id="luminosidade">Carregando...</span>
+                <p id="linhaLuminosidade">
+                    <strong>Luminosidade:</strong>
+                    <span id="luminosidade"></span>
                 </p>
-                <br>
-                <p>
-                    <strong>🌿 Família botânica:</strong>
-                    <span id="familia">Carregando...</span>
+                <p id="linhaFamilia">
+                    <strong>Família botânica:</strong>
+                    <span id="familia"></span>
                 </p>
             </section>
         </div>
     </main>
 
-    <footer id="rodapeGlobal" role="contentinfo">
+    <footer id="rodapeGlobal">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
+            <p class="footer-admin-link">
+                <a href="login.html">Acesso Restrito (Gestão)</a>
+            </p>
         </div>
     </footer>
 
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        if (window.VLibras) {
+            new window.VLibras.Widget('https://vlibras.gov.br/app');
+        }
+    </script>
     <script src="js/planta.js"></script>
 </body>
 </html>

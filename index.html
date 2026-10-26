@@ -3,52 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantae Acessível</title>
+    <title>Plantae Acessível - Início</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header id="cabecalhoNav" role="banner">
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
+    <header id="cabecalhoNav">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
-            <nav class="menu-nav" id="menuNavegacaoSuperior" aria-label="Menu Superior">
-                <a href="login.html" aria-label="Entrar no sistema">Entrar</a>
+            <nav class="menu-nav" id="menuNavegacaoSuperior" aria-label="Menu Superior" hidden>
             </nav>
         </div>
     </header>
 
-    <main class="container" role="main">
+    <main id="conteudo-principal" class="container" tabindex="-1">
         <div class="card telaInicial">
-            <h2>🌿 Bem-vindo ao Plantae Acessível!</h2>
+            <h2>Bem-vindo ao Plantae Acessível</h2>
             <p class="textoInicial">
                 Descubra as espécies presentes em nosso jardim por meio de uma
                 experiência acessível, interativa e educativa.
             </p>
 
-            <div style="margin: 25px 0; text-align: left;">
-                <label for="selectJardimPublico" style="font-weight: bold; color: #198754; display: block; margin-bottom: 8px;">
-                    📍 Escolha o jardim que deseja visitar:
+            <div class="campo-selecao-jardim">
+                <label for="selectJardimPublico" class="label-destaque">
+                    Escolha o jardim que deseja visitar:
                 </label>
-                <select id="selectJardimPublico" aria-required="true" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #198754; font-size: 1.1rem;">
-                    <option value="">A carregar jardins...</option>
+                <select id="selectJardimPublico" class="select-jardim" aria-required="true">
+                    <option value="">Carregando jardins...</option>
                 </select>
             </div>
 
-            <button class="btn-iniciar" id="btnIniciarExperiencia" aria-label="Iniciar experiência no jardim selecionado">
-                🌱 Iniciar Experiência
+            <div id="mensagemErroJardim" class="alerta-feedback" role="alert" aria-live="assertive" hidden></div>
+
+            <button type="button" class="btn-iniciar" id="btnIniciarExperiencia">
+                Iniciar Experiência
             </button>
         </div>
     </main>
 
-    <footer id="rodapeGlobal" role="contentinfo">
+    <footer id="rodapeGlobal">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
+            <p class="footer-admin-link">
+                <a href="login.html">Acesso Restrito (Gestão)</a>
+            </p>
         </div>
     </footer>
 
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        if (window.VLibras) {
+            new window.VLibras.Widget('https://vlibras.gov.br/app');
+        }
+    </script>
     <script src="js/index.js"></script>
 </body>
 </html>

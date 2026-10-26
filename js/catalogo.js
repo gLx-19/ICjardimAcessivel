@@ -1,28 +1,42 @@
 const divListaPlantas = document.getElementById('listaPlantas');
 const inputPesquisa = document.getElementById('pesquisa');
 const formPesquisa = document.getElementById('formPesquisa');
+const statusPesquisa = document.getElementById('statusPesquisa');
+const mainContainer = document.getElementById('conteudo-principal');
 
 // URL da API Spring Boot
 const API_URL = "https://icjardimacessivel.onrender.com/api/plantas";
+
+function debounce(funcao, atrasoMs) {
+    let temporizador;
+    return function (...args) {
+        clearTimeout(temporizador);
+        temporizador = setTimeout(() => funcao.apply(this, args), atrasoMs);
+    };
+}
+
+function anunciarParaLeitorDeTela(mensagem) {
+    if (statusPesquisa) {
+        statusPesquisa.textContent = mensagem;
+    }
+}
 
 // ======================================================
 // 1. CARREGAMENTO INICIAL DA PÁGINA (CABEÇALHO E RODAPÉ)
 // ======================================================
 document.addEventListener("DOMContentLoaded", async () => {
-    
-    // LÓGICA DO BOTÃO VOLTAR (ADMIN / JARDINEIRO)
-    const perfil = localStorage.getItem("perfil"); 
-    
+    const perfil = localStorage.getItem("perfil");
+
     if (perfil === "ADMIN" || perfil === "JARDINEIRO") {
-        const headerContainer = document.querySelector(".header-container");
-        headerContainer.innerHTML += `
-            <nav class="menu-nav">
-                <a href="menuUsuario.html" style="color: white; text-decoration: none; font-weight: bold;">⬅ Voltar ao Painel de Gestão</a>
-            </nav>
-        `;
+        const navCatalogo = document.getElementById("menuNavegacaoCatalogo");
+        if (navCatalogo) {
+            const linkGestao = document.createElement("a");
+            linkGestao.href = "menuUsuario.html";
+            linkGestao.textContent = "Painel de Gestão";
+            navCatalogo.appendChild(linkGestao);
+        }
     }
 
-    // LÓGICA DE PERSONALIZAÇÃO DO JARDIM
     const urlParams = new URLSearchParams(window.location.search);
     const jardimId = urlParams.get("jardimId");
 
@@ -31,14 +45,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             const resposta = await fetch(`https://icjardimacessivel.onrender.com/api/jardins/${jardimId}`);
             if (resposta.ok) {
                 const jardim = await resposta.json();
-                
-                // Muda o Título e Subtítulo
-                document.querySelector(".nomes h2").innerText = jardim.nome;
-                document.querySelector(".nomes p").innerText = jardim.descricao;
-                
-                // Muda o Rodapé
+
+                const tituloEl = document.querySelector(".nomes h2");
+                const descEl = document.querySelector(".nomes p");
+                if (tituloEl && jardim.nome) tituloEl.innerText = jardim.nome;
+                if (descEl && jardim.descricao) descEl.innerText = jardim.descricao;
+
                 const rodapeParagrafo = document.querySelector(".footer-container p");
-                rodapeParagrafo.innerText = `${jardim.nome} - ${jardim.localizacao}`;
+                if (rodapeParagrafo && jardim.nome) {
+                    rodapeParagrafo.innerText = jardim.localizacao
+                        ? `${jardim.nome} - ${jardim.localizacao}`
+                        : jardim.nome;
+                }
             }
         } catch (erro) {
             console.error("Erro ao buscar dados do jardim:", erro);
@@ -50,16 +68,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 // 2. BUSCA AS PLANTAS DO SERVIDOR E APLICA O FILTRO
 // ======================================================
 async function buscarPlantasDoServidor(termoPesquisa = "") {
-
     try {
+        if (mainContainer) mainContainer.setAttribute("aria-busy", "true");
+        if (divListaPlantas) divListaPlantas.setAttribute("aria-busy", "true");
+
         let url = API_URL;
 
-        // Caso exista pesquisa
         if (termoPesquisa.trim() !== "") {
-            url += `?pesquisa=${encodeURIComponent(termoPesquisa)}`;
+            url += `?pesquisa=${encodeURIComponent(termoPesquisa.trim())}`;
         }
-
-        divListaPlantas.innerHTML = "<p>Carregando plantas...</p>";
 
         const resposta = await fetch(url);
 
@@ -69,23 +86,24 @@ async function buscarPlantasDoServidor(termoPesquisa = "") {
 
         const plantas = await resposta.json();
 
-        // --- O SEGREDO ESTÁ AQUI: O FILTRO DO JARDIM ---
         const urlParams = new URLSearchParams(window.location.search);
         const jardimIdUrl = urlParams.get("jardimId");
 
         let plantasParaMostrar = plantas;
-        
-        // Se a URL tiver um jardimId, filtra a lista para mostrar só as daquele jardim!
+
         if (jardimIdUrl) {
             plantasParaMostrar = plantas.filter(p => p.jardimId == jardimIdUrl);
         }
-        // -------------------------------------------------
 
         renderizarCatalogo(plantasParaMostrar);
 
     } catch (erro) {
         console.error("Erro:", erro);
-        divListaPlantas.innerHTML = `<p style="color:red;">Não foi possível conectar ao servidor.</p>`;
+        divListaPlantas.innerHTML = `<p class="mensagem-erro" role="alert">Não foi possível conectar ao servidor.</p>`;
+        anunciarParaLeitorDeTela("Erro ao carregar plantas. Não foi possível conectar ao servidor.");
+    } finally {
+        if (mainContainer) mainContainer.setAttribute("aria-busy", "false");
+        if (divListaPlantas) divListaPlantas.setAttribute("aria-busy", "false");
     }
 }
 
@@ -93,61 +111,65 @@ async function buscarPlantasDoServidor(termoPesquisa = "") {
 // 3. MOSTRA OS CARDS DAS PLANTAS NA TELA
 // ======================================================
 function renderizarCatalogo(plantas) {
-
     divListaPlantas.innerHTML = "";
 
     if (plantas.length === 0) {
-        divListaPlantas.innerHTML = "<p>Nenhuma planta encontrada para este jardim.</p>";
+        divListaPlantas.innerHTML = "<p class='mensagem-status'>Nenhuma planta encontrada para este jardim.</p>";
+        anunciarParaLeitorDeTela("Nenhuma planta encontrada para este jardim.");
         return;
     }
 
+    const total = plantas.length;
+    anunciarParaLeitorDeTela(`${total} ${total === 1 ? "planta encontrada" : "plantas encontradas"}.`);
+
     plantas.forEach(planta => {
-        const cardHTML = `
-            <div class="planta-card">
-                
-                <img 
-                    src="${planta.imagemUrl || 'imagens/placeholder.png'}" 
-                    alt="${planta.nome || 'Planta'}" 
-                    style="max-width:150px;border-radius:8px;"
-                >
+        const nomePlanta = planta.nome || "Planta sem identificação";
+        const nomeCientifico = planta.nomeCientifico || "Nome científico não registrado";
+        const possuiImagemReal = Boolean(planta.imagemUrl && planta.imagemUrl.trim() !== "");
+        const urlImagem = possuiImagemReal ? planta.imagemUrl : "imagens/logo.png";
+        const textoAlt = possuiImagemReal ? `Foto da planta ${nomePlanta}` : "";
 
-                <h3>${planta.nome || 'Sem nome'}</h3>
+        const cardArticle = document.createElement("article");
+        cardArticle.className = "card-planta";
 
-                <p><i>${planta.nomeCientifico || 'Sem nome científico'}</i></p>
-
-                <button
-                    class="btn-pesquisar"
-                    onclick="verDetalhes(${planta.id})"
-                    style="margin-top:10px;"
-                >
-                    Saber Mais
-                </button>
-
-            </div>
+        cardArticle.innerHTML = `
+            <img src="${urlImagem}" alt="${textoAlt}">
+            <h3>${nomePlanta}</h3>
+            <p><i>${nomeCientifico}</i></p>
+            <button
+                type="button"
+                class="btn-pesquisar saberMais"
+                onclick="verDetalhes(${planta.id})"
+                aria-label="Saber mais sobre ${nomePlanta}"
+            >
+                Saber Mais
+            </button>
         `;
 
-        divListaPlantas.innerHTML += cardHTML;
+        divListaPlantas.appendChild(cardArticle);
     });
 }
 
 // ======================================================
 // 4. VAI PARA A PÁGINA DA PLANTA
 // ======================================================
-window.verDetalhes = function(id) {
+window.verDetalhes = function (id) {
     window.location.href = `planta.html?id=${id}`;
 };
 
 // ======================================================
-// 5. EVENTOS DE PESQUISA (SUBMIT E DIGITAÇÃO)
+// 5. EVENTOS DE PESQUISA (SUBMIT E DIGITAÇÃO COM DEBOUNCE)
 // ======================================================
-formPesquisa.addEventListener("submit", function(event){
+formPesquisa.addEventListener("submit", function (event) {
     event.preventDefault();
     buscarPlantasDoServidor(inputPesquisa.value);
 });
 
-inputPesquisa.addEventListener("input", function(){
+const pesquisarComDebounce = debounce(function () {
     buscarPlantasDoServidor(inputPesquisa.value);
-});
+}, 500);
+
+inputPesquisa.addEventListener("input", pesquisarComDebounce);
 
 // ======================================================
 // 6. CARREGAMENTO INICIAL DA LISTA

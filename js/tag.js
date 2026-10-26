@@ -10,7 +10,7 @@ const selectJardimTag = document.getElementById("jardimTag");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
 const secaoCadastroTag = formCadastro.closest(".cadastro");
-const btnNovaTag = document.getElementById("btnNovaTag"); 
+const btnNovaTag = document.getElementById("btnNovaTag");
 
 let listaPlantasLocal = [];
 let tagEmEdicaoId = null;
@@ -21,11 +21,11 @@ if (btnNovaTag) {
         formCadastro.reset();
         document.getElementById("codigo").disabled = false;
         btnSubmit.textContent = "Confirmar Cadastro";
-        
+
         carregarJardimCadastro();
-        
+
         if (secaoCadastroTag) {
-            secaoCadastroTag.style.display = "block";
+            secaoCadastroTag.hidden = false;
             secaoCadastroTag.scrollIntoView({ behavior: 'smooth' });
         }
     });
@@ -36,11 +36,13 @@ if (btnNovaTag) {
 // ======================================================
 async function carregarJardimCadastro() {
     try {
+        if (selectJardimTag) selectJardimTag.setAttribute("aria-busy", "true");
+
         const resposta = await fetch(API_JARDINS);
         if (!resposta.ok) throw new Error("Erro ao buscar jardins");
-        
+
         const listaJardins = await resposta.json();
-        
+
         selectJardimTag.innerHTML = "<option value=''>Selecione o Jardim...</option>";
 
         if (!listaJardins || listaJardins.length === 0) {
@@ -55,19 +57,20 @@ async function carregarJardimCadastro() {
             selectJardimTag.appendChild(option);
         });
 
-        // Bloqueia e limpa a lista de plantas até um jardim ser escolhido
         selectPlanta.innerHTML = "<option value=''>Selecione um jardim primeiro</option>";
         selectPlanta.disabled = true;
 
     } catch (erro) {
         console.error("Erro ao carregar jardim no cadastro:", erro);
+    } finally {
+        if (selectJardimTag) selectJardimTag.setAttribute("aria-busy", "false");
     }
 }
 
 // ======================================================
-// 2. A MÁGICA DA CASCATA: OUVIR A MUDANÇA DO JARDIM
+// 2. CASCATA: OUVIR A MUDANÇA DO JARDIM
 // ======================================================
-selectJardimTag.addEventListener("change", function(event) {
+selectJardimTag.addEventListener("change", function (event) {
     const jardimSelecionado = event.target.value;
     carregarSelectPlantas(jardimSelecionado);
 });
@@ -83,9 +86,8 @@ function carregarSelectPlantas(jardimId) {
     }
 
     selectPlanta.disabled = false;
-    selectPlanta.innerHTML = "<option value=''>Selecione a planta...</option>"; 
+    selectPlanta.innerHTML = "<option value=''>Selecione a planta...</option>";
 
-    // Filtra apenas as plantas que pertencem ao Jardim ID escolhido!
     const plantasFiltradas = listaPlantasLocal.filter(p => p.jardimId == jardimId);
 
     if (plantasFiltradas.length === 0) {
@@ -95,7 +97,7 @@ function carregarSelectPlantas(jardimId) {
 
     plantasFiltradas.forEach(planta => {
         const option = document.createElement("option");
-        option.value = planta.id; 
+        option.value = planta.id;
         option.textContent = planta.nome || "Planta sem nome";
         selectPlanta.appendChild(option);
     });
@@ -107,9 +109,11 @@ function carregarSelectPlantas(jardimId) {
 async function carregarTags(termoPesquisa = "") {
     try {
         if (!termoPesquisa.trim()) {
-            listaTagsDiv.innerHTML = "<p>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
+            listaTagsDiv.innerHTML = "<p class='mensagem-status'>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
             return;
         }
+
+        if (listaTagsDiv) listaTagsDiv.setAttribute("aria-busy", "true");
 
         const resposta = await fetch(API_TAGS);
         if (!resposta.ok) throw new Error("Erro ao buscar tags");
@@ -122,15 +126,15 @@ async function carregarTags(termoPesquisa = "") {
         tags = tags.filter(tag => {
             const codigoBate = tag.id && tag.id.toLowerCase().includes(termo);
             const plantaCorrespondente = listaPlantasLocal.find(p => p.id === tag.plantaId);
-            const nomePlantaBate = plantaCorrespondente && 
-                                   plantaCorrespondente.nome && 
-                                   plantaCorrespondente.nome.toLowerCase().includes(termo);
+            const nomePlantaBate = plantaCorrespondente &&
+                plantaCorrespondente.nome &&
+                plantaCorrespondente.nome.toLowerCase().includes(termo);
 
             return codigoBate || nomePlantaBate;
         });
 
         if (tags.length === 0) {
-            listaTagsDiv.innerHTML = "<p>Nenhuma Tag NFC encontrada para os critérios informados.</p>";
+            listaTagsDiv.innerHTML = "<p class='mensagem-status'>Nenhuma Tag NFC encontrada para os critérios informados.</p>";
             return;
         }
 
@@ -140,16 +144,15 @@ async function carregarTags(termoPesquisa = "") {
 
             const plantaCorrespondente = listaPlantasLocal.find(p => p.id === tag.plantaId);
             const nomePlanta = plantaCorrespondente ? (plantaCorrespondente.nome || "Sem nome") : "Nenhuma planta vinculada";
+            const dadosJson = JSON.stringify(tag).replace(/"/g, '&quot;');
 
             itemDiv.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <span>
-                        📱 <strong>Código:</strong> ${tag.id} - 🌿 <strong>Planta:</strong> ${nomePlanta}
-                    </span>
-                    <div class="acoes">
-                        <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(tag).replace(/"/g, '&quot;')})" style="background-color: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">✏️ Editar</button>
-                        <button class="btn-excluir" onclick="excluirTag('${tag.id}')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">🗑️ Excluir</button>
-                    </div>
+                <div class="item-conteudo">
+                    <strong>Código:</strong> ${tag.id} - <strong>Planta:</strong> ${nomePlanta}
+                </div>
+                <div class="acoes">
+                    <button type="button" class="btn-editar" onclick="prepararEdicao(${dadosJson})" aria-label="Editar tag ${tag.id}">Editar</button>
+                    <button type="button" class="btn-excluir" onclick="excluirTag('${tag.id}')" aria-label="Excluir tag ${tag.id}">Excluir</button>
                 </div>
             `;
             listaTagsDiv.appendChild(itemDiv);
@@ -157,12 +160,14 @@ async function carregarTags(termoPesquisa = "") {
 
     } catch (erro) {
         console.error("Erro ao carregar tags:", erro);
-        listaTagsDiv.innerHTML = "<p style='color:red;'>Erro ao processar dados no servidor.</p>";
+        listaTagsDiv.innerHTML = "<p class='mensagem-erro' role='alert'>Erro ao processar dados no servidor.</p>";
+    } finally {
+        if (listaTagsDiv) listaTagsDiv.setAttribute("aria-busy", "false");
     }
 }
 
 // ======================================================
-// 5. PREPARAR EDIÇÃO 
+// 5. PREPARAR EDIÇÃO
 // ======================================================
 async function prepararEdicao(tag) {
     document.getElementById("codigo").value = tag.id || "";
@@ -170,7 +175,6 @@ async function prepararEdicao(tag) {
 
     await carregarJardimCadastro();
 
-    // Descobre qual é o jardim dessa planta e força os selects a se atualizarem
     const plantaDaTag = listaPlantasLocal.find(p => p.id === tag.plantaId);
     if (plantaDaTag) {
         selectJardimTag.value = plantaDaTag.jardimId;
@@ -183,10 +187,10 @@ async function prepararEdicao(tag) {
     }
 
     tagEmEdicaoId = tag.id;
-    btnSubmit.textContent = "💾 Salvar Alterações";
-    
+    btnSubmit.textContent = "Salvar Alterações";
+
     if (secaoCadastroTag) {
-        secaoCadastroTag.style.display = "block";
+        secaoCadastroTag.hidden = false;
         secaoCadastroTag.scrollIntoView({ behavior: 'smooth' });
     }
 }
@@ -204,6 +208,7 @@ formCadastro.addEventListener("submit", async function (event) {
     };
 
     try {
+        formCadastro.setAttribute("aria-busy", "true");
         let resposta;
         if (tagEmEdicaoId) {
             resposta = await fetch(`${API_TAGS}/${tagEmEdicaoId}`, {
@@ -220,25 +225,27 @@ formCadastro.addEventListener("submit", async function (event) {
         }
 
         if (resposta.ok) {
-            alert(tagEmEdicaoId ? "✅ Vínculo da Tag atualizado!" : "✅ Tag NFC cadastrada com sucesso!");
-            
+            alert(tagEmEdicaoId ? "Vínculo da Tag atualizado com sucesso!" : "Tag NFC cadastrada com sucesso!");
+
             formCadastro.reset();
             document.getElementById("codigo").disabled = false;
             const termoPesquisadoAntigo = document.getElementById("pesquisa").value;
             tagEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
-            
+
             if (secaoCadastroTag) {
-                secaoCadastroTag.style.display = "none";
+                secaoCadastroTag.hidden = true;
             }
 
             carregarTags(termoPesquisadoAntigo);
         } else {
             const erroTexto = await resposta.text();
-            alert(`❌ Erro: ${erroTexto || "Verifique se a planta já possui tag ou se o código já existe."}`);
+            alert(`Erro: ${erroTexto || "Verifique se a planta já possui tag ou se o código já existe."}`);
         }
     } catch (erro) {
-        alert("🔌 Erro de conexão com o servidor!");
+        alert("Erro de conexão com o servidor.");
+    } finally {
+        formCadastro.setAttribute("aria-busy", "false");
     }
 });
 
@@ -251,11 +258,11 @@ async function excluirTag(id) {
     try {
         const resposta = await fetch(`${API_TAGS}/${id}`, { method: "DELETE" });
         if (resposta.ok) {
-            alert("🗑️ Tag NFC removida com sucesso!");
+            alert("Tag NFC removida com sucesso!");
             document.getElementById("pesquisa").value = "";
             carregarTags("");
         } else {
-            alert("❌ Erro ao tentar excluir a tag.");
+            alert("Erro ao tentar excluir a tag.");
         }
     } catch (erro) {
         console.error("Erro ao excluir:", erro);
@@ -271,16 +278,17 @@ formPesquisa.addEventListener("submit", function (event) {
 // Inicialização segura
 async function inicializar() {
     if (secaoCadastroTag) {
-        secaoCadastroTag.style.display = "none";
+        secaoCadastroTag.hidden = true;
     }
-    
-    // Deixa carregada a lista de plantas local para otimizar os filtros de busca
+
     try {
         const resposta = await fetch(API_PLANTAS);
         if (resposta.ok) listaPlantasLocal = await resposta.json();
-    } catch(e) { console.error(e); }
+    } catch (e) {
+        console.error(e);
+    }
 
-    listaTagsDiv.innerHTML = "<p>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
+    listaTagsDiv.innerHTML = "<p class='mensagem-status'>Utilize a barra de pesquisa acima para buscar as tags pelo código ou nome da planta.</p>";
 }
 
 inicializar();

@@ -8,47 +8,55 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-light">
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
 
-    <header class="bg-success text-white py-3 shadow" role="banner">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-2">
-                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" width="40" height="40" onerror="this.style.display='none'">
-                <h1 class="h4 m-0">Plantae Acessível</h1>
+    <header id="cabecalhoNav">
+        <div class="header-container">
+            <div class="logo-area">
+                <img src="imagens/logo.png" alt="Logotipo do Plantae Acessível" class="logo-img">
+                <h1>Plantae Acessível</h1>
             </div>
-            <nav aria-label="Navegação de retorno">
-                <a href="login.html" class="text-white text-decoration-none fw-semibold" aria-label="Voltar para a tela de login">
-                    ⬅ Voltar para o Login
+            <nav class="menu-nav" aria-label="Navegação de retorno">
+                <a href="login.html" aria-label="Voltar para a tela de login">
+                    Voltar para o Login
                 </a>
             </nav>
         </div>
     </header>
 
-    <main class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-5" role="main">
-        <form id="formCadastroUsuario" class="p-4 border rounded shadow-sm bg-white" style="width: 100%; max-width: 500px;" aria-label="Formulário de criação de nova conta">
+    <main id="conteudo-principal" class="container d-flex flex-column align-items-center justify-content-center py-5" tabindex="-1">
+        <form id="formCadastroUsuario" class="p-4 border rounded shadow-sm bg-white form-cadastro-usuario" aria-label="Formulário de criação de nova conta">
             <fieldset>
-                <legend class="text-center mb-4 text-success fw-bold">Criar Nova Conta</legend>
+                <legend class="text-center mb-4 fw-bold">Criar Nova Conta</legend>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold" for="nome">Nome Completo</label>
-                    <input class="form-control" id="nome" type="text" placeholder="Digite seu nome" required aria-required="true">
+                    <input class="form-control" id="nome" type="text" autocomplete="name" placeholder="Digite seu nome" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold" for="cpf">CPF</label>
-                    <input class="form-control" id="cpf" type="text" placeholder="Apenas números (Ex: 12345678901)" maxlength="11" required aria-required="true">
+                    <input class="form-control" id="cpf" type="text" inputmode="numeric" placeholder="Apenas números (Ex: 12345678901)" maxlength="11" required>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-semibold" for="senha">Senha</label>
-                    <input class="form-control" id="senha" type="password" placeholder="Crie uma senha" required aria-required="true">
+                    <input class="form-control" id="senha" type="password" autocomplete="new-password" placeholder="Crie uma senha" required>
                 </div>
 
-                <button class="btn btn-success w-100 fw-bold" type="submit" aria-label="Finalizar e confirmar o cadastro">
+                <button class="btn-principal w-100 fw-bold" type="submit" aria-label="Finalizar e confirmar o cadastro">
                     Finalizar Cadastro
                 </button>
             </fieldset>
         </form>
     </main>
+
+    <footer id="rodapeGlobal">
+        <div class="footer-container">
+            <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
+            <p>CEFET-MG - Campus VII Timóteo</p>
+        </div>
+    </footer>
 
     <script src="js/cliente.js"></script>
 </body>

@@ -7,33 +7,36 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-   <header id="cabecalhoNav" role="banner">
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
+    <header id="cabecalhoNav">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
             <nav class="menu-nav" aria-label="Navegação de retorno">
-                <a href="menuUsuario.html">⬅ Voltar ao Menu Inicial</a>
+                <a href="menuUsuario.html" aria-label="Voltar ao Painel de Gestão">Voltar ao Menu Inicial</a>
             </nav>
         </div>
     </header>
 
-    <main class="container" role="main">
+    <main id="conteudo-principal" class="container" tabindex="-1">
         <div class="card">
             <div class="nomes">
-                <h2>🛠 Manutenções</h2>
+                <h2>Manutenções</h2>
                 <p>Gerencie os registros de manutenção dos jardins.</p>
-                <button id="btnNovaManutencao" class="btn-principal" style="margin-top: 15px; background-color: #28a745; width: auto; padding: 10px 20px;" aria-label="Abrir formulário para registrar nova manutenção">
-                    ➕ Registrar Nova Manutenção
+                <button type="button" id="btnNovaManutencao" class="btn-principal btn-acao-topo" aria-label="Abrir formulário para registrar nova manutenção">
+                    Registrar Nova Manutenção
                 </button>
             </div>
 
             <section class="pesquisa" aria-labelledby="tituloPesquisa">
                 <h3 id="tituloPesquisa">Pesquisar Manutenção</h3>
                 <form id="formPesquisa" role="search" aria-label="Formulário de pesquisa de manutenções">
-                    <input type="search" id="pesquisa" placeholder="Pesquisar por descrição ou jardim" aria-label="Termo de pesquisa de manutenção">
-                    <button type="submit" class="btn-pesquisar">🔍 Pesquisar</button>
+                    <label for="pesquisa" class="sr-only">Pesquisar por descrição ou jardim</label>
+                    <input type="search" id="pesquisa" placeholder="Pesquisar por descrição ou jardim">
+                    <button type="submit" class="btn-pesquisar">Pesquisar</button>
                 </form>
             </section>
 
@@ -43,18 +46,18 @@
                 </div>
             </section>
 
-            <section class="cadastro" aria-labelledby="tituloCadastro">
+            <section class="cadastro" aria-labelledby="tituloCadastro" hidden>
                 <h3 id="tituloCadastro">Cadastrar Manutenção</h3>
                 <form id="formCadastro" aria-label="Formulário de registro de manutenção">
                     <label for="data">Data do Registro</label>
-                    <input type="date" id="data" required aria-required="true">
+                    <input type="date" id="data" required>
 
                     <label for="jardim">Jardim Vinculado</label>
-                    <select id="jardim" required aria-required="true">
+                    <select id="jardim" required>
                     </select>
 
                     <label for="descricao">Descrição dos Procedimentos</label>
-                    <textarea id="descricao" rows="5" placeholder="Descreva as tarefas feitas (Ex: Rega da lavanda, poda, adubação)" required aria-required="true"></textarea>
+                    <textarea id="descricao" rows="5" placeholder="Descreva as tarefas feitas (Ex: Rega da lavanda, poda, adubação)" required></textarea>
 
                     <button type="submit" class="btn-principal">Confirmar Registro</button>
                 </form>
@@ -62,7 +65,7 @@
         </div>
     </main>
 
-    <footer id="rodapeGlobal" role="contentinfo">
+    <footer id="rodapeGlobal">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>

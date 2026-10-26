@@ -7,30 +7,33 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header id="cabecalhoNav" role="banner">
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
+    <header id="cabecalhoNav">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
             <nav class="menu-nav" aria-label="Navegação de retorno">
-                <a href="menuUsuario.html" aria-label="Voltar ao Menu Inicial">⬅ Voltar ao Menu Inicial</a>
+                <a href="menuUsuario.html" aria-label="Voltar ao Painel de Gestão">Voltar ao Menu Inicial</a>
             </nav>
         </div>
     </header>
 
-    <main class="container" role="main">
+    <main id="conteudo-principal" class="container" tabindex="-1">
         <div class="card">
             <div class="nomes">
-                <h2>🌳 Jardins</h2>
+                <h2>Jardins</h2>
                 <p>Gerencie os jardins cadastrados.</p>
             </div>
 
             <section class="pesquisa" aria-labelledby="tituloPesquisa">
                 <h3 id="tituloPesquisa">Pesquisar Jardim</h3>
                 <form id="formPesquisa" role="search" aria-label="Formulário de pesquisa de jardins">
-                    <input type="search" id="pesquisa" placeholder="Digite o nome do jardim" aria-label="Termo de pesquisa do jardim">
-                    <button type="submit" class="btn-pesquisar" aria-label="Buscar jardim">🔍 Pesquisar</button>
+                    <label for="pesquisa" class="sr-only">Digite o nome do jardim</label>
+                    <input type="search" id="pesquisa" placeholder="Digite o nome do jardim">
+                    <button type="submit" class="btn-pesquisar">Pesquisar</button>
                 </form>
             </section>
 
@@ -44,7 +47,7 @@
                 <h3 id="tituloFormulario">Cadastrar Novo Jardim</h3>
                 <form id="formCadastro" aria-label="Formulário de cadastro e edição de jardim">
                     <label for="nome">Nome</label>
-                    <input type="text" id="nome" required aria-required="true">
+                    <input type="text" id="nome" required>
 
                     <label for="localizacao">Localização</label>
                     <input type="text" id="localizacao" placeholder="Ex.: Bloco A - Entrada">
@@ -58,7 +61,7 @@
         </div>
     </main>
 
-    <footer id="rodapeGlobal" role="contentinfo">
+    <footer id="rodapeGlobal">
         <div class="footer-container">
             <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>

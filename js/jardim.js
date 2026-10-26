@@ -13,9 +13,10 @@ let jardimEmEdicaoId = null;
 // ======================================================
 async function carregarJardins(termoPesquisa = "") {
     try {
+        if (listaJardinsDiv) listaJardinsDiv.setAttribute("aria-busy", "true");
+
         let url = API_URL;
-        
-        // Se houver termo de busca, anexa na URL
+
         if (termoPesquisa.trim() !== "") {
             url += `?pesquisa=${encodeURIComponent(termoPesquisa)}`;
         }
@@ -27,30 +28,35 @@ async function carregarJardins(termoPesquisa = "") {
         listaJardinsDiv.innerHTML = "";
 
         if (!jardins || jardins.length === 0) {
-            listaJardinsDiv.innerHTML = "<p>Nenhum jardim encontrado.</p>";
+            listaJardinsDiv.innerHTML = "<p class='mensagem-status'>Nenhum jardim encontrado.</p>";
             return;
         }
 
-        // Renderiza cada jardim retornado do back-end como um card com ações
         jardins.forEach(jardim => {
             const itemDiv = document.createElement("div");
-            itemDiv.className = "planta-card"; 
+            itemDiv.className = "planta-item";
+            const nomeSeg = (jardim.nome || "").replace(/'/g, "\\'");
+            const locSeg = (jardim.localizacao || "").replace(/'/g, "\\'");
+            const descSeg = (jardim.descricao || "").replace(/'/g, "\\'");
+
             itemDiv.innerHTML = `
-                <div>
-                    <strong>🌳 ${jardim.nome}</strong> - <small>${jardim.localizacao || 'Sem localização'}</small>
-                    <p>${jardim.descricao || 'Sem descrição.'}</p>
+                <div class="item-conteudo">
+                    <strong>${jardim.nome}</strong> - <small class="item-localizacao">${jardim.localizacao || 'Sem localização'}</small>
+                    <p class="item-descricao">${jardim.descricao || 'Sem descrição.'}</p>
                 </div>
                 <div class="acoes">
-                <button class="btn-ver" onclick="window.location.href='catalogo.html?jardimId=${jardim.id}'">👁️ Ver</button>
-                    <button class="btn-editar" onclick="prepararEdicao(${jardim.id}, '${jardim.nome}', '${jardim.localizacao || ''}', '${jardim.descricao || ''}')">✏️ Editar</button>
-                    <button class="btn-excluir" onclick="excluirJardim(${jardim.id})">🗑️ Excluir</button>
+                    <button type="button" class="btn-ver" onclick="window.location.href='catalogo.html?jardimId=${jardim.id}'" aria-label="Ver catálogo do jardim ${jardim.nome}">Ver</button>
+                    <button type="button" class="btn-editar" onclick="prepararEdicao(${jardim.id}, '${nomeSeg}', '${locSeg}', '${descSeg}')" aria-label="Editar jardim ${jardim.nome}">Editar</button>
+                    <button type="button" class="btn-excluir" onclick="excluirJardim(${jardim.id})" aria-label="Excluir jardim ${jardim.nome}">Excluir</button>
                 </div>
             `;
             listaJardinsDiv.appendChild(itemDiv);
         });
     } catch (erro) {
         console.error("Erro ao carregar lista de jardins:", erro);
-        listaJardinsDiv.innerHTML = "<p>🔌 Erro de conexão com o servidor ao listar jardins.</p>";
+        listaJardinsDiv.innerHTML = "<p class='mensagem-erro' role='alert'>Erro de conexão com o servidor ao listar jardins.</p>";
+    } finally {
+        if (listaJardinsDiv) listaJardinsDiv.setAttribute("aria-busy", "false");
     }
 }
 
@@ -67,10 +73,10 @@ formCadastro.addEventListener("submit", async function (event) {
     };
 
     try {
+        formCadastro.setAttribute("aria-busy", "true");
         let url = API_URL;
         let metodo = "POST";
 
-        // Se estiver editando, muda o método para PUT e insere o ID na URL ou no corpo
         if (jardimEmEdicaoId) {
             url = `${API_URL}/${jardimEmEdicaoId}`;
             metodo = "PUT";
@@ -84,21 +90,21 @@ formCadastro.addEventListener("submit", async function (event) {
         });
 
         if (resposta.ok) {
-            alert(jardimEmEdicaoId ? "✅ Jardim atualizado com sucesso!" : "✅ Jardim cadastrado com sucesso!");
-            
-            // Reseta o estado do formulário
+            alert(jardimEmEdicaoId ? "Jardim atualizado com sucesso!" : "Jardim cadastrado com sucesso!");
+
             formCadastro.reset();
             jardimEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
             tituloFormulario.textContent = "Cadastrar Novo Jardim";
-            
-            // Recarrega a listagem limpa
+
             carregarJardins();
         } else {
-            alert("❌ Erro ao salvar dados do jardim no servidor.");
+            alert("Erro ao salvar dados do jardim no servidor.");
         }
     } catch (erro) {
-        alert("🔌 Erro de conexão com o servidor!");
+        alert("Erro de conexão com o servidor.");
+    } finally {
+        formCadastro.setAttribute("aria-busy", "false");
     }
 });
 
@@ -112,7 +118,7 @@ function prepararEdicao(id, nome, localizacao, descricao) {
     document.getElementById("descricao").value = descricao;
 
     btnSubmit.textContent = "Salvar Alterações";
-    tituloFormulario.textContent = "✏️ Editando Jardim";
+    tituloFormulario.textContent = "Editando Jardim";
     document.getElementById("secaoCadastroJardim").scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -125,14 +131,14 @@ async function excluirJardim(id) {
     try {
         const resposta = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
         if (resposta.ok) {
-            alert("🗑️ Jardim excluído com sucesso!");
+            alert("Jardim excluído com sucesso!");
             carregarJardins();
         } else {
-            alert("❌ Erro ao tentar excluir o jardim no back-end.");
+            alert("Erro ao tentar excluir o jardim no servidor.");
         }
     } catch (erro) {
         console.error("Erro ao excluir:", erro);
-        alert("🔌 Erro de conexão com o servidor!");
+        alert("Erro de conexão com o servidor.");
     }
 }
 

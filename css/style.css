@@ -1,5 +1,5 @@
 /* ===========================
-   RESET
+   RESET E TIPOGRAFIA GLOBAL
 =========================== */
 * {
     margin: 0;
@@ -8,12 +8,20 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+:root {
+    font-size: 112.5%; /* Base de 18px (16px * 1.125) */
+}
+
 /* ===========================
-   GERAL
+   GERAL E PALETA INSTITUCIONAL
 =========================== */
 body {
-    background: #ffffff;
+    background-color: #F8F9FA;
     color: #121212;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 input,
@@ -25,8 +33,43 @@ button,
     font-size: 1rem;
 }
 
-:root {
-    font-size: 112.5%; /* Aumenta a base para 18px (16px * 1.125) */
+/* ===========================
+   ACESSIBILIDADE: SKIP LINK E SR-ONLY
+=========================== */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 10px;
+    background-color: #1B4332;
+    color: #FFFFFF;
+    padding: 14px 20px;
+    border: 2px solid #FFFFFF;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    top: 10px;
+    outline: 3px solid #FFCA2C;
+    outline-offset: 2px;
+}
+
+.sr-only,
+.visually-hidden:where(:not(:focus-within, :active)) {
+    position: absolute !important;
+    clip-path: inset(50%) !important;
+    overflow: hidden !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    white-space: nowrap !important;
 }
 
 /* Foco de teclado de alto contraste */
@@ -35,23 +78,30 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 4px solid #1A4326;
+    outline: 4px solid #1B4332;
     outline-offset: 4px;
     border-radius: 4px;
+}
+
+#cabecalhoNav a:focus-visible,
+#rodapeGlobal a:focus-visible {
+    outline: 3px solid #FFFFFF;
+    outline-offset: 4px;
+}
+
+main:focus {
+    outline: none;
 }
 
 /* ===========================
    ACESSIBILIDADE: PAINÉIS E CARDS
 =========================== */
+.card-planta:focus-within,
 .planta-card:focus-within,
 .planta-item:focus-within {
-    outline: 2px dashed #2E8B57;
+    outline: 2px solid #1B4332;
     outline-offset: 4px;
-    background-color: #f4fff6;
-}
-
-.acoes button {
-    font-size: 1rem; /* min-height de 44px removido para assumir 48px global */
+    background-color: #F8F9FA;
 }
 
 input[type="search"] {
@@ -60,26 +110,37 @@ input[type="search"] {
 }
 
 /* ===========================
-   CONTAINER
+   CONTAINER E CARD PRINCIPAL
 =========================== */
 .container {
     display: flex;
     justify-content: center;
     padding: 30px 15px;
+    flex: 1;
 }
 
 .card {
-    width: 90%;
-    max-width: 600px;
-    background: #CDFCD3;
+    width: 95%;
+    max-width: 680px;
+    background: #FFFFFF;
+    border: 1px solid #DEE2E6;
     border-radius: 16px;
-    padding: 25px;
+    padding: 28px;
     color: #121212;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
 .card img {
     width: 100%;
     border-radius: 12px;
+}
+
+.imagem-planta-detalhe {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #DEE2E6;
 }
 
 /* ===========================
@@ -88,54 +149,102 @@ input[type="search"] {
 .nomes {
     text-align: center;
     margin-bottom: 25px;
-    color: #1A4326;
+    color: #1B4332;
+}
+
+.nomes-detalhe {
+    margin-top: 20px;
 }
 
 .nomes h2 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     margin-bottom: 8px;
+    color: #1B4332;
 }
 
 .nomes p {
-    color: #444;
+    color: #333333;
 }
 
 /* ===========================
-   INFORMAÇÕES
+   INFORMAÇÕES (DETALHES DA PLANTA)
 =========================== */
-.informcoes {
-    background: #D4A373;
+.informcoes,
+.informacoes {
+    background: #F8F9FA;
     color: #121212;
-    padding: 10px;
-    margin-top: 10px;
+    border: 1px solid #DEE2E6;
+    border-left: 5px solid #1B4332;
+    padding: 16px;
+    margin-top: 16px;
     border-radius: 10px;
     font-size: 1rem;
 }
 
+.informcoes h3,
+.informacoes h3 {
+    color: #1B4332;
+    margin-bottom: 12px;
+}
+
+.informcoes p,
+.informacoes p {
+    line-height: 1.6;
+    color: #121212;
+    margin-bottom: 10px;
+}
+
+.informcoes p:last-child,
+.informacoes p:last-child {
+    margin-bottom: 0;
+}
+
+.informcoes strong,
+.informacoes strong {
+    color: #1B4332;
+}
+
 /* ===========================
-   BOTÕES PADRÃO
+   BOTÕES PADRÃO E ACESSIBILIDADE
 =========================== */
 .audioDescricao,
 .verLibras,
 .saberMais {
-    background: #1A4326;
-    color: #F9DC5C;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 12px;
+    background-color: #1B4332;
+    color: #FFFFFF;
+    padding: 14px 18px;
+    margin-top: 12px;
+    border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
-    transition: .3s;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    width: 100%;
+    border: none;
+    font-size: 1rem;
+    min-height: 48px;
+}
+
+.audioDescricao {
+    margin-top: 20px;
+}
+
+.audioDescricao[aria-pressed="true"] {
+    background-color: #B02A37;
+    color: #FFFFFF;
 }
 
 .audioDescricao:hover,
 .verLibras:hover,
 .saberMais:hover {
-    opacity: .9;
+    background-color: #198754;
+}
+
+.audioDescricao[aria-pressed="true"]:hover {
+    background-color: #842029;
 }
 
 /* ===========================
-   MENU
+   MENU DE GESTÃO
 =========================== */
 .menu {
     display: flex;
@@ -145,24 +254,24 @@ input[type="search"] {
 }
 
 .btn-menu {
-    background: #1A4326;
-    color: #F9DC5C;
+    background-color: #1B4332;
+    color: #FFFFFF;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 16px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: .3s;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    min-height: 48px;
 }
 
 .btn-menu:hover {
-    background: #275d36;
-    transform: translateY(-2px);
+    background-color: #198754;
 }
 
 .btn-menu:active {
-    transform: scale(.98);
+    transform: scale(0.99);
 }
 
 /* ===========================
@@ -173,7 +282,7 @@ input[type="search"] {
 }
 
 .pesquisa h3 {
-    color: #1A4326;
+    color: #1B4332;
     margin-bottom: 12px;
 }
 
@@ -185,92 +294,137 @@ input[type="search"] {
 
 .pesquisa input {
     padding: 12px;
-    border: 2px solid #B4E7BD;
-    border-radius: 10px;
+    border: 2px solid #ADB5BD;
+    border-radius: 8px;
     font-size: 1rem;
+    background-color: #FFFFFF;
+    color: #121212;
+}
+
+.pesquisa input:focus {
+    border-color: #1B4332;
 }
 
 .btn-pesquisar {
-    background: #1A4326;
-    color: #F9DC5C;
+    background-color: #1B4332;
+    color: #FFFFFF;
     border: none;
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 8px;
+    padding: 12px 18px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: .3s;
+    transition: background-color 0.2s ease;
+    min-height: 48px;
 }
 
 .btn-pesquisar:hover {
-    opacity: .9;
+    background-color: #198754;
 }
 
 .btn-pesquisar:active {
-    transform: scale(.98);
+    transform: scale(0.99);
 }
 
 /* ===========================
-   LISTA DE PLANTAS
+   LISTAS ADMINISTRATIVAS E ITENS
 =========================== */
 .lista-plantas h3 {
-    color: #1A4326;
+    color: #1B4332;
     margin-bottom: 15px;
 }
 
 .planta-item {
-    background: #ffffff;
+    background: #FFFFFF;
+    border: 1px solid #DEE2E6;
     border-radius: 12px;
-    padding: 15px;
+    padding: 16px;
     margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.planta-item span {
+.planta-item span,
+.item-conteudo {
+    flex-grow: 1;
+    color: #121212;
+}
+
+.planta-item strong {
+    color: #1B4332;
+}
+
+.item-localizacao {
+    color: #1B4332;
     font-weight: bold;
-    color: #1A4326;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.item-descricao {
+    color: #333333;
+    margin-top: 6px;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.item-subtexto {
+    color: #333333;
+    display: block;
+    margin-top: 4px;
+    font-weight: normal;
 }
 
 /* ===========================
-   AÇÕES
+   BOTÕES DE AÇÃO (TOUCH TARGETS >= 48PX)
 =========================== */
 .acoes {
     display: flex;
     gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
 }
 
 .acoes button {
-    border: none;
     border-radius: 8px;
-    padding: 8px 14px;
+    padding: 10px 16px;
     cursor: pointer;
     font-weight: bold;
-    transition: .3s;
+    font-size: 0.95rem;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
 }
 
 .acoes button:hover {
-    opacity: .9;
+    opacity: 0.92;
 }
 
 .btn-ver {
-    background: #4CAF50;
-    color: white;
+    background-color: #198754;
+    color: #FFFFFF;
+    border: 1px solid #146C43;
 }
 
 .btn-editar {
-    background: #F9DC5C;
-    color: #121212; /* Contraste corrigido */
+    background-color: #FFCA2C;
+    color: #121212;
+    border: 1px solid #CC9A06;
 }
 
 .btn-excluir {
-    background: #E74C3C;
-    color: white;
+    background-color: #B02A37;
+    color: #FFFFFF;
+    border: 1px solid #842029;
 }
 
 /* ===========================
-   NOVA PLANTA
+   BOTÕES PRINCIPAIS E AUXILIARES
 =========================== */
 .nova-planta {
     margin-top: 25px;
@@ -279,32 +433,45 @@ input[type="search"] {
 
 .nova-planta p {
     margin-bottom: 12px;
-    color: #1A4326;
+    color: #1B4332;
 }
 
 .btn-principal {
     width: 100%;
-    background: #1A4326;
-    color: #F9DC5C;
+    background-color: #1B4332;
+    color: #FFFFFF;
     border: none;
-    border-radius: 12px;
-    padding: 14px;
+    border-radius: 10px;
+    padding: 14px 20px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: .3s;
+    transition: background-color 0.2s ease;
+    min-height: 48px;
 }
 
 .btn-principal:hover {
-    opacity: .9;
+    background-color: #198754;
 }
 
 .btn-principal:active {
-    transform: scale(.98);
+    transform: scale(0.99);
+}
+
+.btn-acao-topo {
+    margin-top: 15px;
+    background-color: #198754;
+    color: #FFFFFF;
+    width: auto;
+    padding: 12px 24px;
+}
+
+.btn-acao-topo:hover {
+    background-color: #1B4332;
 }
 
 /* ===========================
-   CATÁLOGO
+   CATÁLOGO DE PLANTAS (CARDS UNIFICADOS)
 =========================== */
 .catalogo {
     display: flex;
@@ -313,65 +480,54 @@ input[type="search"] {
     margin-top: 25px;
 }
 
-.card-planta {
-    background: #ffffff;
+.card-planta,
+.planta-card {
+    background: #FFFFFF;
+    border: 1px solid #DEE2E6;
     border-radius: 12px;
-    padding: 15px;
+    padding: 20px;
     text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.card-planta img {
+.card-planta img,
+.planta-card img {
     width: 100%;
-    border-radius: 12px;
-    margin-bottom: 12px;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    border: 1px solid #DEE2E6;
 }
 
-.card-planta h3 {
-    color: #1A4326;
-    margin-bottom: 5px;
+.card-planta h3,
+.planta-card h3 {
+    color: #1B4332;
+    margin-bottom: 6px;
+    font-size: 1.25rem;
 }
 
-.card-planta p {
-    color: #555;
-    margin-bottom: 15px;
+.card-planta p,
+.planta-card p {
+    color: #333333;
+    margin-bottom: 16px;
 }
 
 /* ===========================
-   PÁGINA DA PLANTA
-=========================== */
-.informcoes h3 {
-    color: #1A4326;
-    margin-bottom: 10px;
-}
-
-.informcoes p {
-    line-height: 1.6;
-}
-
-.informcoes strong {
-    color: #1A4326;
-}
-
-.audioDescricao,
-.verLibras {
-    width: 100%;
-    border: none;
-    font-size: 1rem;
-}
-
-.audioDescricao {
-    margin-top: 20px;
-}
-
-/* ===========================
-   CADASTRO
+   FORMULÁRIOS DE CADASTRO
 =========================== */
 .cadastro {
     margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #DEE2E6;
+}
+
+.cadastro-oculto {
+    display: none;
 }
 
 .cadastro h3 {
-    color: #1A4326;
+    color: #1B4332;
     margin-bottom: 15px;
 }
 
@@ -383,16 +539,24 @@ input[type="search"] {
 
 .cadastro label {
     font-weight: bold;
-    color: #1A4326;
+    color: #121212;
 }
 
 .cadastro input,
 .cadastro textarea,
 .cadastro select {
     padding: 12px;
-    border: 2px solid #B4E7BD;
-    border-radius: 10px;
+    border: 2px solid #ADB5BD;
+    border-radius: 8px;
     font-size: 1rem;
+    background-color: #FFFFFF;
+    color: #121212;
+}
+
+.cadastro input:focus,
+.cadastro textarea:focus,
+.cadastro select:focus {
+    border-color: #1B4332;
 }
 
 .cadastro textarea {
@@ -400,13 +564,45 @@ input[type="search"] {
     min-height: 100px;
 }
 
+.form-autenticacao {
+    width: 100%;
+    max-width: 420px;
+}
+
+.form-cadastro-usuario {
+    width: 100%;
+    max-width: 500px;
+}
+
 /* ===========================
-   HEADER E FOOTER
+   MENSAGENS DE FEEDBACK E ALERTA
+=========================== */
+.alerta-feedback,
+.mensagem-erro {
+    background-color: #F8D7DA;
+    color: #842029;
+    border: 2px solid #F5C2C7;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 15px 0;
+    font-weight: bold;
+    text-align: left;
+}
+
+.mensagem-status {
+    text-align: center;
+    color: #333333;
+    padding: 20px;
+}
+
+/* ===========================
+   HEADER E FOOTER INSTITUCIONAIS
 =========================== */
 #cabecalhoNav {
-    background-color: #2E8B57; /* Verde folha */
-    color: white;
+    background-color: #1B4332;
+    color: #FFFFFF;
     padding: 15px 20px;
+    border-bottom: 1px solid #143325;
 }
 
 .header-container {
@@ -415,12 +611,19 @@ input[type="search"] {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .logo-area {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+}
+
+.logo-area h1 {
+    font-size: 1.35rem;
+    color: #FFFFFF;
 }
 
 .logo-img {
@@ -428,77 +631,132 @@ input[type="search"] {
     width: auto;
 }
 
+.menu-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .menu-nav a {
-    color: white;
+    color: #FFFFFF;
     text-decoration: none;
-    margin-left: 20px;
     font-weight: bold;
+    font-size: 0.95rem;
+    padding: 10px 14px;
+    border-radius: 6px;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.menu-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .btn-login-header {
-    background-color: #fff;
-    color: #2E8B57 !important;
-    padding: 5px 12px;
-    border-radius: 4px;
+    background-color: #FFFFFF;
+    color: #1B4332 !important;
+    padding: 10px 16px;
+    border-radius: 6px;
 }
 
 #rodapeGlobal {
-    background-color: #333;
-    color: #ccc;
+    background-color: #212529;
+    color: #F8F9FA;
     text-align: center;
-    padding: 20px;
-    font-size: 14px;
+    padding: 24px 20px;
+    font-size: 0.9rem;
     margin-top: 40px;
 }
 
 .footer-container p {
-    margin: 5px 0;
+    margin: 6px 0;
+}
+
+.footer-admin-link {
+    margin-top: 12px !important;
+    padding-top: 10px;
+    border-top: 1px solid #495057;
+}
+
+.footer-admin-link a {
+    color: #FFFFFF;
+    text-decoration: underline;
+    font-weight: bold;
+    padding: 10px 14px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+}
+
+.footer-admin-link a:hover {
+    color: #DEE2E6;
 }
 
 /* ==========================
-   Tela Inicial
+   TELA INICIAL (INDEX)
 ========================== */
 .telaInicial {
     text-align: center;
-    padding: 50px 40px;
+    padding: 40px 30px;
 }
 
 .telaInicial h2 {
-    color: #2E8B57;
-    margin-bottom: 20px;
+    color: #1B4332;
+    margin-bottom: 16px;
 }
 
 .textoInicial {
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 40px;
+    font-size: 1rem;
+    color: #333333;
+    margin-bottom: 30px;
     line-height: 1.6;
+}
+
+.campo-selecao-jardim {
+    margin: 25px 0;
+    text-align: left;
+}
+
+.label-destaque {
+    font-weight: bold;
+    color: #1B4332;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.select-jardim {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #1B4332;
+    font-size: 1.05rem;
+    background-color: #FFFFFF;
+    color: #121212;
 }
 
 .btn-iniciar {
     width: 100%;
-    padding: 22px;
-    background-color: #2E8B57;
-    color: white;
+    padding: 18px 22px;
+    background-color: #1B4332;
+    color: #FFFFFF;
     border: none;
     border-radius: 10px;
-    font-size: 24px;
+    font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    transition: background-color 0.2s ease;
+    min-height: 54px;
 }
 
 .btn-iniciar:hover {
-    background-color: #246b43;
-    transform: scale(1.02);
+    background-color: #198754;
 }
 
 .btn-iniciar:active {
-    transform: scale(.98);
-}
-
-.menu-nav a {
-    font-size: 14px;
+    transform: scale(0.99);
 }
 
 /* ===========================
@@ -507,6 +765,10 @@ input[type="search"] {
 @media (max-width: 600px) {
     .card {
         width: 100%;
+        padding: 20px;
+    }
+    .telaInicial {
+        padding: 28px 20px;
     }
     .planta-item {
         flex-direction: column;

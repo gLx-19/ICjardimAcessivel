@@ -7,44 +7,40 @@ const listaPlantasDiv = document.getElementById("listaPlantas");
 const selectJardim = document.getElementById("jardimSelect");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
-// Captura a seção inteira do formulário para controlar a exibição (display: none/block)
 const secaoCadastroPlanta = formCadastro.closest(".cadastro");
-const btnAbrirCadastro = document.getElementById("btnAbrirCadastro"); // ID sugerido para o botão de "Cadastrar Nova Planta" no HTML
+const btnAbrirCadastro = document.getElementById("btnAbrirCadastro");
 
 let plantaEmEdicaoId = null;
+let mapaJardins = {};
 
-// Controla a abertura do formulário para uma NOVA planta
 if (btnAbrirCadastro) {
     btnAbrirCadastro.addEventListener("click", () => {
         plantaEmEdicaoId = null;
         formCadastro.reset();
         btnSubmit.textContent = "Confirmar Cadastro";
 
-        // Garante que o select do Jardim Único continue preenchido
         carregarSelectJardins();
 
-        // Mostra o formulário na tela
         if (secaoCadastroPlanta) {
-            secaoCadastroPlanta.style.display = "block";
+            secaoCadastroPlanta.hidden = false;
             secaoCadastroPlanta.scrollIntoView({ behavior: 'smooth' });
         }
     });
 }
 
-// Criamos um "dicionário" para o JavaScript lembrar o nome dos jardins
-let mapaJardins = {};
-
 // ======================================================
-// 1. CARREGAR JARDINS (AGORA SALVA OS NOMES NO DICIONÁRIO)
+// 1. CARREGAR JARDINS (SALVA OS NOMES NO DICIONÁRIO)
 // ======================================================
 async function carregarSelectJardins() {
     try {
+        if (selectJardim) selectJardim.setAttribute("aria-busy", "true");
+
         const resposta = await fetch(API_JARDINS);
         if (!resposta.ok) throw new Error("Erro ao buscar jardins");
         const listaJardins = await resposta.json();
 
         selectJardim.innerHTML = "<option value=''>Selecione um jardim...</option>";
-        mapaJardins = {}; // Limpa o dicionário
+        mapaJardins = {};
 
         if (!listaJardins || listaJardins.length === 0) {
             selectJardim.innerHTML = "<option value=''>Nenhum jardim cadastrado</option>";
@@ -52,7 +48,7 @@ async function carregarSelectJardins() {
         }
 
         listaJardins.forEach(jardim => {
-            mapaJardins[jardim.id] = jardim.nome; // Guarda o nome na memória
+            mapaJardins[jardim.id] = jardim.nome;
 
             const option = document.createElement("option");
             option.value = jardim.id;
@@ -63,14 +59,18 @@ async function carregarSelectJardins() {
     } catch (erro) {
         console.error("Erro ao carregar select de jardins:", erro);
         selectJardim.innerHTML = "<option value=''>Erro ao carregar jardim</option>";
+    } finally {
+        if (selectJardim) selectJardim.setAttribute("aria-busy", "false");
     }
 }
 
 // ======================================================
-// 2. CARREGAR/LISTAR PLANTAS (COM VISUAL NOVO E NOME DO JARDIM)
+// 2. CARREGAR/LISTAR PLANTAS
 // ======================================================
 async function carregarPlantas(termoPesquisa = "") {
     try {
+        if (listaPlantasDiv) listaPlantasDiv.setAttribute("aria-busy", "true");
+
         let url = API_URL;
         if (termoPesquisa) {
             url += `?pesquisa=${encodeURIComponent(termoPesquisa)}`;
@@ -83,7 +83,7 @@ async function carregarPlantas(termoPesquisa = "") {
         listaPlantasDiv.innerHTML = "";
 
         if (plantas.length === 0) {
-            listaPlantasDiv.innerHTML = "<p>Nenhuma planta encontrada.</p>";
+            listaPlantasDiv.innerHTML = "<p class='mensagem-status'>Nenhuma planta encontrada.</p>";
             return;
         }
 
@@ -91,50 +91,46 @@ async function carregarPlantas(termoPesquisa = "") {
             const plantaCard = document.createElement("div");
             plantaCard.className = "planta-item";
 
-            // Puxa o nome do jardim pela ID. Se não achar, mostra "Desconhecido"
             const nomeDoJardim = mapaJardins[planta.jardimId] || "Jardim Desconhecido";
+            const nomePlanta = planta.nome || "Sem nome";
 
             plantaCard.innerHTML = `
-                <div style="display: flex; width: 100%; align-items: center; justify-content: space-between;">
-                    
-                    <div style="flex-grow: 1; padding-right: 20px;">
-                        <strong>🌿 ${planta.nome || 'Sem nome'}</strong> 
-                        <em>(${planta.nomeCientifico || 'Sem nome científico'})</em>
-                        <br>
-                        <small style="color: #198754; font-weight: bold;">📍 ${nomeDoJardim}</small>
-                        <p style="margin-top: 5px; margin-bottom: 0;">${planta.descricao || 'Sem descrição.'}</p>
-                    </div>
-
-                    <div class="acoes" style="display: flex; gap: 8px; flex-shrink: 0;">
-                        <button class="btn-ver" onclick="window.location.href='planta.html?id=${planta.id}'" style="background-color: #198754; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">👁️ Ver</button>
-                        
-                        <button class="btn-editar" onclick="prepararEdicao(${planta.id})" style="background-color: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✏️ Editar</button>
-                        
-                        <button class="btn-excluir" onclick="excluirPlanta(${planta.id})" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">🗑️ Excluir</button>
-                    </div>
+                <div class="item-conteudo">
+                    <strong>${nomePlanta}</strong>
+                    <em>(${planta.nomeCientifico || 'Sem nome científico'})</em>
+                    <br>
+                    <small class="item-localizacao">Jardim: ${nomeDoJardim}</small>
+                    <p class="item-descricao">${planta.descricao || 'Sem descrição.'}</p>
                 </div>
-                <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+
+                <div class="acoes">
+                    <button type="button" class="btn-ver" onclick="window.location.href='planta.html?id=${planta.id}'" aria-label="Ver detalhes de ${nomePlanta}">Ver</button>
+                    <button type="button" class="btn-editar" onclick="prepararEdicao(${planta.id})" aria-label="Editar planta ${nomePlanta}">Editar</button>
+                    <button type="button" class="btn-excluir" onclick="excluirPlanta(${planta.id})" aria-label="Excluir planta ${nomePlanta}">Excluir</button>
+                </div>
             `;
             listaPlantasDiv.appendChild(plantaCard);
         });
     } catch (erro) {
         console.error("Erro ao carregar lista:", erro);
-        listaPlantasDiv.innerHTML = "<p style='color:red;'>Erro ao carregar dados do servidor.</p>";
+        listaPlantasDiv.innerHTML = "<p class='mensagem-erro' role='alert'>Erro ao carregar dados do servidor.</p>";
+    } finally {
+        if (listaPlantasDiv) listaPlantasDiv.setAttribute("aria-busy", "false");
     }
 }
 
 // ======================================================
-// 3. EXCLUIR PLANTA 
+// 3. EXCLUIR PLANTA
 // ======================================================
 async function excluirPlanta(id) {
     if (!confirm("Tem certeza que deseja apagar esta planta do catálogo?")) return;
     try {
         const resposta = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
         if (resposta.ok) {
-            alert("🗑️ Planta excluída com sucesso!");
+            alert("Planta excluída com sucesso!");
             carregarPlantas();
         } else {
-            alert("❌ Erro ao tentar excluir a planta.");
+            alert("Erro ao tentar excluir a planta.");
         }
     } catch (erro) {
         console.error("Erro ao excluir:", erro);
@@ -142,7 +138,7 @@ async function excluirPlanta(id) {
 }
 
 // ======================================================
-// 4. PREPARAR EDIÇÃO (MOSTRA O FORMULÁRIO APENAS AQUI)
+// 4. PREPARAR EDIÇÃO
 // ======================================================
 async function prepararEdicao(id) {
     try {
@@ -161,16 +157,14 @@ async function prepararEdicao(id) {
             document.getElementById("luminosidade").value = planta.luminosidade;
         }
         if (selectJardim && planta.jardimId) {
-            // Garante que o ID do jardim seja selecionado como texto para bater com as options geradas
             selectJardim.value = planta.jardimId.toString();
         }
 
         plantaEmEdicaoId = id;
-        btnSubmit.textContent = "💾 Salvar Alterações";
+        btnSubmit.textContent = "Salvar Alterações";
 
-        // Mostra o formulário de forma dinâmica ao clicar em Editar
         if (secaoCadastroPlanta) {
-            secaoCadastroPlanta.style.display = "block";
+            secaoCadastroPlanta.hidden = false;
             secaoCadastroPlanta.scrollIntoView({ behavior: 'smooth' });
         }
     } catch (erro) {
@@ -189,7 +183,6 @@ formCadastro.addEventListener("submit", async function (event) {
         return;
     }
 
-    // Tratamento dos dados coletados para não mandar strings vazias em campos opcionais
     const dadosDaPlanta = {
         id: plantaEmEdicaoId ? plantaEmEdicaoId : null,
         nome: document.getElementById("nome").value.trim(),
@@ -197,8 +190,6 @@ formCadastro.addEventListener("submit", async function (event) {
         descricao: document.getElementById("descricao").value.trim(),
         jardimId: parseInt(selectJardim.value),
         imagemUrl: document.getElementById("imagemUrl").value.trim() || null,
-
-        // Garante envio correto de valores para propriedades que podem ser opcionais no banco
         familia: document.getElementById("familia").value.trim() || null,
         luminosidade: document.getElementById("luminosidade").value || null,
         rega: document.getElementById("rega").value.trim() || null,
@@ -206,10 +197,10 @@ formCadastro.addEventListener("submit", async function (event) {
     };
 
     try {
+        formCadastro.setAttribute("aria-busy", "true");
         let urlRequisicao = API_URL;
         let metodoRequisicao = "POST";
 
-        // Se tiver ID de edição, muda a rota e o método para PUT
         if (plantaEmEdicaoId) {
             urlRequisicao = `${API_URL}/${plantaEmEdicaoId}`;
             metodoRequisicao = "PUT";
@@ -222,23 +213,24 @@ formCadastro.addEventListener("submit", async function (event) {
         });
 
         if (resposta.ok) {
-            alert(plantaEmEdicaoId ? "✅ Planta atualizada com sucesso!" : "✅ Planta cadastrada com sucesso!");
+            alert(plantaEmEdicaoId ? "Planta atualizada com sucesso!" : "Planta cadastrada com sucesso!");
             formCadastro.reset();
             plantaEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Cadastro";
 
-            // Oculta novamente a seção do formulário após o sucesso do salvamento
             if (secaoCadastroPlanta) {
-                secaoCadastroPlanta.style.display = "none";
+                secaoCadastroPlanta.hidden = true;
             }
 
             await carregarSelectJardins();
             carregarPlantas();
         } else {
-            alert("❌ Erro ao salvar. Verifique se as informações obrigatórias (Nome, Nome Científico e Descrição) estão preenchidas corretamente.");
+            alert("Erro ao salvar. Verifique se as informações obrigatórias (Nome, Nome Científico e Descrição) estão preenchidas corretamente.");
         }
     } catch (erro) {
-        alert("🔌 Erro de conexão com o servidor!");
+        alert("Erro de conexão com o servidor.");
+    } finally {
+        formCadastro.setAttribute("aria-busy", "false");
     }
 });
 
@@ -249,14 +241,12 @@ formPesquisa.addEventListener("submit", function (event) {
 
 // Inicialização segura das listas
 async function inicializar() {
-    // Esconde o formulário logo no carregamento inicial da página por padrão
     if (secaoCadastroPlanta) {
-        secaoCadastroPlanta.style.display = "none";
+        secaoCadastroPlanta.hidden = true;
     }
 
     await carregarSelectJardins();
-    
-    // Deixa a lista aguardando a pesquisa do usuário
-    listaPlantasDiv.innerHTML = "<p style='text-align:center; color:#555; padding: 20px;'>🔍 Utilize a barra de pesquisa acima para encontrar as plantas do catálogo.</p>";
+
+    listaPlantasDiv.innerHTML = "<p class='mensagem-status'>Utilize a barra de pesquisa acima para encontrar as plantas do catálogo.</p>";
 }
 inicializar();

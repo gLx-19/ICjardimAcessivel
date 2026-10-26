@@ -7,16 +7,21 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header id="cabecalhoNav" role="banner">
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
+    <header id="cabecalhoNav">
         <div class="header-container">
             <div class="logo-area">
-                <img src="imagens/logo.png" alt="Logotipo verde com folhas do Plantae Acessível" class="logo-img">
+                <img src="imagens/logo.png" alt="Logotipo do Plantae Acessível" class="logo-img">
                 <h1>Plantae Acessível</h1>
             </div>
+            <nav class="menu-nav" id="menuNavegacaoCatalogo" aria-label="Navegação principal">
+                <a href="index.html">Início</a>
+            </nav>
         </div>
     </header>
 
-    <main class="container" role="main">
+    <main id="conteudo-principal" class="container" tabindex="-1">
         <div class="card">
             <div class="nomes">
                 <h2>Catálogo de Plantas</h2>
@@ -26,27 +31,43 @@
             <section class="pesquisa" aria-labelledby="tituloPesquisa">
                 <h3 id="tituloPesquisa">Pesquisar Planta</h3>
                 <form id="formPesquisa" role="search" aria-label="Formulário de pesquisa de plantas">
-                    <input type="search" id="pesquisa" placeholder="Digite o nome da planta" aria-label="Termo de pesquisa">
-                    <button type="submit" class="btn-pesquisar" aria-label="Buscar plantas">
+                    <label for="pesquisa" class="sr-only">Digite o nome da planta</label>
+                    <input type="search" id="pesquisa" placeholder="Digite o nome da planta">
+                    <button type="submit" class="btn-pesquisar">
                         Buscar
                     </button>
                 </form>
             </section>
 
-            <!-- aria-live="polite" avisa ao leitor de tela quando o JS injetar as plantas aqui -->
-            <section id="listaPlantas" class="catalogo" aria-live="polite" aria-label="Lista de plantas do jardim">
-                <!-- Os cards serão adicionados aqui pelo JavaScript. -->
+            <p id="statusPesquisa" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+
+            <section id="listaPlantas" class="catalogo" aria-label="Lista de plantas do jardim">
             </section>
         </div>
     </main>
 
-    <footer id="rodapeGlobal" role="contentinfo">
+    <footer id="rodapeGlobal">
         <div class="footer-container">
-            <p>&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
+            <p id="textoRodapeJardim">&copy; 2026 Plantae Acessível - Desenvolvido com foco em acessibilidade botânica.</p>
             <p>CEFET-MG - Campus VII Timóteo</p>
+            <p class="footer-admin-link">
+                <a href="login.html">Acesso Restrito (Gestão)</a>
+            </p>
         </div>
     </footer>
 
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        if (window.VLibras) {
+            new window.VLibras.Widget('https://vlibras.gov.br/app');
+        }
+    </script>
     <script src="js/catalogo.js"></script>
 </body>
 </html>

@@ -8,21 +8,21 @@ const selectJardim = document.getElementById("jardim");
 const btnSubmit = formCadastro.querySelector("button[type='submit']");
 
 const secaoCadastroManutencao = formCadastro.closest(".cadastro");
-const btnNovaManutencao = document.getElementById("btnNovaManutencao"); 
+const btnNovaManutencao = document.getElementById("btnNovaManutencao");
 
 let manutencaoEmEdicaoId = null;
-let mapaJardins = {}; // NOVO: Dicionário para guardar os nomes dos jardins
+let mapaJardins = {};
 
 if (btnNovaManutencao) {
     btnNovaManutencao.addEventListener("click", () => {
         manutencaoEmEdicaoId = null;
         formCadastro.reset();
         btnSubmit.textContent = "Confirmar Registro";
-        
+
         carregarSelectJardins();
-        
+
         if (secaoCadastroManutencao) {
-            secaoCadastroManutencao.style.display = "block";
+            secaoCadastroManutencao.hidden = false;
             secaoCadastroManutencao.scrollIntoView({ behavior: 'smooth' });
         }
     });
@@ -33,12 +33,14 @@ if (btnNovaManutencao) {
 // ======================================================
 async function carregarSelectJardins() {
     try {
+        if (selectJardim) selectJardim.setAttribute("aria-busy", "true");
+
         const resposta = await fetch(API_JARDINS);
         if (!resposta.ok) throw new Error("Erro ao buscar jardins");
-        
+
         const listaJardins = await resposta.json();
-        
-        selectJardim.innerHTML = "<option value=''>Selecione um jardim...</option>"; 
+
+        selectJardim.innerHTML = "<option value=''>Selecione um jardim...</option>";
         mapaJardins = {};
 
         if (!listaJardins || listaJardins.length === 0) {
@@ -47,16 +49,18 @@ async function carregarSelectJardins() {
         }
 
         listaJardins.forEach(jardim => {
-            mapaJardins[jardim.id] = jardim.nome; // Guarda o nome em memória
-            
+            mapaJardins[jardim.id] = jardim.nome;
+
             const option = document.createElement("option");
-            option.value = jardim.id; 
+            option.value = jardim.id;
             option.textContent = jardim.nome;
             selectJardim.appendChild(option);
         });
     } catch (erro) {
         console.error("Erro ao carregar select de jardim:", erro);
         selectJardim.innerHTML = "<option value=''>Erro ao carregar dados do jardim</option>";
+    } finally {
+        if (selectJardim) selectJardim.setAttribute("aria-busy", "false");
     }
 }
 
@@ -65,6 +69,8 @@ async function carregarSelectJardins() {
 // ======================================================
 async function carregarManutencoes(termoPesquisa = "") {
     try {
+        if (listaManutencoesDiv) listaManutencoesDiv.setAttribute("aria-busy", "true");
+
         const resposta = await fetch(API_MANUTENCOES);
         if (!resposta.ok) throw new Error("Erro ao buscar manutenções");
 
@@ -73,13 +79,13 @@ async function carregarManutencoes(termoPesquisa = "") {
 
         if (termoPesquisa) {
             const termo = termoPesquisa.toLowerCase().trim();
-            manutencoes = manutencoes.filter(m => 
+            manutencoes = manutencoes.filter(m =>
                 (m.descricao && m.descricao.toLowerCase().includes(termo))
             );
         }
 
         if (manutencoes.length === 0) {
-            listaManutencoesDiv.innerHTML = "<p>Nenhuma manutenção registrada.</p>";
+            listaManutencoesDiv.innerHTML = "<p class='mensagem-status'>Nenhuma manutenção registrada.</p>";
             return;
         }
 
@@ -93,19 +99,17 @@ async function carregarManutencoes(termoPesquisa = "") {
                 dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
             }
 
-            // Puxa o nome do jardim através do ID salvo no dicionário
             const nomeJardim = mapaJardins[manutencao.jardimId] || "Jardim Desconhecido";
+            const dadosJson = JSON.stringify(manutencao).replace(/"/g, '&quot;');
 
             itemDiv.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <span>
-                        🛠️ <strong>${nomeJardim}</strong> - (${dataFormatada || 'Sem data'})
-                        <br><small style="color: #666;">Procedimento: ${manutencao.descricao}</small>
-                    </span>
-                    <div class="acoes">
-                        <button class="btn-editar" onclick="prepararEdicao(${JSON.stringify(manutencao).replace(/"/g, '&quot;')})" style="background-color: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">✏️ Editar</button>
-                        <button class="btn-excluir" onclick="excluirManutencao(${manutencao.id})" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">🗑️ Excluir</button>
-                    </div>
+                <div class="item-conteudo">
+                    <strong>${nomeJardim}</strong> - <span>(${dataFormatada || 'Sem data'})</span>
+                    <small class="item-subtexto">Procedimento: ${manutencao.descricao}</small>
+                </div>
+                <div class="acoes">
+                    <button type="button" class="btn-editar" onclick="prepararEdicao(${dadosJson})" aria-label="Editar manutenção de ${nomeJardim} em ${dataFormatada || 'sem data'}">Editar</button>
+                    <button type="button" class="btn-excluir" onclick="excluirManutencao(${manutencao.id})" aria-label="Excluir manutenção de ${nomeJardim} em ${dataFormatada || 'sem data'}">Excluir</button>
                 </div>
             `;
             listaManutencoesDiv.appendChild(itemDiv);
@@ -113,26 +117,28 @@ async function carregarManutencoes(termoPesquisa = "") {
 
     } catch (erro) {
         console.error("Erro ao carregar manutenções:", erro);
-        listaManutencoesDiv.innerHTML = "<p style='color:red;'>Erro ao carregar dados do servidor.</p>";
+        listaManutencoesDiv.innerHTML = "<p class='mensagem-erro' role='alert'>Erro ao carregar dados do servidor.</p>";
+    } finally {
+        if (listaManutencoesDiv) listaManutencoesDiv.setAttribute("aria-busy", "false");
     }
 }
 
 // ======================================================
-// 3. PREPARAR EDIÇÃO 
+// 3. PREPARAR EDIÇÃO
 // ======================================================
 function prepararEdicao(manutencao) {
     document.getElementById("data").value = manutencao.dataRegistro || "";
     document.getElementById("descricao").value = manutencao.descricao || "";
-    
+
     if (manutencao.jardimId) {
         selectJardim.value = manutencao.jardimId;
     }
 
     manutencaoEmEdicaoId = manutencao.id;
-    btnSubmit.textContent = "💾 Salvar Alterações";
-    
+    btnSubmit.textContent = "Salvar Alterações";
+
     if (secaoCadastroManutencao) {
-        secaoCadastroManutencao.style.display = "block";
+        secaoCadastroManutencao.hidden = false;
         secaoCadastroManutencao.scrollIntoView({ behavior: 'smooth' });
     }
 }
@@ -156,6 +162,7 @@ formCadastro.addEventListener("submit", async function (event) {
     };
 
     try {
+        formCadastro.setAttribute("aria-busy", "true");
         const url = manutencaoEmEdicaoId ? `${API_MANUTENCOES}/${manutencaoEmEdicaoId}` : API_MANUTENCOES;
         const metodo = manutencaoEmEdicaoId ? "PUT" : "POST";
 
@@ -166,22 +173,24 @@ formCadastro.addEventListener("submit", async function (event) {
         });
 
         if (resposta.ok) {
-            alert(manutencaoEmEdicaoId ? "✅ Registro de manutenção alterado!" : "✅ Manutenção registrada com sucesso!");
+            alert(manutencaoEmEdicaoId ? "Registro de manutenção alterado com sucesso!" : "Manutenção registrada com sucesso!");
             formCadastro.reset();
             manutencaoEmEdicaoId = null;
             btnSubmit.textContent = "Confirmar Registro";
-            
+
             if (secaoCadastroManutencao) {
-                secaoCadastroManutencao.style.display = "none";
+                secaoCadastroManutencao.hidden = true;
             }
-            
+
             await carregarSelectJardins();
             carregarManutencoes();
         } else {
-            alert("❌ Erro ao processar dados no servidor. Verifique se as informações estão preenchidas corretamente.");
+            alert("Erro ao processar dados no servidor. Verifique se as informações estão preenchidas corretamente.");
         }
     } catch (erro) {
-        alert("🔌 Erro de conexão com o servidor!");
+        alert("Erro de conexão com o servidor.");
+    } finally {
+        formCadastro.setAttribute("aria-busy", "false");
     }
 });
 
@@ -194,10 +203,10 @@ async function excluirManutencao(id) {
     try {
         const reply = await fetch(`${API_MANUTENCOES}/${id}`, { method: "DELETE" });
         if (reply.ok) {
-            alert("🗑️ Registro de manutenção excluído!");
+            alert("Registro de manutenção excluído com sucesso!");
             carregarManutencoes();
         } else {
-            alert("❌ Erro ao tentar excluir a manutenção.");
+            alert("Erro ao tentar excluir a manutenção.");
         }
     } catch (erro) {
         console.error("Erro ao excluir:", erro);
@@ -211,7 +220,7 @@ formPesquisa.addEventListener("submit", function (event) {
 
 async function inicializar() {
     if (secaoCadastroManutencao) {
-        secaoCadastroManutencao.style.display = "none";
+        secaoCadastroManutencao.hidden = true;
     }
     await carregarSelectJardins();
     await carregarManutencoes();

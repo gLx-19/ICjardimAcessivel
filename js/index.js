@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    
     // --------------------------------------------------------
     // 1. Lógica do Cabeçalho (Visitante vs Gestor)
     // --------------------------------------------------------
@@ -8,9 +7,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (menuNav) {
         if (perfil === "ADMIN" || perfil === "JARDINEIRO") {
-            menuNav.innerHTML = `<a href="menuUsuario.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 Painel de Gestão</a>`;
+            menuNav.hidden = false;
+            menuNav.innerHTML = `<a href="menuUsuario.html">Painel de Gestão</a>`;
         } else {
-            menuNav.innerHTML = `<a href="login.html" style="color: white; text-decoration: none; font-weight: bold;">🔐 Entrar</a>`;
+            menuNav.hidden = true;
+            menuNav.innerHTML = "";
         }
     }
 
@@ -18,30 +19,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 2. Preencher a Caixa de Seleção de Jardins
     // --------------------------------------------------------
     const selectJardim = document.getElementById("selectJardimPublico");
-    
+    const mainContainer = document.getElementById("conteudo-principal");
+    const mensagemErro = document.getElementById("mensagemErroJardim");
+
+    function exibirErroAcessivel(texto) {
+        if (mensagemErro) {
+            mensagemErro.textContent = texto;
+            mensagemErro.hidden = false;
+        }
+    }
+
+    function limparErroAcessivel() {
+        if (mensagemErro) {
+            mensagemErro.textContent = "";
+            mensagemErro.hidden = true;
+        }
+    }
+
     if (selectJardim) {
+        selectJardim.addEventListener("change", limparErroAcessivel);
+
         try {
-            // Vai ao Java buscar os jardins
+            if (mainContainer) mainContainer.setAttribute("aria-busy", "true");
+            selectJardim.setAttribute("aria-busy", "true");
+
             const resposta = await fetch("https://icjardimacessivel.onrender.com/api/jardins");
             if (!resposta.ok) throw new Error("Erro ao buscar jardins");
-            
+
             const jardins = await resposta.json();
-            
-            // Limpa a opção de "A carregar..."
+
             selectJardim.innerHTML = "<option value=''>Selecione um jardim...</option>";
-            
-            // Adiciona cada jardim à lista
+
             jardins.forEach(jardim => {
                 const option = document.createElement("option");
                 option.value = jardim.id;
-                // Exemplo: "Jardim do CEFET - Bloco B"
-                option.textContent = `${jardim.nome} - ${jardim.localizacao || ''}`;
+                option.textContent = jardim.localizacao
+                    ? `${jardim.nome} - ${jardim.localizacao}`
+                    : jardim.nome;
                 selectJardim.appendChild(option);
             });
 
+            // Pré-seleciona automaticamente se houver apenas 1 jardim cadastrado (Ronda 1)
+            if (jardins.length === 1) {
+                selectJardim.value = String(jardins[0].id);
+            }
         } catch (erro) {
             console.error("Erro:", erro);
-            selectJardim.innerHTML = "<option value=''>🔌 Erro ao ligar ao servidor</option>";
+            selectJardim.innerHTML = "<option value=''>Erro ao conectar ao servidor</option>";
+            exibirErroAcessivel("Não foi possível carregar a lista de jardins. Verifique a conexão com a internet.");
+        } finally {
+            if (mainContainer) mainContainer.setAttribute("aria-busy", "false");
+            selectJardim.setAttribute("aria-busy", "false");
         }
     }
 
@@ -49,18 +77,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 3. O Clique no Botão "Iniciar Experiência"
     // --------------------------------------------------------
     const btnIniciar = document.getElementById("btnIniciarExperiencia");
-    
+
     if (btnIniciar) {
         btnIniciar.addEventListener("click", () => {
-            const idSelecionado = selectJardim.value;
-            
-            // Proteção: Se a pessoa clicar sem escolher nada
+            const idSelecionado = selectJardim ? selectJardim.value : "";
+
             if (!idSelecionado) {
-                alert("⚠️ Por favor, selecione um jardim na lista antes de iniciar a experiência!");
+                exibirErroAcessivel("Por favor, selecione um jardim na lista antes de iniciar a experiência.");
+                if (selectJardim) selectJardim.focus();
                 return;
             }
-            
-            // Redireciona com o ID do jardim na URL!
+
+            limparErroAcessivel();
             window.location.href = `catalogo.html?jardimId=${idSelecionado}`;
         });
     }
