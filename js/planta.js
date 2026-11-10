@@ -5,7 +5,41 @@ const idDaPlanta = urlParams.get("id");
 // URL da API para buscar uma planta específica
 const API_URL = `https://icjardimacessivel.onrender.com/api/plantas/${idDaPlanta}`;
 
+// Configuração do vídeo em Libras (Canal ADEVITA-MG: https://www.youtube.com/@adevita_mg/videos)
+// Para definir um vídeo específico por ID da planta futuramente, basta adicionar abaixo:
+// Exemplo: 1: "https://www.youtube.com/watch?v=ID_DO_VIDEO"
+const URL_PADRAO_LIBRAS = "https://www.youtube.com/@adevita_mg/videos";
+const EMBED_PADRAO_ADEVITA = "https://www.youtube.com/embed/YF7M8lFVW-8?list=UUT542VZiJUddMIx3ddGPxJw";
+
+const VIDEOS_LIBRAS_POR_PLANTA = {
+    // 1: "https://www.youtube.com/watch?v=..."
+};
+
 let plantaCarregada = null;
+
+function converterUrlYoutubeParaEmbed(url) {
+    if (!url || typeof url !== "string") {
+        return EMBED_PADRAO_ADEVITA;
+    }
+
+    const link = url.trim();
+    if (link === "" || link.includes("@adevita_mg")) {
+        return EMBED_PADRAO_ADEVITA;
+    }
+
+    if (link.includes("youtube.com/embed/")) {
+        return link;
+    }
+
+    // Extrai ID de links do tipo youtube.com/watch?v=ID, youtu.be/ID ou youtube.com/shorts/ID
+    const regexId = /(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = link.match(regexId);
+    if (match && match[1]) {
+        return `https://www.youtube.com/embed/${match[1]}`;
+    }
+
+    return EMBED_PADRAO_ADEVITA;
+}
 
 function formatarCampoOpcional(valor) {
     if (valor === null || valor === undefined) {
@@ -71,6 +105,9 @@ async function carregarDetalhesInformacoes() {
         document.getElementById("familia").innerText =
             formatarCampoOpcional(planta.familia);
 
+        // Atualiza o player de vídeo em Libras (usa o vídeo da planta se existir, ou o padrão da ADEVITA-MG)
+        configurarVideoLibras(planta);
+
         // Atualiza o título da página com o nome da planta para leitores de tela
         if (planta.nome) {
             document.title = `${planta.nome} - Plantae Acessível`;
@@ -108,9 +145,11 @@ function configurarAudioDescricao() {
     const btnAudio = document.querySelector(".audioDescricao");
     if (!btnAudio) return;
 
+    const textoInicialBotao = btnAudio.textContent.trim() || "Modo de Leitura";
+
     function atualizarBotaoAudio(falando) {
         btnAudio.setAttribute("aria-pressed", falando ? "true" : "false");
-        btnAudio.textContent = falando ? "Parar Audiodescrição" : "Ouvir Audiodescrição";
+        btnAudio.textContent = falando ? "Parar Leitura" : textoInicialBotao;
     }
 
     btnAudio.addEventListener("click", () => {
@@ -171,19 +210,26 @@ function configurarAudioDescricao() {
 }
 
 // ======================================================
-// 3. Integração com o Widget VLibras
+// 3. Configuração do Player de Vídeo em Libras (YouTube)
 // ======================================================
-function configurarBotaoLibras() {
-    const btnLibras = document.querySelector(".verLibras");
-    if (!btnLibras) return;
+function configurarVideoLibras(planta) {
+    const iframeLibras = document.getElementById("videoLibrasPlanta");
+    if (!iframeLibras) return;
 
-    btnLibras.addEventListener("click", () => {
-        const botaoWidgetVLibras = document.querySelector("[vw-access-button]");
-        if (botaoWidgetVLibras) {
-            botaoWidgetVLibras.click();
-            botaoWidgetVLibras.focus();
-        }
-    });
+    const urlEscolhida =
+        (planta && (planta.librasUrl || planta.videoLibrasUrl)) ||
+        VIDEOS_LIBRAS_POR_PLANTA[idDaPlanta] ||
+        URL_PADRAO_LIBRAS;
+
+    const urlEmbed = converterUrlYoutubeParaEmbed(urlEscolhida);
+
+    if (iframeLibras.src !== urlEmbed) {
+        iframeLibras.src = urlEmbed;
+    }
+
+    if (planta && planta.nome) {
+        iframeLibras.title = `Vídeo em Libras sobre a planta ${planta.nome}`;
+    }
 }
 
 // ======================================================
@@ -206,5 +252,4 @@ function exibirMensagemErro() {
 
 // Inicialização
 configurarAudioDescricao();
-configurarBotaoLibras();
 carregarDetalhesInformacoes();
